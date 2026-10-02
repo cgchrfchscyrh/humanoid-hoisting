@@ -52,7 +52,13 @@ async function scan(name) {
   });
 }
 for (const route of ["/", "/paper/", "/supplementary/", "/accessibility/"]) {
-  await page.goto(origin + route, { waitUntil: "networkidle" });
+  const response = await page.goto(origin + route, {
+    waitUntil: "networkidle",
+  });
+  if (!response?.ok())
+    throw new Error(
+      `Accessibility scan could not open ${origin + route}: HTTP ${response?.status()}`,
+    );
   assert((await page.locator("h1").count()) === 1, route + ": one H1");
   assert(
     (await page.locator("img:not([alt])").count()) === 0,

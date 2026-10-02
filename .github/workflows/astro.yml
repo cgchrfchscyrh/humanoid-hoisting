@@ -85,12 +85,19 @@ jobs:
       - name: Verify WCAG 2.1 AA before deployment
         env:
           TEST_URL: http://127.0.0.1:4332${{ steps.pages.outputs.base_path }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: |
+          rm -f reports/axe-wcag21aa.json
           npm run preview -- --host 127.0.0.1 --port 4332 > /tmp/hoist-preview.log 2>&1 &
+          preview_ready=false
           for attempt in $(seq 1 30); do
-            if curl --silent --fail "$TEST_URL/" > /dev/null; then break; fi
+            if curl --silent --fail "$TEST_URL/" > /dev/null; then preview_ready=true; break; fi
             sleep 1
           done
+          if [ "$preview_ready" != true ]; then
+            cat /tmp/hoist-preview.log
+            exit 1
+          fi
           npm run test:a11y
         working-directory: ${{ env.BUILD_PATH }}
       - name: Save accessibility report
