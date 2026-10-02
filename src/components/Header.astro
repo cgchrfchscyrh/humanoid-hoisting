@@ -1,136 +1,264 @@
 ---
 import { Icon } from "astro-icon/components";
-
-type Author = {
-  name: string;
-  url?: string;
-  institution?: string;
-  notes?: string[];
-};
-
-type Note = {
-  symbol: string;
-  text: string;
-};
-
-type Link = {
-  url: string;
-  name: string;
-  icon?: string;
-};
-
-interface Props {
-  title: string;
-  authors: Author[];
-  conference?: string;
-  notes?: Note[];
-  links?: Link[];
-}
-
-const { title, authors, conference, notes, links } = Astro.props;
-
-const hasBackground = Astro.slots.has("background");
+import { project, asset } from "../data/project";
+const links = [
+  {
+    name: "Read the paper",
+    url: project.paperUrl || asset("paper/"),
+    icon: "ri:file-text-line",
+  },
+  { name: "Full research video", url: "#demo", icon: "ri:play-circle-line" },
+  {
+    name: "Supplementary",
+    url: asset("supplementary/"),
+    icon: "ri:attachment-2",
+  },
+  ...(project.codeUrl
+    ? [{ name: "Code", url: project.codeUrl, icon: "ri:github-line" }]
+    : []),
+  ...(project.arxivUrl
+    ? [{ name: "arXiv", url: project.arxivUrl, icon: "academicons:arxiv" }]
+    : []),
+];
 ---
 
-<header
-  class:list={[
-    "full-bleed relative mb-12",
-    hasBackground && "-mt-16 pt-24 pb-28",
-  ]}
->
-  {
-    hasBackground && (
-      <div class="cover absolute inset-0 z-0 overflow-hidden">
-        <slot name="background" />
-        {/* Darken the cover so the white header text stays legible. */}
-        <div class="absolute inset-0 bg-black/40" />
-      </div>
-    )
-  }
-  <div
-    class:list={[
-      "relative z-10 mx-auto flex max-w-[50rem] flex-col items-center px-6 text-center",
-      hasBackground
-        ? "gap-10 text-white prose-headings:text-white [text-shadow:0_0_8px_rgba(0,0,0,0.6)]"
-        : "gap-6",
-    ]}
-  >
-    <h1 class="my-0 text-5xl font-medium">{title}</h1>
-    <div class="flex flex-row flex-wrap justify-center gap-x-8 gap-y-4">
+<header class="comparison-hero" id="top">
+  <div class="hero-stage">
+    <div class="hero-intro">
+      <p class="hero-kicker">Learning to guide the load</p>
+      <h1>
+        <span class="hero-name">HOIST</span><span class="hero-paper-title"
+          >{project.subtitle}</span
+        >
+      </h1>
+      <p class="hero-mission">
+        Lifting equipment carries the weight.<br class="small-screen-break" /> Can
+        a humanoid learn to guide the placement?
+      </p>
+    </div>
+    <div class="hero-scenes">
+      <figure class="hero-scene">
+        <video
+          id="construction-clip"
+          controls
+          muted
+          playsinline
+          preload="metadata"
+          width="640"
+          height="480"
+          poster={asset("media/construction-guidance-poster.jpg")}
+          aria-label="Construction context: workers guide a crane-suspended concrete cap"
+          aria-describedby="construction-scene-caption construction-visual-description"
+        >
+          <source
+            src={asset("media/construction-guidance.mp4")}
+            type="video/mp4"
+          />
+          <track
+            kind="descriptions"
+            src={asset("media/construction-guidance-descriptions.vtt")}
+            srclang="en"
+            label="English visual descriptions"
+          />
+          <a href={asset("media/construction-guidance.mp4")}
+            >Download the construction excerpt.</a
+          >
+        </video>
+        <figcaption id="construction-scene-caption">
+          <span class="scene-index">01 / The real-world task</span><strong
+            >People guide a suspended load.</strong
+          ><span
+            >Construction footage · <a
+              href="https://www.dvidshub.net/video/760467/crane-2"
+              >U.S. Navy / DVIDS</a
+            ></span
+          >
+        </figcaption>
+      </figure>
+      <figure class="hero-scene">
+        <video
+          id="robot-clip"
+          controls
+          muted
+          playsinline
+          preload="metadata"
+          width="384"
+          height="432"
+          poster={asset("media/hoist-guidance-poster.jpg")}
+          aria-label="HOIST laboratory demonstration: a humanoid guides a suspended box toward its target"
+          aria-describedby="robot-scene-caption robot-visual-description"
+        >
+          <source src={asset("media/hoist-guidance.mp4")} type="video/mp4" />
+          <track
+            kind="descriptions"
+            src={asset("media/hoist-guidance-descriptions.vtt")}
+            srclang="en"
+            label="English visual descriptions"
+          />
+          <a href={asset("media/hoist-guidance.mp4")}
+            >Download the HOIST laboratory excerpt.</a
+          >
+        </video>
+        <figcaption id="robot-scene-caption">
+          <span class="scene-index">02 / Our research</span><strong
+            >A humanoid learns to do the guiding.</strong
+          ><span>HOIST · Autonomous laboratory demonstration</span>
+        </figcaption>
+      </figure>
+    </div>
+    <div class="hero-playback">
+      <button
+        id="hero-playback-toggle"
+        type="button"
+        aria-controls="construction-clip robot-clip"
+        hidden
+      >
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"
+          ><path class="play-symbol" d="M7 4v16l14-8z" fill="currentColor"
+          ></path><path
+            class="pause-symbol"
+            d="M5 4h5v16H5zm9 0h5v16h-5z"
+            fill="currentColor"></path></svg
+        >
+        <span>Play both clips</span>
+      </button>
+      <span>26-second silent excerpts · Play at your own pace</span>
+      <p class="sr-only" id="hero-playback-status" role="status"></p>
+    </div>
+  </div>
+  <div class="hero-publication">
+    <div class="authors">
       {
-        authors.map((author) => (
-          <div class="flex flex-col items-center text-center">
-            <div class="flex flex-row text-xl">
-              {author.url ? (
-                <a class:list={[hasBackground && "not-prose text-blue-200 hover:text-blue-100 underline decoration-dashed underline-offset-4 hover:decoration-solid"]} href={author.url}>{author.name}</a>
-              ) : (
-                author.name
-              )}
-              {author.notes && (
-                <sup class="text-xl">
-                  {author.notes.map(
-                    (note, index, array) =>
-                      note + (index < array.length - 1 ? "," : ""),
-                  )}
-                </sup>
-              )}
-            </div>
-            {author.institution && <div>{author.institution}</div>}
-          </div>
+        project.authors.map((author) => (
+          <span>
+            <a href={`mailto:${author.email}`}>{author.name}</a>
+            {author.note && <sup>{author.note}</sup>}
+          </span>
         ))
       }
     </div>
-    {conference && <div>{conference}</div>}
-    {
-      notes && (
-        <div class="text-center text-sm">
-          {
-            // prettier-ignore
-            notes.map((note, index, array) => (
-              <span>
-                <sup>{note.symbol}</sup>{note.text}{index < array.length - 1 ? "," : ""}
-              </span>
-            ))
-          }
-        </div>
-      )
-    }
-    {
-      links && (
-        <div class="not-prose flex flex-row flex-wrap justify-center gap-2">
-          {links.map((link) => (
-            <a
-              href={link.url}
-              class:list={["flex flex-row items-center gap-2 rounded-full px-5 py-2 text-lg hover:no-underline",
-                hasBackground ? "bg-white hover:bg-zinc-200 text-zinc-800 text-shadow-none shadow-[0_0_8px_rgba(0,0,0,0.6)]" : "bg-zinc-800 text-white hover:bg-black dark:text-zinc-900 dark:hover:bg-zinc-50 dark:bg-zinc-200"
-              ]}
-            >
-              {link.icon && <Icon name={link.icon} />}
+    <p class="affiliation">
+      <strong>{project.institution}</strong><span>{project.department}</span>
+    </p>
+    <p class="author-notes">
+      <span>* Equal contribution</span><span>† Corresponding author</span>
+    </p>
+    <div class="resource-links">
+      {
+        links.map((link) => (
+          <a class="button" href={link.url}>
+            <>
+              <Icon name={link.icon} />
               <span>{link.name}</span>
-            </a>
-          ))}
-        </div>
-      )
-    }
+            </>
+          </a>
+        ))
+      }
+    </div>
   </div>
 </header>
+<div class="hero-context wide">
+  <p>
+    <strong>From construction practice to a laboratory research task.</strong> HOIST
+    learns to approach, guide, and stop a suspended payload through whole-body contact.
+    Our physical experiments use a 2.5 kg box; the construction clip illustrates the
+    motivation.
+  </p>
+  <details class="hero-media-notes">
+    <summary>Video sources and visual descriptions</summary>
+    <div class="hero-description-grid">
+      <div>
+        <p id="construction-visual-description">
+          <strong>Left — construction context.</strong> Workers on an unfinished building
+          guide a concrete cap hanging from a crane cable. They steady and align the
+          piece by hand as it is lowered toward the top of a masonry wall. A wider
+          shot shows the cable, the workers, and the surrounding structure.
+        </p>
+        <p>
+          Source: <a href="https://www.dvidshub.net/video/760467/crane-2"
+            >“CRANE #2” — U.S. Navy video, Defense VI Records Center / DVIDS</a
+          >. Excerpt: 01:38–02:04; audio removed for this visual comparison.
+          Listed as public domain in the United States, subject to <a
+            href="https://www.dvidshub.net/about/copyright"
+            >DVIDS usage conditions</a
+          >.
+        </p>
+        <p class="source-disclaimer">
+          The appearance of U.S. Department of War (DoW) visual information does
+          not imply or constitute DoW endorsement.
+        </p>
+        <a href={asset("media/construction-guidance-descriptions.vtt")} download
+          >Download construction visual descriptions (WebVTT)</a
+        >
+      </div>
+      <div>
+        <p id="robot-visual-description">
+          <strong>Right — HOIST laboratory demonstration.</strong> A humanoid approaches
+          a gray box suspended from overhead straps. It contacts the box with both
+          hands and adjusts its position as the box descends onto a wooden platform,
+          toward a marked rectangular target. The robot stops after guiding the payload
+          into place.
+        </p>
+        <p>
+          Source: the authors’ <a href="#demo">full HOIST research video</a>,
+          00:16–00:42. Cropped to the right-hand HOIST panel; playback speed is
+          unchanged. This excerpt contains no audio. The two clips show
+          different settings and are paired to explain the research motivation.
+        </p>
+        <a href={asset("media/hoist-guidance-descriptions.vtt")} download
+          >Download HOIST visual descriptions (WebVTT)</a
+        >
+      </div>
+    </div>
+  </details>
+</div>
 
-<style>
-  /* Make the slotted cover (Picture/Video, or a plain <img>/<video>) fill the
-     header, overriding those components' figure styling. Scoped to `.cover`.
-     Kept as scoped CSS because expressing it with Tailwind would require
-     repeating the descendant variant on every declaration. */
-  .cover :global(:is(picture, img, video)) {
-    position: absolute;
-    inset: 0;
-    /* Zero the margin that `prose` adds to media elements, which would
-       otherwise push the cover down and expose the page background. */
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    max-width: none;
-    max-height: none;
-    object-fit: cover;
-    border-radius: 0;
+<script>
+  const button = document.querySelector<HTMLButtonElement>(
+    "#hero-playback-toggle",
+  );
+  const clips = ["construction-clip", "robot-clip"].map(
+    (id) => document.getElementById(id) as HTMLVideoElement,
+  );
+  const status = document.querySelector<HTMLElement>("#hero-playback-status");
+  if (button && clips.every(Boolean)) {
+    const update = () => {
+      const playing = clips.some((clip) => !clip.paused && !clip.ended);
+      button.querySelector("span")!.textContent = playing
+        ? "Pause clips"
+        : clips.every((clip) => clip.ended)
+          ? "Replay both clips"
+          : "Play both clips";
+      button.classList.toggle("is-playing", playing);
+    };
+    button.hidden = false;
+    for (const clip of clips) {
+      for (const event of ["play", "pause", "ended", "error"])
+        clip.addEventListener(event, update);
+    }
+    button.addEventListener("click", async () => {
+      if (clips.some((clip) => !clip.paused && !clip.ended)) {
+        clips.forEach((clip) => clip.pause());
+        if (status) status.textContent = "";
+        update();
+        return;
+      }
+      if (clips.some((clip) => clip.ended))
+        clips.forEach((clip) => {
+          clip.currentTime = 0;
+        });
+      button.disabled = true;
+      const playback = clips.map((clip) => clip.play());
+      update();
+      const results = await Promise.allSettled(playback);
+      button.disabled = false;
+      if (status)
+        status.textContent = results.some(
+          (result) => result.status === "rejected",
+        )
+          ? "A clip could not start. Use its individual player controls or the source links below."
+          : "";
+      update();
+    });
   }
-</style>
+</script>

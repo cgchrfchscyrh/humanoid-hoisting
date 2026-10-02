@@ -1,0 +1,46 @@
+---
+import ReadingLayout from "../layouts/ReadingLayout.astro";
+import { asset } from "../data/project";
+import content from "../content/supplementary.html?raw";
+import toc from "../content/supplementary-toc.json";
+---
+
+<ReadingLayout
+  title="HOIST supplementary material"
+  description="HTML reading edition of the HOIST supplementary algorithm, placement results, residual-motion results, and implementation details."
+>
+  <p class="eyebrow">Research manuscript · HTML reading edition</p>
+  <h1>HOIST: Supplementary material</h1>
+  <p class="paper-meta">
+    Songyang Liu, Shunyu Yao, Dingyuan Huang, Shuai Li<br />Department of Civil
+    and Coastal Engineering, University of Florida
+  </p>
+  <div class="document-actions resource-links">
+    <a
+      class="button button-primary"
+      href={asset("papers/hoist-supplementary.pdf")}
+      >Download supplement (tagged PDF, web edition)</a
+    ><a class="button button-secondary" href={asset("paper/")}
+      >Read the full paper</a>
+  </div>
+  <p class="reading-note">
+    This reading edition is based on the supplementary source accompanying the
+    RCIM manuscript. The downloadable PDF is reformatted from this edition, with
+    different pagination from the original submission.
+  </p>
+  <nav class="document-toc" aria-label="Supplement contents">
+    <h2>Contents</h2><ol>
+      {
+        toc.map((item) => (
+          <li>
+            <a href={`#${item.id}`}>{item.label}</a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+  <article
+    aria-label="Supplementary text"
+    set:html={content.replaceAll("__BASE__", asset(""))}
+  />
+</ReadingLayout>

@@ -1,0 +1,54 @@
+[
+  {
+    "id": "abstract",
+    "label": "Abstract"
+  },
+  {
+    "id": "introduction",
+    "label": "Introduction"
+  },
+  {
+    "id": "related-work",
+    "label": "Related Work"
+  },
+  {
+    "id": "methodology",
+    "label": "Methodology"
+  },
+  {
+    "id": "experiments-and-results",
+    "label": "Experiments and Results"
+  },
+  {
+    "id": "discussion-and-limitation",
+    "label": "Discussion and Limitation"
+  },
+  {
+    "id": "conclusion",
+    "label": "Conclusion"
+  },
+  {
+    "id": "hoist-algorithm",
+    "label": "HOIST Algorithm"
+  },
+  {
+    "id": "implementation-details-and-hyperparameters",
+    "label": "Implementation\nDetails and Hyperparameters"
+  },
+  {
+    "id": "credit-authorship-contribution-statement",
+    "label": "CRediT authorship\ncontribution statement"
+  },
+  {
+    "id": "declaration-of-competing-interest",
+    "label": "Declaration of competing\ninterest"
+  },
+  {
+    "id": "data-availability",
+    "label": "Data availability"
+  },
+  {
+    "id": "references",
+    "label": "References"
+  }
+]

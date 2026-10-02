@@ -1,0 +1,739 @@
+<h2 class="unnumbered" id="abstract">Abstract</h2>
+<p>This document provides the HOIST training algorithm, additional
+placement and payload-motion results, and implementation and hardware
+details.</p>
+<h2 id="hoist-algorithm">HOIST Algorithm</h2>
+<p><strong>Algorithm S1: HOIST Training</strong> <span id="alg:hoist" data-label="alg:hoist"></span></p>
+<ol>
+<li><p><strong>Inputs:</strong> VR teleoperation demonstrations
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="script">𝒟</mi><annotation encoding="application/x-tex">\mathcal{D}</annotation></semantics></math>,
+pretrained VLA policy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mtext mathvariant="normal">VLA</mtext></msub><annotation encoding="application/x-tex">\pi_\text{VLA}</annotation></semantics></math>
+(GR00T N1.6), whole-body controller
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mtext mathvariant="normal">WBC</mtext></msub><annotation encoding="application/x-tex">f_\text{WBC}</annotation></semantics></math>
+(SONIC, frozen throughout)</p></li>
+<li><p><strong>Output:</strong> Refined hoisting policy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi>π</mi><mtext mathvariant="normal">VLA</mtext><mo>*</mo></msubsup><mo>,</mo><msubsup><mi>μ</mi><mi>θ</mi><mo>*</mo></msubsup><mo>,</mo><msub><mi>f</mi><mtext mathvariant="normal">WBC</mtext></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\pi_\text{VLA}^*, \mu_\theta^*, f_\text{WBC})</annotation></semantics></math></p></li>
+<li><p><strong>Phase 1 — Supervised Finetuning</strong></p></li>
+<li><p>Collect VR teleoperation demonstrations with multimodal
+observations:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mi>i</mi></msub><mo>=</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>o</mi><mi>t</mi></msub><mo>,</mo><msubsup><mi>u</mi><mi>t</mi><mtext mathvariant="normal">demo</mtext></msubsup><mo>,</mo><msubsup><mi>a</mi><mi>t</mi><mtext mathvariant="normal">motor</mtext></msubsup><msubsup><mo stretchy="false" form="postfix">}</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>T</mi><mi>i</mi></msub></msubsup><mo>,</mo><mspace width="0.167em"></mspace><msub><mi>y</mi><mi>i</mi></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau_i = \bigl(\{o_t, u_t^\text{demo}, a_t^\text{motor}\}_{t=1}^{T_i},\, y_i\bigr)</annotation></semantics></math></p></li>
+<li><p>Each observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>o</mi><mi>t</mi></msub><annotation encoding="application/x-tex">o_t</annotation></semantics></math>
+contains ego RGB/depth, side-view RGB, proprioception, ego velocity,
+navigation command, and language goal
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">y_i</annotation></semantics></math></p></li>
+<li><p>Convert teleoperation commands into VLA action chunks
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><msubsup><mi>U</mi><mi>t</mi><mtext mathvariant="normal">demo</mtext></msubsup><mo>=</mo><mo stretchy="false" form="prefix">[</mo><mi mathvariant="normal">Δ</mi><msub><mi>u</mi><mi>t</mi></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi mathvariant="normal">Δ</mi><msub><mi>u</mi><mrow><mi>t</mi><mo>+</mo><mi>H</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\Delta U_t^\text{demo} = [\Delta u_t,\dots,\Delta u_{t+H-1}]</annotation></semantics></math>
+with horizon
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>=</mo><mn>24</mn></mrow><annotation encoding="application/x-tex">H{=}24</annotation></semantics></math></p></li>
+<li><p>Initialize from the pretrained GR00T N1.6 VLA and attach encoders
+for newly introduced modalities (depth, ego velocity, navigation
+command)</p></li>
+<li><p>Supervise the flow-matching action expert to generate
+demonstration chunks conditioned on VLM features and robot state, using
+4 denoise steps</p></li>
+<li><p>Finetune the final 4 VLM layers, the action expert, and the
+new-modality encoders on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="script">𝒟</mi><annotation encoding="application/x-tex">\mathcal{D}</annotation></semantics></math>;
+keep the remaining VLM backbone and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mtext mathvariant="normal">WBC</mtext></msub><annotation encoding="application/x-tex">f_\text{WBC}</annotation></semantics></math>
+frozen
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇒</mo><annotation encoding="application/x-tex">\Rightarrow</annotation></semantics></math>
+obtain
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>π</mi><mtext mathvariant="normal">VLA</mtext><mo>*</mo></msubsup><annotation encoding="application/x-tex">\pi_\text{VLA}^*</annotation></semantics></math></p></li>
+<li><p><em>Freeze</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>π</mi><mtext mathvariant="normal">VLA</mtext><mo>*</mo></msubsup><annotation encoding="application/x-tex">\pi_\text{VLA}^*</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mtext mathvariant="normal">WBC</mtext></msub><annotation encoding="application/x-tex">f_\text{WBC}</annotation></semantics></math>;
+cache VLM features for rollout-level RL refinement</p></li>
+<li><p><strong>Phase 2 — Iterative Batched RL
+Refinement</strong></p></li>
+<li><p>Initialize noise-steering SAC actor-critic
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>θ</mi></msub><mo>,</mo><msub><mi>Q</mi><mi>ϕ</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mu_\theta, Q_\phi)</annotation></semantics></math></p></li>
+<li><p><strong>For iteration
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">k = 1,2,\dots,K</annotation></semantics></math>:</strong></p>
+<ol>
+<li><p>Collect
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">N=10</annotation></semantics></math>
+autonomous rollouts using
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi>π</mi><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">A</mi></mrow><mo>*</mo></msubsup><mo>,</mo><msub><mi>μ</mi><mi>θ</mi></msub><mo>,</mo><msub><mi>f</mi><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">B</mi><mi mathvariant="normal">C</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\pi^*_{\mathrm{VLA}}, \mu_\theta, f_{\mathrm{WBC}})</annotation></semantics></math></p></li>
+<li><p>The actor deterministically predicts a replacement initial-noise
+tensor
+<span aria-label="Mathematical expression 1" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>a</mi><mi>t</mi><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">L</mi></mrow></msubsup><mo>=</mo><msub><mi>μ</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>o</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="1.0em"></mspace><msubsup><mi>a</mi><mi>t</mi><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">L</mi></mrow></msubsup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mn>24</mn><mo>×</mo><mn>25</mn></mrow></msup></mrow><annotation encoding="application/x-tex">a_t^{\mathrm{RL}} = \mu_\theta(o_t), \quad a_t^{\mathrm{RL}} \in \mathbb{R}^{24 \times 25}</annotation></semantics></math></span></p></li>
+<li><p>Here, 24 is the action-chunk horizon, and 25 is the per-step
+planner-command dimension covering head target, left/right end-effector
+targets, navigation command, and base-height command</p></li>
+<li><p>Replace the flow-matching action expert’s initial noise with the
+scaled actor output:
+<span aria-label="Mathematical expression 2" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mi>t</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msubsup><mo>←</mo><msub><mi>s</mi><mi>k</mi></msub><mspace width="0.167em"></mspace><msubsup><mi>a</mi><mi>t</mi><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">L</mi></mrow></msubsup></mrow><annotation encoding="application/x-tex">\epsilon_t^{\mathrm{init}} \leftarrow s_k \, a_t^{\mathrm{RL}}</annotation></semantics></math></span></p></li>
+<li><p>Execute the VLA action chunk through the frozen whole-body
+controller
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">B</mi><mi mathvariant="normal">C</mi></mrow></msub><annotation encoding="application/x-tex">f_{\mathrm{WBC}}</annotation></semantics></math></p></li>
+<li><p><strong>For each rollout
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\tau_i</annotation></semantics></math>:</strong></p>
+<ol>
+<li><p>Observe terminal payload pose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mover><mi>x</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>y</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>ψ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\hat{x}, \hat{y}, \hat{\psi})</annotation></semantics></math>
+and target
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>x</mi><mo>*</mo></msup><mo>,</mo><msup><mi>y</mi><mo>*</mo></msup><mo>,</mo><msup><mi>ψ</mi><mo>*</mo></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x^*, y^*, \psi^*)</annotation></semantics></math></p></li>
+<li><p>Compute terminal errors:
+<span aria-label="Mathematical expression 3" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>x</mi><mo>=</mo><mover><mi>x</mi><mo accent="true">̂</mo></mover><mo>−</mo><msup><mi>x</mi><mo>*</mo></msup><mo>,</mo><mspace width="1.0em"></mspace><mi mathvariant="normal">Δ</mi><mi>y</mi><mo>=</mo><mover><mi>y</mi><mo accent="true">̂</mo></mover><mo>−</mo><msup><mi>y</mi><mo>*</mo></msup><mo>,</mo><mspace width="1.0em"></mspace><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo>=</mo><mover><mi>ψ</mi><mo accent="true">̂</mo></mover><mo>−</mo><msup><mi>ψ</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">\Delta x = \hat{x}-x^*, \quad
+            \Delta y = \hat{y}-y^*, \quad
+            \Delta \psi = \hat{\psi}-\psi^*</annotation></semantics></math></span></p></li>
+<li><p>Compute terminal reward:
+<span aria-label="Mathematical expression 4" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mi>T</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">[</mo><mn>1.5</mn><mspace width="-0.167em"></mspace><msup><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><mrow><mi mathvariant="normal">Δ</mi><mi>x</mi></mrow><mrow><mn>100</mn><mspace width="0.167em"></mspace><mtext mathvariant="normal">mm</mtext></mrow></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mspace width="-0.167em"></mspace><mn>2</mn></mrow></msup><mo>+</mo><mn>1.0</mn><mspace width="-0.167em"></mspace><msup><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><mrow><mi mathvariant="normal">Δ</mi><mi>y</mi></mrow><mrow><mn>80</mn><mspace width="0.167em"></mspace><mtext mathvariant="normal">mm</mtext></mrow></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mspace width="-0.167em"></mspace><mn>2</mn></mrow></msup><mo>+</mo><mn>1.0</mn><mspace width="-0.167em"></mspace><msup><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo stretchy="false" form="prefix">|</mo></mrow><msup><mn>30</mn><mo>∘</mo></msup></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mspace width="-0.167em"></mspace><mn>2</mn></mrow></msup><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">r_T = \exp\!\left(-\left[
+            1.5\!\left(\tfrac{\Delta x}{100\,\text{mm}}\right)^{\!2}
+          + 1.0\!\left(\tfrac{\Delta y}{80\,\text{mm}}\right)^{\!2}
+          + 1.0\!\left(\tfrac{|\Delta\psi|}{30^\circ}\right)^{\!2}
+          \right]\right)</annotation></semantics></math></span></p></li>
+</ol></li>
+<li><p>Convert rollouts into an offline replay buffer
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">ℬ</mi><mrow><mn>0</mn><mo>:</mo><mi>k</mi><mi>N</mi></mrow></msub><annotation encoding="application/x-tex">\mathcal{B}_{0:kN}</annotation></semantics></math></p></li>
+<li><p>Train/update
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>θ</mi></msub><mo>,</mo><msub><mi>Q</mi><mi>ϕ</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mu_\theta, Q_\phi)</annotation></semantics></math>
+with offline SAC on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">ℬ</mi><mrow><mn>0</mn><mo>:</mo><mi>k</mi><mi>N</mi></mrow></msub><annotation encoding="application/x-tex">\mathcal{B}_{0:kN}</annotation></semantics></math>
+for fixed gradient steps</p></li>
+<li><p>Resume from previous RL checkpoint for the next stage</p></li>
+</ol></li>
+<li><p><strong>Return</strong> refined hoisting policy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi>π</mi><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">A</mi></mrow><mo>*</mo></msubsup><mo>,</mo><msubsup><mi>μ</mi><mi>θ</mi><mo>*</mo></msubsup><mo>,</mo><msub><mi>f</mi><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">B</mi><mi mathvariant="normal">C</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\pi^*_{\mathrm{VLA}}, \mu^*_\theta, f_{\mathrm{WBC}})</annotation></semantics></math></p></li>
+</ol>
+<h3 id="design-rationale.">Design rationale.</h3>
+<p>During RL refinement, the VLA policy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>π</mi><mtext mathvariant="normal">VLA</mtext><mo>*</mo></msubsup><annotation encoding="application/x-tex">\pi_\text{VLA}^*</annotation></semantics></math>
+and WBC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mtext mathvariant="normal">WBC</mtext></msub><annotation encoding="application/x-tex">f_\text{WBC}</annotation></semantics></math>
+remain frozen; only the actor-critic
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>θ</mi></msub><mo>,</mo><msub><mi>Q</mi><mi>ϕ</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mu_\theta, Q_\phi)</annotation></semantics></math>
+is updated. This preserves the imitation-learned visuomotor prior while
+restricting exploration to the VLA initial-noise space. Each batch of
+autonomous rollouts is converted into an offline replay buffer, and RL
+policy is updated with SAC using terminal task rewards. Thus, the method
+is not tabula-rasa RL, but rollout-level refinement of the frozen VLA
+flow-matching action-generation trajectory through a compact
+noise-steering module.</p>
+<h2 id="additional-placement-results">Additional Placement Results</h2>
+<p>Tables&#160;<a href="#tab:place_sim">S1</a> and&#160;<a href="#tab:place_real">S2</a> report terminal placement errors in
+simulation and on the real platform, respectively. HOIST denotes VLA-50
+with iterative batched RL refinement; the rollout count indicates the
+total RL rollouts used.</p>
+<h3 class="unnumbered" id="simulation">Simulation</h3>
+<p>All three HOIST variants substantially reduce
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>x</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|\Delta x|</annotation></semantics></math>
+relative to VLA-50. Performance is not strictly monotonic in simulation:
+HOIST (+20&#160;RL) achieves the lowest mean Manhattan error (2.54&#160;cm), while
+HOIST (+30&#160;RL) shows a slight increase (6.25&#160;cm). We attribute this to
+evaluation variance over a small number of trials; on the real platform
+the mean Manhattan error decreases monotonically (Table&#160;<a href="#tab:place_real">S2</a>).</p>
+<div id="tab:place_sim">
+<div aria-label="Table S1. Terminal placement errors — Simulation. Values: mean
+±\pm
+std." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table S1. </strong>Terminal placement errors — Simulation. Values: mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+std.</caption>
+<thead>
+<tr>
+<th scope="col">Method</th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>x</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|\Delta x|</annotation></semantics></math>
+(cm)</th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>y</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|\Delta y|</annotation></semantics></math>
+(cm)</th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|\Delta\psi|</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mo>∘</mo></msup><annotation encoding="application/x-tex">^\circ</annotation></semantics></math>)</th>
+<th scope="col">Manhattan (cm)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Human Expert Teleop</th>
+<td>4.35
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.67</td>
+<td>3.00
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.78</td>
+<td>8.48
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.99</td>
+<td>7.35
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.14</td>
+</tr>
+<tr>
+<th scope="row">VLA-50</th>
+<td>21.56
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.20</td>
+<td>0.88
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.94</td>
+<td>3.85
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.94</td>
+<td>22.44
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.63</td>
+</tr>
+<tr>
+<th scope="row">VLA-80</th>
+<td>15.69
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.18</td>
+<td>2.89
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.58</td>
+<td>12.14
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.69</td>
+<td>18.58
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.84</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+10 RL)</th>
+<td>15.09
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.53</td>
+<td>1.83
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.91</td>
+<td>4.58
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.97</td>
+<td>16.92
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.89</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+20 RL)</th>
+<td>1.72
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.57</td>
+<td>0.82
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.37</td>
+<td>0.29
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.27</td>
+<td>2.54
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.48</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+30 RL)</th>
+<td>5.16
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+7.11</td>
+<td>1.09
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.57</td>
+<td>2.76
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.04</td>
+<td>6.25
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+7.30</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<figure id="fig:place_sim" data-latex-placement="htbp">
+<figure>
+<img loading="lazy" alt="Simulation trial-level Manhattan placement errors. Box plots show the interquartile range, whiskers show 1.5 times that range, and dots show individual trials. HOIST after 20 RL rollouts has the lowest mean error, 2.54 centimeters; the 30-rollout condition has larger variability. Exact aggregate values appear in the placement table." src="__BASE__papers/figures/sim_placement_manhattan.png">
+<figcaption>Manhattan error (Simulation).</figcaption>
+</figure>
+<figure>
+<img loading="lazy" alt="Simulation trial-level absolute yaw errors. Box plots and dots show the distribution of trials. HOIST after 20 RL rollouts has the lowest mean yaw error, 0.29 degrees. Exact means and standard deviations appear in the placement table." src="__BASE__papers/figures/sim_placement_yaw.png">
+<figcaption>Yaw error
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|\Delta\psi|</annotation></semantics></math>
+(Simulation).</figcaption>
+</figure>
+<figcaption><strong>Figure S1. </strong>Simulation placement errors per trial (box = IQR, whiskers =
+1.5<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>IQR,
+dots = individual trials).</figcaption>
+</figure>
+<h3 class="unnumbered" id="real-platform">Real Platform</h3>
+<p>On the real platform, HOIST reduces mean Manhattan error from 9.28&#160;cm
+(VLA-50) to 6.38&#160;cm (+30&#160;RL), indicating improved translational
+placement. However, yaw remains high-variance: +20&#160;RL improves mean yaw
+relative to VLA-50, whereas +30&#160;RL has larger mean yaw error. We
+therefore interpret the real-platform gains primarily as improvements in
+translational placement and Manhattan error, rather than as monotonic
+orientation refinement.</p>
+<div id="tab:place_real">
+<div aria-label="Table S2. Terminal placement errors — Real Platform. Values: mean
+±\pm
+std." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table S2. </strong>Terminal placement errors — Real Platform. Values: mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+std.</caption>
+<thead>
+<tr>
+<th scope="col">Method</th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>x</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|\Delta x|</annotation></semantics></math>
+(cm)</th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>y</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|\Delta y|</annotation></semantics></math>
+(cm)</th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|\Delta\psi|</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mo>∘</mo></msup><annotation encoding="application/x-tex">^\circ</annotation></semantics></math>)</th>
+<th scope="col">Manhattan (cm)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">VLA-50</th>
+<td>1.60
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.46</td>
+<td>7.68
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.16</td>
+<td>14.50
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+12.46</td>
+<td>9.28
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+4.32</td>
+</tr>
+<tr>
+<th scope="row">VLA-80</th>
+<td>0.54
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.29</td>
+<td>8.03
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.55</td>
+<td>27.00
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+26.64</td>
+<td>8.57
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.54</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+10 RL)</th>
+<td>2.15
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.50</td>
+<td>5.22
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.72</td>
+<td>21.00
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+17.09</td>
+<td>7.37
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.81</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+20 RL)</th>
+<td>4.20
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.26</td>
+<td>2.49
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.35</td>
+<td>12.10
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+5.78</td>
+<td>6.69
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.09</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+30 RL)</th>
+<td>1.64
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.98</td>
+<td>4.74
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.52</td>
+<td>28.90
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+20.15</td>
+<td>6.38
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.01</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<figure id="fig:place_real" data-latex-placement="htbp">
+<figure>
+<img loading="lazy" alt="Real-platform trial-level Manhattan placement errors. Mean errors decrease from 9.28 centimeters for VLA-50 to 7.37, 6.69 and 6.38 centimeters after 10, 20 and 30 RL rollouts. The box plots and dots show trial variability; the placement table reports the aggregate values." src="__BASE__papers/figures/real_placement_manhattan.png">
+<figcaption>Manhattan error (Real Platform).</figcaption>
+</figure>
+<figure>
+<img loading="lazy" alt="Real-platform trial-level yaw errors have substantial variability. Mean yaw is 14.50 degrees for VLA-50 and 21.00, 12.10 and 28.90 degrees after 10, 20 and 30 RL rollouts. Refinement does not improve yaw monotonically." src="__BASE__papers/figures/real_placement_yaw.png">
+<figcaption>Yaw error
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|\Delta\psi|</annotation></semantics></math>
+(Real Platform).</figcaption>
+</figure>
+<figcaption><strong>Figure S2. </strong>Real-platform placement errors per trial.</figcaption>
+</figure>
+<h2 id="imu-residual-motion-analysis">IMU Residual Motion Analysis</h2>
+<p>IMU data were collected in simulation only. We attach a 6-axis IMU to
+the payload and record accelerometer and gyroscope readings throughout
+each trial. Acceleration is gravity-compensated using the payload
+orientation quaternion and reported as RMS over active frames (frames
+where gravity-compensated acceleration magnitude
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&gt;</mo><mn>0.5</mn><mspace width="0.167em"></mspace><msup><mtext mathvariant="normal">m/s</mtext><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">&gt; 0.5\,\text{m/s}^2</annotation></semantics></math>
+or angular velocity magnitude
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&gt;</mo><mn>0.01</mn><mspace width="0.167em"></mspace><mtext mathvariant="normal">rad/s</mtext></mrow><annotation encoding="application/x-tex">&gt; 0.01\,\text{rad/s}</annotation></semantics></math>).</p>
+<div id="tab:imu">
+<div aria-label="Table S3. IMU residual motion — Simulation. Acceleration:
+gravity-compensated, active-frame RMS. Values: mean
+±\pm
+std." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table S3. </strong>IMU residual motion — Simulation. Acceleration:
+gravity-compensated, active-frame RMS. Values: mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+std.</caption>
+<thead>
+<tr>
+<th scope="col">Method</th>
+<th scope="colgroup" colspan="2">Acc (m/s<sup>2</sup>)</th>
+<th scope="colgroup" colspan="2">Gyro (rad/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row"><span>2-3</span> (lr)<span>4-5</span></th>
+<td>RMS</td>
+<td>Peak</td>
+<td>RMS</td>
+<td>Peak</td>
+</tr>
+<tr>
+<th scope="row">Human Expert Teleop</th>
+<td>8.31
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.11</td>
+<td>14.23
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.20</td>
+<td>0.144
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.033</td>
+<td>0.561
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.116</td>
+</tr>
+<tr>
+<th scope="row">VLA-50</th>
+<td>3.56
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.32</td>
+<td>7.74
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.00</td>
+<td>0.141
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.019</td>
+<td>0.623
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.050</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+10 RL)</th>
+<td>3.75
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.27</td>
+<td>7.77
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.11</td>
+<td>0.087
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.026</td>
+<td>0.642
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.135</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+20 RL)</th>
+<td>4.83
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.23</td>
+<td>10.19
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.96</td>
+<td>0.064
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.021</td>
+<td>0.487
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.184</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+30 RL)</th>
+<td>4.84
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.57</td>
+<td>9.33
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.75</td>
+<td>0.106
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.032</td>
+<td>0.580
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.106</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<figure id="fig:imu" data-latex-placement="htbp">
+<figure>
+<img loading="lazy" alt="Simulation payload acceleration RMS comparison, with standard-deviation error bars. Mean values for teleoperation, VLA-50 and HOIST after 10, 20 and 30 RL rollouts are 8.31, 3.56, 3.75, 4.83 and 4.84 meters per second squared. The IMU table provides numerical values." src="__BASE__papers/figures/imu_acc_norm.png">
+<figcaption>Gravity-compensated acceleration RMS.</figcaption>
+</figure>
+<figure>
+<img loading="lazy" alt="Simulation payload angular-velocity RMS comparison, with standard-deviation error bars. Mean values are 0.144 for teleoperation, 0.141 for VLA-50, and 0.087, 0.064 and 0.106 radians per second after 10, 20 and 30 RL rollouts. The 20-rollout condition has the lowest angular RMS." src="__BASE__papers/figures/imu_gyro_norm.png">
+<figcaption>Payload angular velocity RMS.</figcaption>
+</figure>
+<figcaption><strong>Figure S3. </strong>IMU residual motion (Simulation). Error bars:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>±</mi><mn>1</mn></mrow><annotation encoding="application/x-tex">\pm 1</annotation></semantics></math>
+std.</figcaption>
+</figure>
+<h3 id="interpretation.">Interpretation.</h3>
+<p>Compared with VLA-50, the HOIST variants generally reduce gyroscope
+RMS, with the strongest reduction at +20&#160;RL. Acceleration metrics and
+gyroscope peaks are not uniformly improved across RL stages, so we
+interpret the IMU results as evidence for reduced angular RMS in some
+refined policies rather than a uniform reduction of all residual-motion
+metrics. Human teleoperation exhibits higher accelerometer readings,
+while gyroscope responses overlap with or are exceeded by some
+learned-policy settings.</p>
+<h2 id="implementation-details-and-hyperparameters">Implementation
+Details and Hyperparameters</h2>
+<h3 class="unnumbered" id="vla-supervised-finetuning">VLA Supervised
+Finetuning</h3>
+<div id="tab:vla_ft">
+<div aria-label="Table S4. VLA supervised finetuning details." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table S4. </strong>VLA supervised finetuning details.</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th scope="col">Parameter</th>
+<th scope="col">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Pretrained backbone</th>
+<td>GR00T N1.6</td>
+</tr>
+<tr>
+<th scope="row">VLM backbone</th>
+<td>Eagle-Block2A-2B-v2</td>
+</tr>
+<tr>
+<th scope="row">Finetuned modules</th>
+<td>Final 4 VLM layers; flow-matching action
+expert; new-modality encoders</td>
+</tr>
+<tr>
+<th scope="row">Frozen modules</th>
+<td>Remaining VLM layers; whole-body
+controller</td>
+</tr>
+<tr>
+<th scope="row">Input modalities</th>
+<td>Ego RGB, ego depth, side-view RGB,
+proprioception, ego velocity, nav command, language goal</td>
+</tr>
+<tr>
+<th scope="row">Action chunk horizon</th>
+<td>24</td>
+</tr>
+<tr>
+<th scope="row">Flow-matching denoise steps</th>
+<td>4</td>
+</tr>
+<tr>
+<th scope="row">Batch size</th>
+<td>96</td>
+</tr>
+<tr>
+<th scope="row">Learning rate</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>4</mn></mrow></msup></mrow><annotation encoding="application/x-tex">1\times10^{-4}</annotation></semantics></math></td>
+</tr>
+<tr>
+<th scope="row">LR schedule</th>
+<td>Cosine</td>
+</tr>
+<tr>
+<th scope="row">Warmup ratio</th>
+<td>0.05</td>
+</tr>
+<tr>
+<th scope="row">Warmup steps</th>
+<td>500 steps</td>
+</tr>
+<tr>
+<th scope="row">Weight decay</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">1\times10^{-5}</annotation></semantics></math></td>
+</tr>
+<tr>
+<th scope="row">Training steps</th>
+<td>10,000</td>
+</tr>
+<tr>
+<th scope="row">Equivalent epochs</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>∼</mo><annotation encoding="application/x-tex">\sim</annotation></semantics></math>40</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<h3 class="unnumbered" id="rl-rollout-refinement">RL Rollout
+Refinement</h3>
+<div id="tab:rl">
+<div aria-label="Table S5. RL rollout refinement details." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table S5. </strong>RL rollout refinement details.</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th scope="col">Parameter</th>
+<th scope="col">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Reward type</th>
+<td>Terminal-only</td>
+</tr>
+<tr>
+<th scope="row">Reward formula</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mspace width="-0.167em"></mspace><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mo>−</mo><mo stretchy="false" form="prefix">[</mo><mn>1.5</mn><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Δ</mi><mi>x</mi><mi>/</mi><mn>100</mn><mspace width="0.167em"></mspace><mtext mathvariant="normal">mm</mtext><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><mn>1.0</mn><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Δ</mi><mi>y</mi><mi>/</mi><mn>80</mn><mspace width="0.167em"></mspace><mtext mathvariant="normal">mm</mtext><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><mn>1.0</mn><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo stretchy="false" form="prefix">|</mo><mi>/</mi><msup><mn>30</mn><mo>∘</mo></msup><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo stretchy="false" form="postfix">]</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\exp\!\bigl(-[1.5(\Delta x/100\,\text{mm})^2
+                              + 1.0(\Delta y/80\,\text{mm})^2
+                              + 1.0(|\Delta\psi|/30^\circ)^2]\bigr)</annotation></semantics></math></td>
+</tr>
+<tr>
+<th scope="row">RL rollouts per iteration</th>
+<td>10</td>
+</tr>
+<tr>
+<th scope="row">Total RL rollouts (HOIST)</th>
+<td>30</td>
+</tr>
+<tr>
+<th scope="row">Actor input</th>
+<td>Observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>o</mi><mi>t</mi></msub><annotation encoding="application/x-tex">o_t</annotation></semantics></math>
+with cached VLM features</td>
+</tr>
+<tr>
+<th scope="row">Actor output</th>
+<td>Deterministic replacement initial-noise
+tensor</td>
+</tr>
+<tr>
+<th scope="row">Noise tensor shape</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>24</mn><mo>×</mo><mn>25</mn></mrow><annotation encoding="application/x-tex">24 \times 25</annotation></semantics></math>
+(chunk horizon
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+command dimension)</td>
+</tr>
+<tr>
+<th scope="row">Command dimensions</th>
+<td>Head target; left/right end-effector
+targets; nav command; base height</td>
+</tr>
+<tr>
+<th scope="row">Frozen modules</th>
+<td>GR00T N1.6 backbone, SONIC WBC</td>
+</tr>
+<tr>
+<th scope="row">Trainable modules</th>
+<td>Noise-steering actor-critic</td>
+</tr>
+<tr>
+<th scope="row">Batch size</th>
+<td>256</td>
+</tr>
+<tr>
+<th scope="row">Learning rate</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>4</mn></mrow></msup></mrow><annotation encoding="application/x-tex">3\times10^{-4}</annotation></semantics></math></td>
+</tr>
+<tr>
+<th scope="row">Gradient steps / iter.</th>
+<td>20000</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<h3 class="unnumbered" id="hardware-and-sensing">Hardware and
+Sensing</h3>
+<div id="tab:hw">
+<div aria-label="Table S6. Hardware and sensing setup." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table S6. </strong>Hardware and sensing setup.</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th scope="col">Component</th>
+<th scope="col">Specification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Robot platform</th>
+<td>Unitree G1</td>
+</tr>
+<tr>
+<th scope="row">Whole-body controller</th>
+<td>SONIC (GR00T WBC, frozen)</td>
+</tr>
+<tr>
+<th scope="row">VR teleoperation device</th>
+<td>PICO VR headset and controllers</td>
+</tr>
+<tr>
+<th scope="row">Payload size / mass</th>
+<td>54 cm
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+54 cm
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+50 cm / 2.5 kg</td>
+</tr>
+<tr>
+<th scope="row">Suspension length</th>
+<td>35 cm</td>
+</tr>
+<tr>
+<th scope="row">Target zone size</th>
+<td>59 cm
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+59 cm</td>
+</tr>
+<tr>
+<th scope="row">Ego RGB/depth camera</th>
+<td>Intel RealSense D435i</td>
+</tr>
+<tr>
+<th scope="row">Side-view RGB camera</th>
+<td>Intel RealSense D455</td>
+</tr>
+<tr>
+<th scope="row">VLA control frequency</th>
+<td>50 Hz</td>
+</tr>
+<tr>
+<th scope="row">Trial reset procedure</th>
+<td>Manual reset / warm-start from
+demonstration replay</td>
+</tr>
+</tbody>
+</table></div>
+</div>

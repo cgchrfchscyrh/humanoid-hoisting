@@ -1,0 +1,25 @@
+{
+  "reviewed": "2026-10-01",
+  "construction-guidance.mp4": {
+    "title": "CRANE #2",
+    "creator": "U.S. Navy",
+    "publisher": "Defense VI Records Center / DVIDS",
+    "source": "https://www.dvidshub.net/video/760467/crane-2",
+    "source_player_media": "https://d34w7g4gy10iej.cloudfront.net/video/2007/DOD_107904992/DOD_107904992-640x480-922k.mp4",
+    "rights": "Listed as public domain in the United States; subject to DVIDS usage conditions, including non-endorsement and other rights restrictions.",
+    "usage_conditions": "https://www.dvidshub.net/about/copyright",
+    "required_disclaimer": "The appearance of U.S. Department of War (DoW) visual information does not imply or constitute DoW endorsement.",
+    "excerpt_seconds": [98, 124],
+    "modifications": "26-second excerpt; audio removed; H.264 compression at 640 × 480; no speed change. Website layout may crop the frame; native fullscreen shows the complete excerpt.",
+    "poster": "construction-guidance-poster.jpg (frame at excerpt time 00:02)",
+    "purpose": "Construction background only; not a HOIST experiment or evidence of field deployment."
+  },
+  "hoist-guidance.mp4": {
+    "creator": "HOIST authors",
+    "source": "Authors’ supplementary hoist.mp4",
+    "full_website_video": "hoist.mp4",
+    "excerpt_seconds": [16, 42],
+    "modifications": "Cropped to the HOIST panel only: 384 × 432 pixels at x=896, y=144 in the 1280 × 720 website video. No speed change. No audio.",
+    "poster": "hoist-guidance-poster.jpg (frame at excerpt time 00:08)"
+  }
+}

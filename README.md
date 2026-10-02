@@ -1,89 +1,105 @@
-# Academic project page template
+# HOIST 论文项目网页
 
-This is a template to help you build a professional project page for your research paper, based on the design from the original [Nerfies page](https://nerfies.github.io/). Instead of manually editing an HTML file, you can author the page's content in Markdown and make use of a polished set of components, then deploy it with GitHub Pages. [See a live demo of the template](https://research-template.roman.technology).
+基于 [Academic Project Astro Template](https://github.com/RomanHauksson/academic-project-astro-template)，内容采用本目录的 **RCIM journal 稿件**。网页保留英文，维护说明使用中文。首页、论文全文、补充材料和无障碍说明共四个页面。
 
-<img src="public/screenshot-light.png" width="48%" alt="Screenshot of this template in light mode" /> <img src = "public/screenshot-dark.png" width="48%" alt="Screenshot of this template in dark mode"/>
+## 预览与构建
 
-## Features
+使用 Node.js 24 或更新版本；`.nvmrc` 选择版本 24。
 
-- Pre-built components for LaTeX, figures, tables, code blocks (with syntax highlighting), videos, YouTube embeds, 3D objects, comparison sliders, carousels, tabbed slides, and pairs of columns.
-- Optional cover image or video behind the page header.
-- Optional dark mode :)
-- Automatically converts figures stored as PDF files into images.
-- Compresses images using [AVIF](https://en.wikipedia.org/wiki/AVIF) and uses [responsive images](https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Responsive_images) to minimize loading time.
-- Optimized font rendering, with [resized fallback font faces](https://developer.chrome.com/blog/font-fallbacks) to prevent cumulative layout shift.
-- Responsive, accessible, and SEO-optimized.
-- Add your own components with HTML or any Javascript framework you like. React comes pre-configured, but you could also use Vue, Svelte, etc.
-- Built with [Astro](https://astro.build/), [React](https://react.dev/), [Tailwind](https://tailwindcss.com/), [MDX](https://mdxjs.com/), and [TypeScript](https://www.typescriptlang.org/).
-
-## Examples
-
-- [Token-Efficient Long Video Understanding for Multimodal LLMs](https://research.nvidia.com/labs/lpr/storm/) (NVIDIA Research)
-- [PolyPose: Deformable 2D/3D Registration via Polyrigid Transforms](https://polypose.csail.mit.edu/) (MIT CSAIL)
-- [ByteWrist: A Parallel Robotic Wrist Enabling Flexible and Anthropomorphic Motion for Confined Spaces](https://bytewrist.github.io/) (ByteDance Seed)
-- [Dexterous Teleoperation of 20-DoF ByteDexter Hand via Human Motion Retargeting](https://byte-dexter.github.io/) (ByteDance Seed)
-- [Conformal Prediction as Bayesian Quadrature](https://jakesnell.com/projects/conformal-as-bayes-quad/)
-- [Lossy Compression With Pretrained Diffusion Models](https://jeremyiv.github.io/diffc-project-page/)
-- [RoboSpatial: Teaching Spatial Understanding to 2D and 3D Vision-Language Models for Robotics](https://chanh.ee/RoboSpatial/)
-- [CLIP-RT: Learning Language-Conditioned Robotic Policies from Natural Language Supervision](https://clip-rt.github.io/)
-- [PCO: Precision-Controllable Offset Surfaces with Sharp Features](https://alan-leo-wong.github.io/SIGASIA24-PCO-ProjectPage/)
-- [SCUBA: Salesforce Computer Use Benchmark](https://sfrcua.github.io/SCUBA/)
-
-## Usage
-
-1. Click ["Use this template"](https://github.com/new?template_name=academic-project-astro-template&template_owner=RomanHauksson) to make a copy of this repository in your GitHub account.
-2. Enable GitHub Pages for the repository. Click on the **Settings** tab, then go to **Pages** (under the **Code and automation** section). Using the dropdown, change **Source** from "Deploy from a branch" to "GitHub Actions".
-
-At this point, whenever you push to the `main` branch, the GitHub Actions workflow in `.github/workflows/astro.yml` will automatically build a static website and deploy it to `https://<username>.github.io/<repository>/`. No other configuration is necessary!
-
-To edit the content, you _could_ simply edit [`./src/paper.mdx`](./src/paper.mdx) in your browser in the GitHub interface, without downloading or setting anything else up. But if you want to preview your changes faster, I recommend editing it locally:
-
-3. Clone the repository.
-
-4. [Install Node.js](https://nodejs.org/en/download/) if you haven't already. Make sure you're using version 24 or later, which you can check by running
-
-```bash
-node --version
-```
-
-If your Node version is less than 24, you can use [Node Version Manager](https://github.com/nvm-sh/nvm) to install version 24 and switch to it:
-
-```bash
-nvm install 24 && nvm use 24
-```
-
-6. In the root directory of your cloned repository, install the dependencies:
-
-```bash
-npm install
-```
-
-7. Start the development server:
-
-```bash
+```sh
+npm ci
 npm run dev
 ```
 
-While the development server is running, you can open `http://localhost:4321` in your browser to see a live preview of your page.
+开发地址为 <http://localhost:4321>。静态构建与生产预览：
 
-8. Edit the content in [`./src/paper.mdx`](./src/paper.mdx). Every time you save a file, the development server will automatically reload `http://localhost:4321` to display the updated version of the page.
+```sh
+npm run build
+npm run preview -- --host 127.0.0.1 --port 4332
+```
 
-9. Push your changes to the GitHub repository to trigger a new deployment with your changes.
+打开 <http://localhost:4332>。`dist/` 可部署到静态托管服务，无需后端。构建包含 Astro / TypeScript 检查，并为生成的脚本写入带 SHA-256 哈希的 Content Security Policy。
 
-Alternatively, you can build the site locally, and copy the output to wherever you'd like to host the site. Running the following command will create a static website stored in `./dist/`.
+本机暂未配置系统 Node；当前会话可用以下方式执行相同命令。临时运行时不属于项目交付文件。
 
-```bash
+```sh
+PATH=/tmp/hoist-runtime/node/bin:$PATH npm run dev
+```
+
+## 内容与编辑位置
+
+| 文件                                                  | 用途                                                  |
+| ----------------------------------------------------- | ----------------------------------------------------- |
+| `src/paper.mdx`                                       | 首页摘要、方法、图表与研究介绍                        |
+| `src/data/project.ts`                                 | 标题、作者、联系方式、公开链接、BibTeX                |
+| `src/components/Header.astro`                         | 左右双视频首屏、共同播放/暂停、媒体来源与文字描述     |
+| `src/components/ConstructionContext.astro`            | 施工照片、研究动机、行业视频原站链接                  |
+| `src/components/Results.astro`                        | 模拟与真实平台的实验数据                              |
+| `src/components/Demo.astro`                           | 视频与按时间整理的文字说明                            |
+| `src/components/SiteHeader.astro`、`SiteFooter.astro` | 项目导航、研究声明、无障碍联系入口                    |
+| `src/content/`                                        | 转换后的论文全文、补充材料、目录和转换清单            |
+| `src/styles/global.css`                               | 炭黑 / 灰白配色、IBM Plex Sans 字体、响应式和打印样式 |
+| `public/papers/`                                      | 带结构标签的 PDF 网页阅读版与全文插图                 |
+| `public/media/`                                       | 压缩后的无声视频、海报和描述轨道                      |
+| `public/favicon.svg`                                  | HOIST 项目 H 字母图标，不使用 UF 标志                 |
+
+首页默认进入 HTML 全文阅读版，同时提供 PDF 下载。`paperUrl`、`codeUrl`、`arxivUrl` 可在获得正式公开链接后填写；空链接不会显示。不推定已录用、DOI 或 arXiv 编号。
+
+19.9 cm 和 3.56° 改善对应 **模拟环境、追加 20 次 RL rollout**；真实平台的 31.3% 对应追加 30 次 rollout 后从 9.28 cm 降至 6.38 cm。满足阈值的均值不等于每次试验的成功率。
+
+## 无障碍与安全检查
+
+详细结果、限制和品牌素材来源见 [ACCESSIBILITY.md](ACCESSIBILITY.md)。
+
+```sh
+npm run lint
+npm run build
+npm run audit:security
+npx playwright install chromium
+# 另一个终端保持 4332 端口的生产预览运行
+npm run test:a11y
+```
+
+测试可通过 `TEST_URL` 指定含子目录的地址，通过 `CHROME_PATH` 使用现有 Chrome。报告保存为 `reports/axe-wcag21aa.json`。当前检查覆盖四个页面、桌面/手机布局、键盘导航、结果切换、文字间距、320px 回流、无 JavaScript 访问与视频设置，以及双视频的键盘播放/暂停、独立控件联动和结束重播。自动通过不等于完整 WCAG 或 ADA 认证。
+
+## 更新全文与 PDF
+
+通常修改首页不必运行这一步。只有稿件变化时，才在保留原始材料的本机重新转换。需要 Python 3 和 Pandoc；可使用 `PANDOC` 环境变量指定 Pandoc 可执行文件。
+
+```sh
+python3 scripts/convert_manuscripts.py
+node scripts/prepare-reading-editions.mjs
+npm run build
+# 保持 4332 端口的生产预览运行
+node scripts/render-pdf.mjs
 npm run build
 ```
 
-For more information, consult [`./documentation.md`](./documentation.md).
+必须按顺序运行两个转换脚本，避免重复处理已经转换的 HTML。提交 `src/content/`、`public/papers/figures/` 和新 PDF，CI 不需要原始论文目录或 Pandoc。PDF 是重新排版的网页阅读版，页码与投稿稿件不同；原始稿件保持不变。重新生成后需要核对论文内容、逐页检查版面，并复查标签、阅读顺序和公式。HTML 版本保留原生 MathML。
 
-I'd like to speak directly with users to learn about what they want and get feedback on the template. If you're interested in getting help with setting up with the project, fixing bugs AI can't solve, or even having me develop the page for you, you can [email me](mailto:roman.i0djm@aleeas.com) or [schedule a virtual meeting](https://cal.com/romanhauksson/projectpage).
+## GitHub Pages 部署
 
-## Alternative template
+1. 在正式发布前完成单位的品牌/域名流程，以及 `ACCESSIBILITY.md` 中的人工复查。
+2. 将项目源文件提交到目标仓库的 `main` 分支，保留 `.github/workflows/astro.yml`。`.gitignore` 已排除原始研究文件夹、`node_modules/` 和构建产物。
+3. 在 **Settings → Pages** 中选择 **GitHub Actions**。
+4. 推送后工作流执行依赖安全审计、类型检查、构建和 axe 检查；检查失败会阻止部署。
 
-For a different look, the other template I'd recommend is [_Clarity: A Minimalist Website Template for AI Research_](https://shikun.io/projects/clarity) by Shikun Liu. It has a beautiful and careful design that's distinct from the original Nerfies page. It's simply an HTML file styled with Sass.
+Pages 自动提供站点域名和仓库子路径。其他静态服务可以设置：
 
-## Credits
+```sh
+SITE_URL=https://example.com BASE_PATH=/hoist/ npm run build
+```
 
-This template was originally adapted from Eliahu Horwitz's [Academic Project Page Template](https://github.com/eliahuhorwitz/Academic-project-page-template), which was adapted from Keunhong Park's [project page for _Nerfies_](https://nerfies.github.io/). It's licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
+独立域名根路径使用 `BASE_PATH=/`。正式域名用于 canonical、社交预览和论文元数据；不要将示例域名作为公开地址。GitHub Pages 的技术支持不替代 UF 的域名与品牌要求。本次未创建远程仓库，也未执行公开部署。
+
+## 来源与许可
+
+- 正文、补充材料和图表：`2026_Hoist_CES/rcim_submission/` 的 RCIM LaTeX 源文件。
+- 视频：`1204_HOIST_Humanoid_Optimizati_Supplementary Materials/hoist.mp4`。原音轨所有样本均为零，网站版删除空音轨并压缩；没有省略语音内容。
+- 首屏采用左右双视频背景，左为真实吊装，右为 HOIST 实体机器人。桌面标题/作者/按钮叠加在背景上，手机与平板将文字移到画面外。无自动播放或循环，共同按钮与原生控件均可暂停；无 JavaScript 时保留原生控件。
+- 首屏施工视频：[CRANE #2](https://www.dvidshub.net/video/760467/crane-2)，U.S. Navy / Defense VI Records Center / DVIDS，原站标为美国公有领域，遵循原站使用条件。截取 01:38–02:04、移除音轨，保留来源及规定的非背书声明；HOIST 片段取自原视频 00:16–00:42，裁出右侧 HOIST 实验。具体来源、处理和封面帧记录在 `public/media/ATTRIBUTION.json`。
+- 首页施工背景照片：MTA Capital Construction Mega Projects，2017-10-03，CC BY 2.0。原始来源和许可保存在 `src/assets/construction/ATTRIBUTION.json`，页面图注提供署名和许可链接。仅做响应式缩放/压缩，不改变画面内容；该图片不属于论文实验图。
+- Peikko 与 NCC 行业视频仅链接到发布者原站，没有复制、嵌入或自动播放。后续若嵌入，需先核对授权、字幕和键盘操作。
+- 原始研究材料保持原样，不随网页仓库提交。
+- 模板源自 Roman Hauksson，设计继承 [Nerfies](https://nerfies.github.io/) 和 [Eliahu Horwitz 的模板](https://github.com/eliahuhorwitz/Academic-project-page-template)。原说明保存在 `TEMPLATE-README.md`。
+- 模板及改编页面设计遵循 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)。论文、研究图片、PDF 和视频保留各自作者的权利。

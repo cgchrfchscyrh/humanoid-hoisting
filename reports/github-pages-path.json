@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-01T14:22:26.624Z",
+  "base": "/hoist/",
+  "pages": [
+    "home",
+    "paper/",
+    "supplementary/",
+    "accessibility/"
+  ],
+  "resources": 44,
+  "errors": []
+}

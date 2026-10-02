@@ -1,0 +1,46 @@
+---
+import ReadingLayout from "../layouts/ReadingLayout.astro";
+import { project, asset } from "../data/project";
+import content from "../content/main.html?raw";
+import toc from "../content/main-toc.json";
+---
+
+<ReadingLayout
+  title={project.title}
+  description="Full HTML reading edition of the HOIST RCIM manuscript, including equations, figures, tables, and references."
+>
+  <p class="eyebrow">Research manuscript · HTML reading edition</p>
+  <h1>{project.title}</h1>
+  <p class="paper-meta">
+    Songyang Liu*, Shunyu Yao*, Dingyuan Huang, Shuai Li†<br />Department of
+    Civil and Coastal Engineering, University of Florida<br />* Equal
+    contribution · † Corresponding author
+  </p>
+  <div class="document-actions resource-links">
+    <a class="button button-primary" href={asset("papers/hoist.pdf")}
+      >Download paper (tagged PDF, web edition)</a
+    ><a class="button button-secondary" href={asset("supplementary/")}
+      >Read supplementary material</a>
+  </div>
+  <p class="reading-note">
+    This reading edition preserves the manuscript’s content with web formatting.
+    Figure and table descriptions support nonvisual reading. The downloadable
+    PDF uses the same reading edition; its pagination differs from the journal
+    submission.
+  </p>
+  <nav class="document-toc" aria-label="Paper contents">
+    <h2>Contents</h2><ol>
+      {
+        toc.map((item) => (
+          <li>
+            <a href={`#${item.id}`}>{item.label}</a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+  <article
+    aria-label="Paper text"
+    set:html={content.replaceAll("__BASE__", asset(""))}
+  />
+</ReadingLayout>

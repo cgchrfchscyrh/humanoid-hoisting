@@ -1,0 +1,59 @@
+{
+  "hoist.pdf": {
+    "pages": 26,
+    "language": "en",
+    "marked": true,
+    "roles": {
+      "/Document": 1,
+      "/NonStruct": 3985,
+      "/P": 69,
+      "/H1": 1,
+      "/Art": 1,
+      "/H2": 13,
+      "/Strong": 43,
+      "/Figure": 25,
+      "/Caption": 21,
+      "/Link": 22,
+      "/Em": 47,
+      "/L": 5,
+      "/LI": 72,
+      "/Lbl": 29,
+      "/H3": 11,
+      "/H4": 4,
+      "/Table": 7,
+      "/TR": 70,
+      "/TH": 89,
+      "/TD": 138
+    },
+    "figureAltCount": 11,
+    "textOutsidePage": []
+  },
+  "hoist-supplementary.pdf": {
+    "pages": 11,
+    "language": "en",
+    "marked": true,
+    "roles": {
+      "/Document": 1,
+      "/NonStruct": 1685,
+      "/P": 32,
+      "/H1": 1,
+      "/Art": 1,
+      "/H2": 5,
+      "/Strong": 17,
+      "/L": 3,
+      "/LI": 26,
+      "/Lbl": 26,
+      "/Em": 1,
+      "/H3": 7,
+      "/Link": 3,
+      "/Table": 6,
+      "/Caption": 15,
+      "/TR": 61,
+      "/TH": 74,
+      "/TD": 106,
+      "/Figure": 15
+    },
+    "figureAltCount": 6,
+    "textOutsidePage": []
+  }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "abstract",
+    "label": "Abstract"
+  },
+  {
+    "id": "hoist-algorithm",
+    "label": "HOIST Algorithm"
+  },
+  {
+    "id": "additional-placement-results",
+    "label": "Additional Placement Results"
+  },
+  {
+    "id": "imu-residual-motion-analysis",
+    "label": "IMU Residual Motion Analysis"
+  },
+  {
+    "id": "implementation-details-and-hyperparameters",
+    "label": "Implementation\nDetails and Hyperparameters"
+  }
+]

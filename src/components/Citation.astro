@@ -1,0 +1,46 @@
+---
+import { Icon } from "astro-icon/components";
+import { bibtex } from "../data/project";
+---
+
+<div class="citation-box">
+  <div class="citation-heading">
+    <span>BibTeX</span><button id="copy-citation" type="button" hidden
+      ><Icon name="ri:file-copy-line" /><span>Copy citation</span></button
+    >
+  </div><pre><code id="bibtex">{bibtex}</code></pre><p
+    id="copy-status"
+    class="sr-only"
+    role="status"
+    aria-live="polite"
+  >
+  </p>
+</div>
+<script>
+  const button = document.querySelector<HTMLButtonElement>("#copy-citation");
+  const code = document.querySelector<HTMLElement>("#bibtex");
+  const status = document.querySelector<HTMLElement>("#copy-status");
+  if (button && code && status) {
+    button.hidden = false;
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent || "");
+        button.querySelector("span")!.textContent = "Copied!";
+        status.textContent = "Citation copied to clipboard.";
+        window.setTimeout(() => {
+          button.querySelector("span")!.textContent = "Copy citation";
+        }, 2500);
+      } catch {
+        const range = document.createRange();
+        range.selectNodeContents(code);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        status.textContent =
+          "Citation selected. Press Control+C or Command+C to copy.";
+        button.querySelector("span")!.textContent =
+          "Selected — press Ctrl/Cmd+C";
+      }
+    });
+  }
+</script>

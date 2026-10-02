@@ -1,0 +1,89 @@
+---
+import { Icon } from "astro-icon/components";
+import { asset } from "../data/project";
+---
+
+<section
+  class="demo-section wide"
+  id="demo"
+  aria-label="HOIST demonstration video"
+>
+  <div class="video-frame">
+    <div class="video-heading">
+      <span><span class="status-dot"></span> HOIST in action</span><span
+        >Simulation + real humanoid</span
+      >
+    </div>
+    <video
+      id="hoist-demo"
+      controls
+      playsinline
+      preload="none"
+      poster={asset("media/video-poster.jpg")}
+      width="1280"
+      height="720"
+      aria-label="HOIST research demonstration: method, simulation, and real humanoid experiments"
+      aria-describedby="video-description"
+    >
+      <source src={asset("media/hoist.mp4")} type="video/mp4" />
+      <track
+        kind="descriptions"
+        src={asset("media/hoist-descriptions.vtt")}
+        srclang="en"
+        label="English visual descriptions"
+      />
+      Your browser does not support embedded video. <a
+        href={asset("media/hoist.mp4")}>Download the demonstration.</a
+      >
+    </video>
+  </div>
+  <div class="video-caption">
+    <p id="video-description">
+      A humanoid learns to approach, guide, and place an externally suspended
+      payload.
+    </p><a href={asset("media/hoist.mp4")} download
+      >Download video <Icon name="ri:arrow-down-line" /></a
+    >
+  </div>
+  <p class="media-kind">Silent video · 1 minute 35 seconds · No spoken audio</p>
+  <details class="video-description video-transcript">
+    <summary>Read the descriptive video transcript</summary>
+    <ol>
+      <li>
+        <time>00:00–00:04.</time> The title introduces HOIST. A pipeline diagram links
+        VR teleoperation, a vision-language-action policy, whole-body control, and
+        reinforcement-learning refinement.
+      </li>
+      <li>
+        <time>00:04–00:08.</time> Three panels compare directly actuated pick-and-place,
+        an externally suspended payload, and HOIST. The humanoid guides the suspended
+        box through contact; the load can swing and overshoot the marked target after
+        the robot stops.
+      </li>
+      <li>
+        <time>00:08–00:16.</time> A motivation figure contrasts imitation-only placement
+        errors, unsafe exploration with reinforcement learning from scratch, and imitation-initialized
+        refinement with HOIST.
+      </li>
+      <li>
+        <time>00:16–00:42.</time> Three synchronized panels show physical humanoid
+        experiments: VLA-50 on the left, VLA-80 in the center, and HOIST on the right.
+        A humanoid approaches and pushes a gray suspended box as it descends toward
+        a rectangular target marked on a wooden platform. The methods end with different
+        payload positions. Text identifies each method and states “1× speed” and “fully
+        autonomous.”
+      </li>
+      <li>
+        <time>00:42–01:35.</time> The video transitions to repeated simulation trials
+        with the same left-to-right method order. Humanoids guide cable-suspended
+        boxes toward raised target platforms. The boxes continue moving during contact
+        and descent; differences in pushing and stopping produce different final positions.
+        <a href="#results">The experiment results below</a> provide the numerical
+        placement errors.
+      </li>
+    </ol>
+    <a href={asset("media/hoist-descriptions.vtt")} download
+      >Download timed visual descriptions (WebVTT)</a
+    >
+  </details>
+</section>

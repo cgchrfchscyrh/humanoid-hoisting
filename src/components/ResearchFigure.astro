@@ -1,0 +1,42 @@
+---
+import { Picture } from "astro:assets";
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption: string;
+  label?: string;
+  description?: string;
+}
+const { src, alt, caption, label, description } = Astro.props;
+---
+
+<figure class="research-figure">
+  <a
+    class="figure-link"
+    href={src.src}
+    target="_blank"
+    rel="noopener"
+    aria-label={`Open full-size figure in a new tab: ${alt}`}
+  >
+    <Picture
+      src={src}
+      alt={alt}
+      formats={["webp"]}
+      widths={[640, 960, 1440, 2000]}
+      sizes="(max-width: 760px) 92vw, 1080px"
+      loading="lazy"
+    />
+    <span class="figure-expand" aria-hidden="true">↗</span>
+  </a>
+  <figcaption>{label && <strong>{label} </strong>}{caption}</figcaption>
+  {
+    description && (
+      <details class="figure-description">
+        <>
+          <summary>Read the detailed figure description</summary>
+          <p>{description}</p>
+        </>
+      </details>
+    )
+  }
+</figure>

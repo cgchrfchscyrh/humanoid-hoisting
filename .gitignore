@@ -1,24 +1,15 @@
-# build output
-dist/
-
-# generated types
-.astro/
-
-# dependencies
 node_modules/
-
-# logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# environment variables
+dist/
+.astro/
 .env
-.env.production
-
-# macOS-specific files
+.env.*
+!.env.example
 .DS_Store
+playwright-report/
+test-results/
+# Original research materials remain local, separate from the site source.
+2026_Hoist_CES/
+1204_HOIST_Humanoid_Optimizati_Supplementary Materials/
 
-# jetbrains setting folder
-.idea/
+# Downloadable build artifact
+hoist-static-site.zip

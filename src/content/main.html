@@ -1,0 +1,1787 @@
+<h2 class="unnumbered" id="abstract">Abstract</h2>
+<p>Manipulating suspended payloads with humanoid robots is challenging
+because the robot can only influence an underactuated, oscillatory load
+through whole-body motion and intermittent contact. Imitation learning
+provides safe initial behavior but does not directly optimize final
+placement, while reinforcement learning from scratch is unsafe and
+sample-inefficient on real humanoids. We present <span class="smallcaps">HOIST</span>–<strong>H</strong>umanoid&#160;<strong>O</strong>ptimized
+with&#160;<strong>I</strong>mitation and <strong>S</strong>ample-efficient
+<strong>T</strong>uning for manipulating suspended loads. <span class="smallcaps">HOIST</span> first finetunes a high-level
+vision-language-action (VLA) policy from virtual-reality (VR)
+teleoperation demonstrations and executes its commands through a
+whole-body controller. It then uses VLA rollouts and iterative batched
+RL to improve placement accuracy and stopping behavior. Experiments in
+simulation and on a real humanoid show that <span class="smallcaps">HOIST</span> improves over imitation-only and
+additional-demonstration baselines; compared with pure VLA rollouts,
+<span class="smallcaps">HOIST</span> reduces translational placement
+error by
+19.9&#160;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">cm</annotation></semantics></math>
+and raw angular error by
+3.56<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mo>∘</mo></msup><annotation encoding="application/x-tex">^\circ</annotation></semantics></math>,
+demonstrating the potential of humanoids for underactuated
+material-handling tasks.</p>
+<figure id="fig:1" data-latex-placement="t">
+<img loading="lazy" alt="A construction worker guides a crane-suspended concrete panel. Beside this, the laboratory setup shows a humanoid next to a suspended box and a marked landing platform. The crane supports the weight; the humanoid provides horizontal guidance." src="__BASE__papers/figures/figure1.jpg">
+<figcaption><strong>Figure 1. </strong> Motivation and task setup for humanoid hoisting. Left:
+workers manually guide a suspended payload during construction hoisting,
+exposing them to struck-by and caught-between hazards. Right: our lab
+setup studies a humanoid robot pushing an externally suspended payload
+toward a target region, requiring whole-body balance, contact-rich
+pushing, and accurate stopping. Left image adapted from online
+material&#160;<span class="citation" data-cites="youtubeHoistingExampleGXIMQnndCVU">(<a href="#ref-youtubeHoistingExampleGXIMQnndCVU" role="doc-biblioref">Holy
+maker 2026</a>)</span>. </figcaption>
+</figure>
+<h2 id="introduction">Introduction</h2>
+<p>Hoisting is a common material-handling operation across construction,
+manufacturing, and shipbuilding. In construction, cranes transport and
+install room-sized prefabricated building modules through congested
+sites and align them with structural interfaces&#160;<span class="citation" data-cites="zhu2022cranelift">(<a href="#ref-zhu2022cranelift" role="doc-biblioref">Zhu et al. 2022</a>)</span>. In manufacturing,
+overhead or multi-cable cranes support the transport and precision
+assembly of large workpieces whose size and mass exceed the payload
+capacity of conventional robot manipulators&#160;<span class="citation" data-cites="hoffman2020precision">(<a href="#ref-hoffman2020precision" role="doc-biblioref">Hoffman and Asada 2020</a>)</span>. In
+shipbuilding, large hull blocks and offshore-plant modules are erected
+using single- or multi-crane lifts, for which coupled crane-payload
+dynamics directly affect operational safety&#160;<span class="citation" data-cites="ku2014dynamic">(<a href="#ref-ku2014dynamic" role="doc-biblioref">Ku and Ha 2014</a>)</span>. These examples span
+different scales and workflows, but share the same basic structure:
+lifting equipment provides high load capacity and long-range transport,
+while a suspended payload must be guided through a constrained workspace
+and accurately aligned with its final installation interface. Improving
+this last stage of hoisting is therefore important not only for
+construction automation, but also for flexible manufacturing and
+large-scale assembly.</p>
+<p>Despite its importance, near-field load guidance remains
+labor-intensive and hazardous. Workers commonly stand close to the
+suspended object to guide, stabilize, rotate, or push it into alignment,
+where delayed payload response and residual swing create struck-by and
+caught-between hazards &#160;<span class="citation" data-cites="cdc2021liftzone bls2023crane niosh2006crane oshaStruckBy">(<a href="#ref-cdc2021liftzone" role="doc-biblioref">National Institute for
+Occupational Safety and Health 2021</a>, <a href="#ref-niosh2006crane" role="doc-biblioref">2006</a>; <a href="#ref-bls2023crane" role="doc-biblioref">U.S. Bureau of Labor Statistics 2023</a>; <a href="#ref-oshaStruckBy" role="doc-biblioref">Occupational Safety and
+Health Administration 2011</a>)</span>. Existing automation does not
+fully address this role. Anti-sway and trajectory controllers act
+through the crane and generally require access to the lifting system,
+while fixed robot arms have limited workspace and must be installed at
+each placement location. Wheeled mobile manipulators extend the
+reachable workspace, but their planar mobility and limited whole-body
+redundancy are often ill-suited to uneven or cluttered worksites and to
+interactions that require simultaneous base repositioning, balance
+regulation, torso motion, bimanual contact, and forceful pushing.
+Hoisting guidance is consequently a whole-body loco-manipulation problem
+rather than an arm-only manipulation task.</p>
+<p>Humanoid robots are well matched to these requirements. Their legged
+mobility, human-scale reach, articulated torso, and two arms allow them
+to move through human-designed environments, vary their contact height
+and posture, and use the whole body to manipulate large objects while
+maintaining balance &#160;<span class="citation" data-cites="yoshida2007dexterous murooka2015whole zhang2025falcon">(<a href="#ref-yoshida2007dexterous" role="doc-biblioref">Yoshida et al.
+2007</a>; <a href="#ref-murooka2015whole" role="doc-biblioref">Murooka
+et al. 2015</a>; <a href="#ref-zhang2025falcon" role="doc-biblioref">Zhang et al. 2025</a>)</span>. Fig.&#160;<a href="#fig:1">1</a> illustrates both real hoisting operations and our
+lab setup, motivating the question: can humanoid robots safely operate
+around underactuated material-handling systems that are currently
+handled by human workers?</p>
+<p>We study this question through <em>humanoid hoisting</em>: using a
+humanoid robot to position an externally suspended payload through
+whole-body motion and contact-rich manipulation. Unlike standard
+pick-and-place or tabletop manipulation, the robot cannot directly
+control the payload pose or velocity; it can only influence the payload
+through base motion, arm motion, body posture, and contact forces. The
+payload therefore behaves like an underactuated pendulum, a structure
+widely studied in crane modeling and anti-sway control&#160;<span class="citation" data-cites="abdel2003dynamics ramli2017control qiang2021anti mojallizadeh2023modeling">(<a href="#ref-abdel2003dynamics" role="doc-biblioref">Abdel-Rahman et al.
+2003</a>; <a href="#ref-ramli2017control" role="doc-biblioref">Ramli et
+al. 2017</a>; <a href="#ref-qiang2021anti" role="doc-biblioref">Qiang et
+al. 2021</a>; <a href="#ref-mojallizadeh2023modeling" role="doc-biblioref">Mojallizadeh et al. 2023</a>)</span>. It may
+continue moving after the robot stops, overshoot the target, or retain
+residual oscillation. We therefore position humanoid hoisting as a new
+whole-body loco-manipulation problem, where success depends not only on
+feasible humanoid motion, but also on contact timing and stopping
+behavior for a dynamically active payload. VR teleoperation offers a
+practical way to collect demonstrations for initializing humanoid
+hoisting behaviors&#160;<span class="citation" data-cites="zhang2018deep rosen2018testing han2023vr">(<a href="#ref-zhang2018deep" role="doc-biblioref">Zhang et al. 2018</a>; <a href="#ref-rosen2018testing" role="doc-biblioref">Rosen et al. 2018</a>;
+<a href="#ref-han2023vr" role="doc-biblioref">Han 2023</a>)</span>.
+However, imitation learning does not directly optimize final placement
+accuracy and may accumulate errors during closed-loop execution&#160;<span class="citation" data-cites="ross2011reduction">(<a href="#ref-ross2011reduction" role="doc-biblioref">Ross et al.
+2011</a>)</span>. Conversely, training from scratch with RL on a real
+humanoid is unsafe and sample-inefficient in this contact-rich
+setting&#160;<span class="citation" data-cites="rajeswaran2017learning wagenmaker2025steering">(<a href="#ref-rajeswaran2017learning" role="doc-biblioref">Rajeswaran et
+al. 2017</a>; <a href="#ref-wagenmaker2025steering" role="doc-biblioref">Wagenmaker et al. 2025</a>)</span>.</p>
+<p>We present <span class="smallcaps">HOIST</span>–<strong>H</strong>umanoid&#160;<strong>O</strong>ptimized
+with&#160;<strong>I</strong>mitation and <strong>S</strong>ample-efficient
+<strong>T</strong>uning for manipulating suspended loads. <span class="smallcaps">HOIST</span> first uses VR whole body teleoperation
+collected demonstrations to finetune a high-level vision-language-action
+(VLA) policy, whose planner-level commands are executed by a whole-body
+controller. It then collects autonomous rollouts and applies iterative
+batched RL refinement with hoisting-specific rewards to improve
+placement accuracy and stopping behavior. This combines safe imitation
+initialization with task-level reward optimization, avoiding unsafe
+tabula-rasa exploration while addressing objectives not captured by
+imitation alone. Our contributions are:</p>
+<ul>
+<li><p>We introduce <em>humanoid hoisting</em>, a whole-body
+loco-manipulation problem involving an externally suspended, indirectly
+driven, and oscillatory payload, opening a direction for humanoids to
+operate underactuated material-handling systems.</p></li>
+<li><p>We present <span class="smallcaps">HOIST</span>, which combines
+VR teleoperation, supervised VLA finetuning, fixed whole-body execution,
+and sample-efficient RL refinement for suspended-payload
+manipulation.</p></li>
+<li><p>We evaluate suspended-payload positioning in simulation and on a
+real humanoid, comparing additional demonstrations with RL refinement
+and analyzing how rollout count and input modalities affect placement
+accuracy.</p></li>
+</ul>
+<h2 id="related-work">Related Work</h2>
+<h3 id="robotic-hoisting-and-suspended-payload-control">Robotic hoisting
+and suspended-payload control</h3>
+<p>Robotic systems have been widely studied for construction automation
+and material handling&#160;<span class="citation" data-cites="bock2016construction xu2020site">(<a href="#ref-bock2016construction" role="doc-biblioref">Bock and Linner
+2016</a>; <a href="#ref-xu2020site" role="doc-biblioref">Xu and De Soto
+2020</a>)</span>, where hoisting heavy payloads is common. Because
+suspended loads exhibit pendulum-like dynamics, prior work has studied
+modeling, trajectory planning, input shaping, and anti-sway control for
+crane and cable-suspended systems&#160;<span class="citation" data-cites="abdel2003dynamics ramli2017control qiang2021anti hoffman2020precision">(<a href="#ref-abdel2003dynamics" role="doc-biblioref">Abdel-Rahman et al.
+2003</a>; <a href="#ref-ramli2017control" role="doc-biblioref">Ramli et
+al. 2017</a>; <a href="#ref-qiang2021anti" role="doc-biblioref">Qiang et
+al. 2021</a>; <a href="#ref-hoffman2020precision" role="doc-biblioref">Hoffman and Asada 2020</a>)</span>. These methods
+typically control the lifting mechanism directly, whereas humanoid
+hoisting can only influence an externally suspended payload through
+intermittent whole-body contact. Recent work has studied non-prehensile
+tool-object manipulation using language-level planning and feedback
+control&#160;<span class="citation" data-cites="lee2026nonprehensile">(<a href="#ref-lee2026nonprehensile" role="doc-biblioref">Lee et al.
+2026</a>)</span>, but the tool is directly held by the robot and the
+manipulated object is not externally suspended. Our work therefore
+reformulates suspended-payload positioning as humanoid-assisted local
+manipulation, where the robot acts as an external contact-rich agent
+rather than part of the crane controller.</p>
+<h3 id="humanoid-whole-body-control-and-loco-manipulation">Humanoid
+whole-body control and loco-manipulation</h3>
+<p>Humanoid whole-body control has advanced from motion tracking to real
+humanoid systems with richer high-level interfaces&#160;<span class="citation" data-cites="peng2018deepmimic peng2018sfv allshire2025visual luo2025sonic bjorck2025gr00t gr00twbc2025">(<a href="#ref-peng2018deepmimic" role="doc-biblioref">Peng, Abbeel, et al.
+2018</a>; <a href="#ref-peng2018sfv" role="doc-biblioref">Peng,
+Kanazawa, et al. 2018</a>; <a href="#ref-allshire2025visual" role="doc-biblioref">Allshire et al. 2025</a>; <a href="#ref-luo2025sonic" role="doc-biblioref"><span class="nocase">Luo,
+Yuan, Wang, Li, Chen, Castaneda, et al.</span> 2025</a>; <a href="#ref-bjorck2025gr00t" role="doc-biblioref"><span class="nocase">Bjorck et al.</span> 2025</a>; <a href="#ref-gr00twbc2025" role="doc-biblioref">Luo, Yuan, Wang, Li, Chen,
+Castañeda, et al. 2025</a>)</span>. Humanoid loco-manipulation further
+studies coordinated locomotion, balance, and contact-rich interaction
+through motion priors, residual policies, and compliance
+regulation&#160;<span class="citation" data-cites="yoshida2007dexterous zhang2025falcon zhao2025resmimic chen2025chip">(<a href="#ref-yoshida2007dexterous" role="doc-biblioref">Yoshida et al.
+2007</a>; <a href="#ref-zhang2025falcon" role="doc-biblioref">Zhang et
+al. 2025</a>; <a href="#ref-zhao2025resmimic" role="doc-biblioref">Zhao
+et al. 2025</a>; <a href="#ref-chen2025chip" role="doc-biblioref"><span class="nocase">Chen et al.</span> 2025</a>)</span>. Surveys of
+industrial human-robot collaboration identify safety, adaptation,
+communication, and learning from human partners as central challenges
+for collaborative robots&#160;<span class="citation" data-cites="hjorth2022human mukherjee2022survey">(<a href="#ref-hjorth2022human" role="doc-biblioref">Hjorth and Chrysostomou
+2022</a>; <a href="#ref-mukherjee2022survey" role="doc-biblioref">Mukherjee et al. 2022</a>)</span>. For contact-rich
+mobile manipulation, learned variable-impedance control can combine
+RGB-D and force/torque observations with human demonstrations to improve
+compliant execution&#160;<span class="citation" data-cites="zhou2025variable">(<a href="#ref-zhou2025variable" role="doc-biblioref">Zhou et al. 2025</a>)</span>. However, most prior
+tasks involve rigid or quasi-static objects whose motion is constrained
+by the robot or environment. In contrast, suspended payloads remain
+dynamically active after contact, making success depend on contact
+timing, accurate placement, and stopping behavior.</p>
+<h3 id="reinforcement-learning-for-robot-control">Reinforcement learning
+for robot control</h3>
+<p>Reinforcement learning can optimize robot behavior from task rewards
+and environment interaction, including high-dimensional contact-rich
+manipulation&#160;<span class="citation" data-cites="rajeswaran2017learning elguea2023review">(<a href="#ref-rajeswaran2017learning" role="doc-biblioref">Rajeswaran et
+al. 2017</a>; <a href="#ref-elguea2023review" role="doc-biblioref">Elguea-Aguinaco et al. 2023</a>)</span>. Reviews of
+smart robotic manufacturing position robot learning as an important
+enabling technology while emphasizing data efficiency, generalization,
+and safe deployment as persistent challenges&#160;<span class="citation" data-cites="liu2022robotlearning">(<a href="#ref-liu2022robotlearning" role="doc-biblioref">Liu et al. 2022</a>)</span>. Hierarchical
+contact-policy learning further shows that complex contact behaviors can
+be decomposed into reusable lower-level skills and higher-level
+sequencing policies&#160;<span class="citation" data-cites="simonic2024hierarchical">(<a href="#ref-simonic2024hierarchical" role="doc-biblioref">Simonič et al.
+2024</a>)</span>. However, applying RL directly to humanoid hoisting is
+unsafe and sample-inefficient: early exploration may cause unstable
+motion, hard contacts, over-pushing, or large residual swing, motivating
+safety-aware and demonstration-guided learning&#160;<span class="citation" data-cites="garcia2015comprehensive gu2023human">(<a href="#ref-garcia2015comprehensive" role="doc-biblioref">Garcıa and
+Fernández 2015</a>; <a href="#ref-gu2023human" role="doc-biblioref">Gu
+et al. 2023</a>)</span>. Our approach avoids tabula-rasa exploration by
+starting from a teleoperation-finetuned VLA policy and using RL to
+refine high-level commands from limited rollouts, optimizing placement
+and stopping while preserving safe demonstrated behavior&#160;<span class="citation" data-cites="wagenmaker2025steering">(<a href="#ref-wagenmaker2025steering" role="doc-biblioref">Wagenmaker et
+al. 2025</a>)</span>.</p>
+<h2 id="methodology">Methodology</h2>
+<p>This section describes the technical formulation and implementation
+of <span class="smallcaps">HOIST</span>. We first formalize the complete
+descent–guidance–landing episode, including the exogenous hoist motion,
+initialization, termination, and evaluation criteria. We then present
+the teleoperation data collection, high-level VLA policy, whole-body
+controller, and RL refinement procedure used to improve terminal payload
+placement.</p>
+<figure id="fig:overview" data-latex-placement="t">
+<img loading="lazy" alt="Three task panels. Standard pick-and-place directly actuates an object with an immediate response. Humanoid hoisting indirectly influences an externally suspended, oscillatory object. HOIST refines contact and stopping to improve placement and reduce angular motion." src="__BASE__papers/figures/figure2.jpg">
+<figcaption><strong>Figure 2. </strong>Overview of humanoid hoisting. Left: in standard
+pick-and-place, the robot directly actuates the object and receives an
+immediate object response. Middle: in humanoid hoisting, the payload is
+externally suspended and underactuated, so the robot can only influence
+it through whole-body contact; this introduces delayed motion,
+overshoot, and residual swing near the target. Right: <span class="smallcaps">HOIST</span> addresses this setting by learning
+high-level hoisting commands from teleoperation and refining them with
+iterative batched RL, improving final placement accuracy while reducing
+residual sway.</figcaption>
+</figure>
+<figure id="fig:learning-idea" data-latex-placement="t">
+<img loading="lazy" alt="Three motivation panels. Imitation can produce feasible motions but leave a placement error. Reinforcement learning from scratch can involve unstable exploration. HOIST initializes from demonstrations and refines the policy using task outcomes." src="__BASE__papers/figures/figure3.jpg">
+<figcaption><strong>Figure 3. </strong>Motivation for imitation-initialized RL. Pure imitation
+yields safe motions but may leave large placement errors, while pure RL
+from scratch is unsafe and hard to converge on real humanoids. <span class="smallcaps">HOIST</span> starts from an imitation-learned policy
+and uses iterative batched RL refinement to improve task-level placement
+while preserving safe behavior.</figcaption>
+</figure>
+<h3 id="sec:problem_formulation">Problem formulation</h3>
+<p>We consider <em>humanoid hoisting</em>, where a humanoid robot
+assists the local positioning and landing of an externally suspended
+payload while an external hoist lowers it toward a target region. The
+episode contains three phases: (i)&#160;the robot approaches while the
+payload is suspended and begins to descend, (ii)&#160;the robot establishes
+contact and guides its position and yaw during descent, and (iii)&#160;the
+robot reduces contact and stops as the payload reaches the terminal
+landing height. The robot does not actuate the hoist or suspension
+mechanism. The vertical hoist motion is an exogenous input, whereas the
+humanoid can influence the payload only through whole-body motion and
+intermittent contact forces. The task therefore couples locomotion and
+balance, contact timing, horizontal placement, descent-dependent
+pendulum dynamics, landing, and residual swing.</p>
+<p>The payload is a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>54</mn><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow><mo>×</mo><mn>54</mn><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow><mo>×</mo><mn>50</mn><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow></mrow><annotation encoding="application/x-tex">54\,\mathrm{cm}\times54\,\mathrm{cm}\times50\,\mathrm{cm}</annotation></semantics></math>
+box with mass
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2.5</mn><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">k</mi><mi mathvariant="normal">g</mi></mrow></mrow><annotation encoding="application/x-tex">2.5\,\mathrm{kg}</annotation></semantics></math>,
+suspended above a target zone. At the beginning of every episode, the
+suspension configuration and payload pose are reset to the same nominal
+state. In particular, the payload center is initialized at a fixed
+offset from the target center in the horizontal
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+plane. This offset is chosen such that the payload’s unguided vertical
+descent lies outside the target footprint. Consequently, lowering alone
+cannot produce a successful placement: the humanoid must establish
+contact and create sufficient horizontal displacement toward the target.
+If the robot fails to push or loses effective contact, the payload
+reaches the terminal height outside the target area.</p>
+<p>We model humanoid hoisting as a task-conditioned, partially observed,
+closed-loop control problem. At each high-level decision step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
+the policy receives the observation
+<span aria-label="Mathematical expression 1" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold-italic">𝒐</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><msubsup><mi mathvariant="bold-italic">𝑰</mi><mi>t</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">o</mi><mo mathvariant="normal">,</mo><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">b</mi></mrow></msubsup><mo>,</mo><msubsup><mi mathvariant="bold-italic">𝑫</mi><mi>t</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo>,</mo><msubsup><mi mathvariant="bold-italic">𝑰</mi><mi>t</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mo mathvariant="normal">,</mo><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">b</mi></mrow></msubsup><mo>,</mo><msubsup><mi mathvariant="bold-italic">𝒙</mi><mi>t</mi><mi>r</mi></msubsup><mo>,</mo><msubsup><mi mathvariant="bold-italic">𝒗</mi><mi>t</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo>,</mo><mi>ℓ</mi><mo>,</mo><msubsup><mi mathvariant="bold-italic">𝒄</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi mathvariant="normal">n</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">v</mi></mrow></msubsup><mo stretchy="true" form="postfix">}</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+    \mathbf{o}_t =
+    \left\{
+    \mathbf{I}^{\mathrm{ego,rgb}}_t,
+    \mathbf{D}^{\mathrm{ego}}_t,
+    \mathbf{I}^{\mathrm{side,rgb}}_t,
+    \mathbf{x}^{r}_t,
+    \mathbf{v}^{\mathrm{ego}}_t,
+    \ell,
+    \mathbf{c}^{\mathrm{nav}}_{t-1}
+    \right\},
+\end{equation}</annotation></semantics></math></span> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝑰</mi><mi>t</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">o</mi><mo mathvariant="normal">,</mo><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">b</mi></mrow></msubsup><annotation encoding="application/x-tex">\mathbf{I}^{\mathrm{ego,rgb}}_t</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝑫</mi><mi>t</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">o</mi></mrow></msubsup><annotation encoding="application/x-tex">\mathbf{D}^{\mathrm{ego}}_t</annotation></semantics></math>
+are the humanoid onboard RGB and depth observations,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝑰</mi><mi>t</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mo mathvariant="normal">,</mo><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">b</mi></mrow></msubsup><annotation encoding="application/x-tex">\mathbf{I}^{\mathrm{side,rgb}}_t</annotation></semantics></math>
+is an external side-view image that captures the payload, target, and
+ongoing descent,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝒙</mi><mi>t</mi><mi>r</mi></msubsup><annotation encoding="application/x-tex">\mathbf{x}^{r}_t</annotation></semantics></math>
+denotes the humanoid proprioceptive state,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝒗</mi><mi>t</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">o</mi></mrow></msubsup><annotation encoding="application/x-tex">\mathbf{v}^{\mathrm{ego}}_t</annotation></semantics></math>
+is the ego-velocity input,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℓ</mi><annotation encoding="application/x-tex">\ell</annotation></semantics></math>
+is the language instruction, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝒄</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi mathvariant="normal">n</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">v</mi></mrow></msubsup><annotation encoding="application/x-tex">\mathbf{c}^{\mathrm{nav}}_{t-1}</annotation></semantics></math>
+is the previous navigation command. The proprioceptive state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝒙</mi><mi>t</mi><mi>r</mi></msubsup><annotation encoding="application/x-tex">\mathbf{x}^{r}_t</annotation></semantics></math>
+includes joint states and base/IMU information. We do not assume direct
+contact-force sensing or explicit payload pose, velocity, cable length,
+hoist phase, or landing-state input. These latent task variables must
+instead be inferred from the image history and robot state, making the
+descending task partially observed.</p>
+<p>The high-level policy does not output joint torques. Instead, it
+predicts the next
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+high-level planner-command increments:
+<span aria-label="Mathematical expression 2" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><msub><mi mathvariant="bold-italic">𝑼</mi><mi>t</mi></msub><mo>=</mo><msub><mi>π</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi mathvariant="bold-italic">𝒐</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Δ</mi><msub><mi mathvariant="bold-italic">𝒖</mi><mi>t</mi></msub><mo>,</mo><mi mathvariant="normal">Δ</mi><msub><mi mathvariant="bold-italic">𝒖</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi mathvariant="normal">Δ</mi><msub><mi mathvariant="bold-italic">𝒖</mi><mrow><mi>t</mi><mo>+</mo><mi>H</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+    \Delta \mathbf{U}_t
+    =
+    \pi_{\theta}(\mathbf{o}_t)
+    =
+    \left(
+    \Delta \mathbf{u}_{t},
+    \Delta \mathbf{u}_{t+1},
+    \ldots,
+    \Delta \mathbf{u}_{t+H-1}
+    \right),
+\end{equation}</annotation></semantics></math></span> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mi>θ</mi></msub><annotation encoding="application/x-tex">\pi_{\theta}</annotation></semantics></math>
+is the learned high-level VLA policy with parameters
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+is the action-chunk horizon, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><msub><mi mathvariant="bold-italic">𝑼</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\Delta \mathbf{U}_t</annotation></semantics></math>
+is the predicted command-increment chunk at time
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.</p>
+<p>Each single-step command increment
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><msub><mi mathvariant="bold-italic">𝒖</mi><mi>τ</mi></msub></mrow><annotation encoding="application/x-tex">\Delta \mathbf{u}_{\tau}</annotation></semantics></math>
+updates the head target, left-hand target, right-hand target, navigation
+command, and desired base height:
+<span aria-label="Mathematical expression 3" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><msub><mi mathvariant="bold-italic">𝒖</mi><mi>τ</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi mathvariant="normal">Δ</mi><msubsup><mi mathvariant="bold-italic">𝒚</mi><mi>τ</mi><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">d</mi></mrow></msubsup><mo>,</mo><mi mathvariant="normal">Δ</mi><msubsup><mi mathvariant="bold-italic">𝒚</mi><mi>τ</mi><mi>L</mi></msubsup><mo>,</mo><mi mathvariant="normal">Δ</mi><msubsup><mi mathvariant="bold-italic">𝒚</mi><mi>τ</mi><mi>R</mi></msubsup><mo>,</mo><mi mathvariant="normal">Δ</mi><msubsup><mi mathvariant="bold-italic">𝒄</mi><mi>τ</mi><mrow><mi mathvariant="normal">n</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">v</mi></mrow></msubsup><mo>,</mo><mi mathvariant="normal">Δ</mi><msubsup><mi>h</mi><mi>τ</mi><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi></mrow></msubsup><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mspace width="1.0em"></mspace><mi>τ</mi><mo>=</mo><mi>t</mi><mo>,</mo><mi>…</mi><mo>,</mo><mi>t</mi><mo>+</mo><mi>H</mi><mo>−</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+    \Delta \mathbf{u}_{\tau}
+    =
+    \left[
+    \Delta \mathbf{y}^{\mathrm{head}}_{\tau},
+    \Delta \mathbf{y}^{L}_{\tau},
+    \Delta \mathbf{y}^{R}_{\tau},
+    \Delta \mathbf{c}^{\mathrm{nav}}_{\tau},
+    \Delta h^{\mathrm{base}}_{\tau}
+    \right],
+    \quad \tau=t,\ldots,t+H-1.
+\end{equation}</annotation></semantics></math></span> Here,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+indexes a future high-level step within the predicted command chunk,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝒚</mi><mi>τ</mi><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">d</mi></mrow></msubsup><annotation encoding="application/x-tex">\mathbf{y}^{\mathrm{head}}_{\tau}</annotation></semantics></math>
+is the head tracking target,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝒚</mi><mi>τ</mi><mi>L</mi></msubsup><annotation encoding="application/x-tex">\mathbf{y}^{L}_{\tau}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝒚</mi><mi>τ</mi><mi>R</mi></msubsup><annotation encoding="application/x-tex">\mathbf{y}^{R}_{\tau}</annotation></semantics></math>
+are the left- and right-hand tracking targets,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝒄</mi><mi>τ</mi><mrow><mi mathvariant="normal">n</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">v</mi></mrow></msubsup><annotation encoding="application/x-tex">\mathbf{c}^{\mathrm{nav}}_{\tau}</annotation></semantics></math>
+is the navigation command, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>h</mi><mi>τ</mi><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi></mrow></msubsup><annotation encoding="application/x-tex">h^{\mathrm{base}}_{\tau}</annotation></semantics></math>
+is the desired base-height command. There is deliberately no crane,
+winch, or descent command in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><msub><mi mathvariant="bold-italic">𝒖</mi><mi>τ</mi></msub></mrow><annotation encoding="application/x-tex">\Delta\mathbf{u}_{\tau}</annotation></semantics></math>:
+the lowering trajectory is generated externally and is not controlled by
+either the VLA policy or the whole-body controller.</p>
+<p>The corresponding full planner command at time
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+is
+<span aria-label="Mathematical expression 4" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold-italic">𝒖</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><msubsup><mi mathvariant="bold-italic">𝒚</mi><mi>t</mi><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">d</mi></mrow></msubsup><mo>,</mo><msubsup><mi mathvariant="bold-italic">𝒚</mi><mi>t</mi><mi>L</mi></msubsup><mo>,</mo><msubsup><mi mathvariant="bold-italic">𝒚</mi><mi>t</mi><mi>R</mi></msubsup><mo>,</mo><msubsup><mi mathvariant="bold-italic">𝒄</mi><mi>t</mi><mrow><mi mathvariant="normal">n</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">v</mi></mrow></msubsup><mo>,</mo><msubsup><mi>h</mi><mi>t</mi><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi></mrow></msubsup><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+    \mathbf{u}_{t}
+    =
+    \left[
+    \mathbf{y}^{\mathrm{head}}_{t},
+    \mathbf{y}^{L}_{t},
+    \mathbf{y}^{R}_{t},
+    \mathbf{c}^{\mathrm{nav}}_{t},
+    h^{\mathrm{base}}_{t}
+    \right].
+\end{equation}</annotation></semantics></math></span> In words, the VLA policy
+only decides short-horizon task-level motions, such as where the hands
+and body should move next; the low-level controller converts these
+commands into balanced whole-body motion.</p>
+<p>The execution stack maintains the previous full planner command
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="bold-italic">𝒖</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">\mathbf{u}_{t-1}</annotation></semantics></math>,
+while the policy receives only the previous navigation command
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝒄</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi mathvariant="normal">n</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">v</mi></mrow></msubsup><annotation encoding="application/x-tex">\mathbf{c}^{\mathrm{nav}}_{t-1}</annotation></semantics></math>
+as an explicit command-history input. At execution time, we apply the
+first increment in the chunk to update the current planner command:
+<span aria-label="Mathematical expression 5" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold-italic">𝒖</mi><mi>t</mi></msub><mo>=</mo><msub><mi mathvariant="bold-italic">𝒖</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><mi mathvariant="normal">Δ</mi><msub><mi mathvariant="bold-italic">𝒖</mi><mi>t</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+    \mathbf{u}_t = \mathbf{u}_{t-1} + \Delta \mathbf{u}_t.
+\end{equation}</annotation></semantics></math></span> The updated command is
+then executed by a humanoid whole-body control stack:
+<span aria-label="Mathematical expression 6" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi mathvariant="bold-italic">𝒂</mi><mi>t</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow></msubsup><mo>=</mo><msub><mi>π</mi><mrow><mi mathvariant="normal">w</mi><mi mathvariant="normal">b</mi><mi mathvariant="normal">c</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi mathvariant="bold-italic">𝒙</mi><mi>t</mi><mi>r</mi></msubsup><mo>,</mo><msub><mi mathvariant="bold-italic">𝒖</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+    \mathbf{a}^{\mathrm{motor}}_t
+    =
+    \pi_{\mathrm{wbc}}
+    \left(
+    \mathbf{x}^{r}_t,
+    \mathbf{u}_t
+    \right),
+\end{equation}</annotation></semantics></math></span> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mrow><mi mathvariant="normal">w</mi><mi mathvariant="normal">b</mi><mi mathvariant="normal">c</mi></mrow></msub><annotation encoding="application/x-tex">\pi_{\mathrm{wbc}}</annotation></semantics></math>
+is a fixed decoupled whole-body controller&#160;<span class="citation" data-cites="luo2025sonic">(<a href="#ref-luo2025sonic" role="doc-biblioref"><span class="nocase">Luo, Yuan, Wang, Li, Chen,
+Castaneda, et al.</span> 2025</a>)</span>, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="bold-italic">𝒂</mi><mi>t</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow></msubsup><annotation encoding="application/x-tex">\mathbf{a}^{\mathrm{motor}}_t</annotation></semantics></math>
+denotes the low-level motor command. This hierarchy lets the learned
+policy operate at the task-command level, while whole-body tracking,
+balance, and joint-level stabilization are handled by the fixed
+execution stack.</p>
+<figure id="fig:pipeline" data-latex-placement="t">
+<img loading="lazy" alt="HOIST pipeline. VR demonstrations initialize a vision-language-action policy. Ego and side-view RGB, language and navigation commands condition the vision-language backbone. Robot state and depth condition the flow-matching action expert. It outputs action chunks executed as head, end-effector, navigation and base-height commands through a frozen whole-body controller. During RL, a SAC actor learns the initial noise from autonomous rollouts and terminal placement rewards; the VLA and controller remain frozen." src="__BASE__papers/figures/figure4.jpg">
+<figcaption><strong>Figure 4. </strong> Overview of the <span class="smallcaps">HOIST</span>
+pipeline. VR teleoperation provides hoisting demonstrations to finetune
+a high-level VLA policy, which predicts short-horizon planner-command
+chunks. A fixed whole-body controller executes these commands as stable
+humanoid motion. Autonomous VLA rollouts are then used for iterative
+batched RL with hoisting-specific rewards to improve placement accuracy,
+residual swing, and stopping behavior. </figcaption>
+</figure>
+<h3 id="sec:overview">Overview of HOIST</h3>
+<p>Our method consists of three stages: teleoperation data collection,
+supervised VLA finetuning, and RL refinement. First, a human operator
+uses a VR headset and controllers to teleoperate the humanoid robot
+through the hoisting task. Second, we use the collected teleoperation
+data to finetune A high-level VLA policy, so that the humanoid can
+autonomously generate hoisting-related planner commands from visual
+observations and task instructions. Third, we deploy the finetuned VLA
+policy to collect autonomous rollouts and use these rollouts for
+iterative batched flow-matching-steering RL&#160;<span class="citation" data-cites="wagenmaker2025steering">(<a href="#ref-wagenmaker2025steering" role="doc-biblioref">Wagenmaker et
+al. 2025</a>)</span> refinement.</p>
+<h4 id="sec:teleop_data">Teleoperation data collection</h4>
+<p>We collect whole-body hoisting demonstrations using a PICO VR headset
+and controllers. During each demonstration, the operator controls the
+humanoid through the complete task sequence, including approaching the
+suspended payload, establishing bimanual contact, coordinating base and
+upper-body motion to guide the payload, and terminating the pushing
+motion near the target. The teleoperation interface produces the same
+planner-level command representation defined in Section&#160;3.1, so the
+recorded demonstrations remain compatible with the fixed whole-body
+execution stack used during autonomous deployment.</p>
+<p>Each demonstration trajectory is represented as <span id="eq:teleop_trajectory"></span>
+<span aria-label="Mathematical expression 7" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mi>i</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mrow><mo stretchy="true" form="prefix">{</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>o</mi><mi>t</mi></msub><mo>,</mo><msubsup><mi>u</mi><mi>t</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo>,</mo><msubsup><mi>a</mi><mi>t</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">}</mo></mrow><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>T</mi><mi>i</mi></msub></msubsup><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+\tau_i =
+\left(
+\left\{
+\left(o_t,u_t^{\mathrm{demo}},a_t^{\mathrm{motor}}\right)
+\right\}_{t=1}^{T_i},
+y_i
+\right),
+\end{equation}</annotation></semantics></math></span> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>o</mi><mi>t</mi></msub><annotation encoding="application/x-tex">o_t</annotation></semantics></math>
+is the multimodal observation defined in Section&#160;3.1,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>u</mi><mi>t</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi></mrow></msubsup><annotation encoding="application/x-tex">u_t^{\mathrm{demo}}</annotation></semantics></math>
+is the planner-level command generated from VR teleoperation,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>a</mi><mi>t</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow></msubsup><annotation encoding="application/x-tex">a_t^{\mathrm{motor}}</annotation></semantics></math>
+is the motor command produced by the fixed whole-body controller, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">y_i</annotation></semantics></math>
+contains trajectory-level outcomes such as terminal payload placement
+and residual motion. The sensing modalities and planner-command
+variables are therefore not redefined here. The VLA operates at 50&#160;Hz in
+our implementation.</p>
+<p>Following the relative-command formulation introduced in Section&#160;3.1,
+the recorded teleoperation commands are converted into supervised
+action-chunk targets <span id="eq:demo_chunk"></span>
+<span aria-label="Mathematical expression 8" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><msubsup><mi>U</mi><mi>t</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi mathvariant="normal">Δ</mi><msubsup><mi>u</mi><mi>t</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo>,</mo><mi>…</mi><mo>,</mo><mi mathvariant="normal">Δ</mi><msubsup><mi>u</mi><mrow><mi>t</mi><mo>+</mo><mi>H</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi mathvariant="normal">Δ</mi><msubsup><mi>u</mi><mi>τ</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo>=</mo><msubsup><mi>u</mi><mi>τ</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo>−</mo><msubsup><mi>u</mi><mrow><mi>τ</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi></mrow></msubsup><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+\Delta U_t^{\mathrm{demo}}
+=
+\left(
+\Delta u_t^{\mathrm{demo}},
+\ldots,
+\Delta u_{t+H-1}^{\mathrm{demo}}
+\right),
+\qquad
+\Delta u_\tau^{\mathrm{demo}}
+=
+u_\tau^{\mathrm{demo}}-u_{\tau-1}^{\mathrm{demo}},
+\end{equation}</annotation></semantics></math></span> with an action-chunk
+horizon of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>=</mo><mn>24</mn></mrow><annotation encoding="application/x-tex">H=24</annotation></semantics></math>.
+The per-step command dimensions are those defined in Eq.&#160;(3). This
+preprocessing converts the teleoperated planner trajectories into the
+same relative action representation predicted by the high-level policy
+while preserving short-horizon temporal structure for coordinated
+pushing and stopping.</p>
+<p>These demonstrations serve two purposes. First, they constrain the
+initial learned policy to motions that have already been executed safely
+through the humanoid whole-body controller. Second, they expose the VLA
+to task-specific visual and dynamical transitions, including payload
+approach, contact establishment, payload displacement, and stopping near
+the landing region. The resulting supervised dataset therefore
+initializes HOIST close to a feasible whole-body behavior distribution
+before any reinforcement-learning refinement is performed.</p>
+<h4 id="sec:vla_policy">High-level VLA policy</h4>
+<p>The high-level policy is initialized from GR00T N1.6&#160;<span class="citation" data-cites="bjorck2025gr00t">(<a href="#ref-bjorck2025gr00t" role="doc-biblioref"><span class="nocase">Bjorck et al.</span> 2025</a>)</span> and modified for
+suspended-payload manipulation. Its input-output interface is the one
+formalized in Section&#160;3.1: the policy maps the multimodal observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>o</mi><mi>t</mi></msub><annotation encoding="application/x-tex">o_t</annotation></semantics></math>
+to a short-horizon planner-command chunk
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><msub><mi>U</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\Delta U_t</annotation></semantics></math>,
+rather than directly predicting joint positions or torques. This
+separation allows the learned policy to focus on task-level decisions
+such as approaching, maintaining contact, coordinating bimanual pushing,
+repositioning the base, and stopping, while balance and joint-level
+stabilization remain delegated to the pretrained execution layer.</p>
+<p>HOIST augments the pretrained VLA with modalities that are especially
+relevant to contact-rich hoisting. Ego-view and side-view RGB
+observations provide semantic context for the humanoid, suspended
+payload, and target region. The previous navigation command is
+introduced as an additional conditioning signal to the vision-language
+representation so that the policy can account for ongoing commanded base
+motion. A dedicated depth encoder processes the onboard depth
+observation, while robot-state and ego-velocity features are provided to
+the flow-matching action expert. These additions allow action generation
+to depend jointly on scene appearance, local geometry, and the
+humanoid’s current motion state without requiring explicit payload pose
+or contact-force measurements.</p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>h</mi><mi>t</mi><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">M</mi></mrow></msubsup><annotation encoding="application/x-tex">h_t^{\mathrm{VLM}}</annotation></semantics></math>
+denote the visual-language representation produced by the VLM backbone,
+while
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>z</mi><mi>t</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi></mrow></msubsup><annotation encoding="application/x-tex">z_t^{\mathrm{state}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>z</mi><mi>t</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">h</mi></mrow></msubsup><annotation encoding="application/x-tex">z_t^{\mathrm{depth}}</annotation></semantics></math>
+denote the encoded robot-state and depth features. The flow-matching
+action expert generates the planner-command trajectory conditioned on
+these representations and an initially sampled noise tensor. In our
+implementation, the horizon is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>=</mo><mn>24</mn></mrow><annotation encoding="application/x-tex">H=24</annotation></semantics></math>,
+consistent with Section&#160;3.1, and four flow-matching denoising steps are
+used to transform the initial noise into the final command chunk.</p>
+<p>Supervised finetuning minimizes the discrepancy between the predicted
+action chunks and the teleoperated targets
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><msubsup><mi>U</mi><mi>t</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi></mrow></msubsup></mrow><annotation encoding="application/x-tex">\Delta U_t^{\mathrm{demo}}</annotation></semantics></math>.
+To avoid unnecessarily modifying the pretrained foundation
+representation, we update only the final four VLM layers, the
+flow-matching action expert, and the encoders associated with the newly
+introduced modalities. The remaining VLM layers and the downstream
+whole-body controller are frozen. Training is performed for 10,000
+optimization steps with a batch size of 96 and an initial learning rate
+of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>4</mn></mrow></msup></mrow><annotation encoding="application/x-tex">1\times10^{-4}</annotation></semantics></math>
+using cosine decay.</p>
+<h4 id="sec:wbc">Humanoid whole-body controller</h4>
+<p>HOIST uses the GR00T Whole-Body Control deployment stack&#160;<span class="citation" data-cites="luo2025sonic">(<a href="#ref-luo2025sonic" role="doc-biblioref"><span class="nocase">Luo, Yuan, Wang, Li, Chen,
+Castaneda, et al.</span> 2025</a>)</span> as a fixed low-level execution
+module. The command accumulation and low-level execution equations are
+already given in Eqs.&#160;(5) and (6), respectively. In this hierarchy, the
+VLA operates in planner-command space, whereas the whole-body controller
+converts the resulting targets into dynamically feasible humanoid motion
+while handling whole-body tracking, locomotion, posture regulation,
+balance, and joint-level stabilization.</p>
+<p>The whole-body controller is kept frozen throughout both VLA
+finetuning and RL refinement. We do not adapt the low-level controller
+to the suspended payload in the current implementation. Thus, all task
+learning occurs through the planner-command interface, and any
+correction learned by HOIST must propagate through the fixed controller
+and the resulting physical humanoid-payload interaction.</p>
+<h4 id="sec:rl_refinement">Reinforcement-learning refinement</h4>
+<p>Supervised VLA finetuning provides a feasible initial policy but
+optimizes imitation accuracy rather than the terminal outcome of the
+hoisting task. During autonomous deployment, small errors in base
+motion, contact timing, pushing duration, or stopping commands alter
+subsequent observations and can accumulate into systematic placement
+bias. Rather than updating the complete VLA using a small number of
+real-robot trials, HOIST performs reinforcement learning in the
+initial-noise space of the frozen flow-matching action expert.</p>
+<p>After supervised finetuning, the VLA policy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>π</mi><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">A</mi></mrow><mo>*</mo></msubsup><annotation encoding="application/x-tex">\pi_{\mathrm{VLA}}^{*}</annotation></semantics></math>
+and whole-body controller
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">B</mi><mi mathvariant="normal">C</mi></mrow></msub><annotation encoding="application/x-tex">\pi_{\mathrm{WBC}}</annotation></semantics></math>
+are frozen. We use a lightweight Soft Actor-Critic (SAC) actor-critic
+module&#160;<span class="citation" data-cites="haarnoja2018sac">(<a href="#ref-haarnoja2018sac" role="doc-biblioref">Haarnoja et al.
+2018</a>)</span>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>θ</mi></msub><mo>,</mo><msub><mi>Q</mi><mi>ϕ</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mu_\theta,Q_\phi)</annotation></semantics></math>.
+At each high-level decision step, the actor predicts a deterministic
+replacement for the initial noise used by the flow-matching action
+expert, <span id="eq:rl_noise_action"></span>
+<span aria-label="Mathematical expression 9" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>a</mi><mi>t</mi><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">L</mi></mrow></msubsup><mo>=</mo><msub><mi>μ</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>o</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msubsup><mi>a</mi><mi>t</mi><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">L</mi></mrow></msubsup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mn>24</mn><mo>×</mo><mn>25</mn></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+a_t^{\mathrm{RL}}
+=
+\mu_\theta(o_t),
+\qquad
+a_t^{\mathrm{RL}}
+\in
+\mathbb{R}^{24\times25}.
+\end{equation}</annotation></semantics></math></span> The two dimensions
+correspond to the 24-step action-chunk horizon and the 25-dimensional
+per-step planner-command representation defined by the command interface
+in Section&#160;3.1. Instead of sampling the original initial-noise tensor,
+HOIST substitutes the actor output, <span id="eq:noise_steering"></span>
+<span aria-label="Mathematical expression 10" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mi>t</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msubsup><mo>←</mo><msub><mi>s</mi><mi>k</mi></msub><mspace width="0.167em"></mspace><msubsup><mi>a</mi><mi>t</mi><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">L</mi></mrow></msubsup><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+\epsilon_t^{\mathrm{init}}
+\leftarrow
+s_k\,a_t^{\mathrm{RL}},
+\end{equation}</annotation></semantics></math></span> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>s</mi><mi>k</mi></msub><annotation encoding="application/x-tex">s_k</annotation></semantics></math>
+controls the steering magnitude at refinement iteration
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>.
+The frozen flow-matching action expert then transforms this steered
+initial noise into a complete planner-command chunk. Because the
+underlying VLA weights are unchanged, reinforcement learning does not
+construct a new action policy from scratch; it modifies which trajectory
+is selected from the action distribution already learned from
+demonstrations.</p>
+<p>Each generated command chunk is executed through the same frozen
+whole-body controller, allowing the resulting command perturbation to
+propagate through locomotion, contact, and suspended-payload dynamics.
+After the terminal landing and settling event, the payload pose is
+measured and compared with the target pose. We define the terminal
+reward using normalized translational and yaw errors, <span id="eq:terminal_reward"></span>
+<span aria-label="Mathematical expression 11" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mi>T</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">[</mo><mn>1.5</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi mathvariant="normal">Δ</mi><mi>x</mi></mrow><mrow><mn>100</mn><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">m</mi></mrow></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>+</mo><mn>1.0</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi mathvariant="normal">Δ</mi><mi>y</mi></mrow><mrow><mn>80</mn><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">m</mi></mrow></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>+</mo><mn>1.0</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo stretchy="false" form="prefix">|</mo></mrow><msup><mn>30</mn><mo>∘</mo></msup></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+r_T =
+\exp\!\left(
+-\left[
+1.5\left(\frac{\Delta x}{100\,\mathrm{mm}}\right)^2
++
+1.0\left(\frac{\Delta y}{80\,\mathrm{mm}}\right)^2
++
+1.0\left(\frac{|\Delta\psi|}{30^\circ}\right)^2
+\right]
+\right).
+\end{equation}</annotation></semantics></math></span> This terminal-only reward
+directly optimizes the final task objective and avoids introducing
+intermediate shaping terms that could bias the robot toward a particular
+pushing strategy.</p>
+<p>Training follows an iterative batched rollout-and-update procedure.
+Starting from the supervised VLA policy, HOIST collects
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">N=10</annotation></semantics></math>
+autonomous hoisting rollouts per refinement iteration. The resulting
+transitions, initial-noise actions, and terminal rewards are appended to
+an accumulated offline replay buffer. The SAC actor-critic is then
+updated using the accumulated rollout data before the refined steering
+policy is redeployed to collect the next batch. In our experiments, this
+process is repeated for up to three iterations, corresponding to 30
+autonomous task rollouts.</p>
+<p>Only the noise-steering actor-critic is updated during this stage;
+the GR00T N1.6 backbone, flow-matching action generator, and SONIC
+whole-body controller remain frozen. We additionally cache VLM features
+because the visual-language backbone does not change during RL, avoiding
+repeated visual-language encoding during actor–critic optimization. The
+RL module is trained with a batch size of 256, a learning rate of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>4</mn></mrow></msup></mrow><annotation encoding="application/x-tex">3\times10^{-4}</annotation></semantics></math>,
+and 20,000 gradient updates per refinement iteration.</p>
+<h2 id="experiments-and-results">Experiments and Results</h2>
+<h3 id="experiment-setup">Experiment setup</h3>
+<p>We evaluate <span class="smallcaps">HOIST</span> in simulation and on
+a real humanoid platform. Each trial starts with the payload away from
+the target; the humanoid must position it through contact without
+actuating the suspension mechanism. In each domain, VLA-50 is finetuned
+on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+teleoperated demonstrations, VLA-80 uses
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>80</mn><annotation encoding="application/x-tex">80</annotation></semantics></math>
+demonstrations, and <span class="smallcaps">HOIST</span> starts from
+VLA-50 before applying up to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+same-domain RL rollouts. All methods use the same frozen GR00T
+whole-body execution stack, isolating changes to the high-level command
+policy.</p>
+<h3 id="sec:evaluation_metrics">Evaluation metrics</h3>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>T</mi></msub><mo>,</mo><msub><mi>y</mi><mi>T</mi></msub><mo>,</mo><msub><mi>ψ</mi><mi>T</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x_T, y_T, \psi_T)</annotation></semantics></math>
+denote the payload-center pose measured after the terminal
+descent/landing event and settling window, and let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>x</mi><mo>⋆</mo></msup><mo>,</mo><msup><mi>y</mi><mo>⋆</mo></msup><mo>,</mo><msup><mi>ψ</mi><mo>⋆</mo></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x^{\star}, y^{\star}, \psi^{\star})</annotation></semantics></math>
+denote the target pose. We report two terminal placement metrics: the
+Manhattan position error
+<span aria-label="Mathematical expression 12" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>M</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>x</mi><mi>T</mi></msub><mo>−</mo><msup><mi>x</mi><mo>⋆</mo></msup><mo stretchy="true" form="postfix">|</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>y</mi><mi>T</mi></msub><mo>−</mo><msup><mi>y</mi><mo>⋆</mo></msup><mo stretchy="true" form="postfix">|</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+e_M = \left|x_T-x^{\star}\right|+\left|y_T-y^{\star}\right|,
+\end{equation}</annotation></semantics></math></span> and the absolute yaw
+error
+<span aria-label="Mathematical expression 13" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>ψ</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">|</mo><mrow><mi mathvariant="normal">w</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">p</mi></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>ψ</mi><mi>T</mi></msub><mo>−</mo><msup><mi>ψ</mi><mo>⋆</mo></msup><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">|</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+e_\psi = \left|\mathrm{wrap}(\psi_T-\psi^{\star})\right|.
+\end{equation}</annotation></semantics></math></span> For an interpretable
+task-level success criterion, we set a translational tolerance of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>M</mi></msub><mo>≤</mo><mn>7</mn><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow></mrow><annotation encoding="application/x-tex">e_M\leq7\,\mathrm{cm}</annotation></semantics></math>
+and an orientation tolerance of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>ψ</mi></msub><mo>≤</mo><msup><mn>30</mn><mo>∘</mo></msup></mrow><annotation encoding="application/x-tex">e_\psi\leq30^\circ</annotation></semantics></math>.
+A trial is successful only when both conditions are satisfied after
+landing and settling. These thresholds are applied uniformly to all
+methods and domains and are used only for evaluation; the RL reward
+continues to use the normalized component-wise terminal errors defined
+in Eq.&#160;<a href="#eq:terminal_reward">11</a>.</p>
+<h3 id="reinforcement-learning-progression">Reinforcement-learning
+progression</h3>
+<p>Table&#160;<a href="#tab:rollout_progression">1</a> reports placement
+accuracy after each batch of RL rollouts. The rollout feedback
+substantially corrects the placement bias of the VLA-50 initialization,
+although improvement is not strictly monotonic after every batch.</p>
+<div id="tab:rollout_progression">
+<div aria-label="Table 1.  Placement accuracy with increasing numbers of RL rollouts.
+Values are mean
+±\pm
+std. “Y” indicates that both mean errors satisfy
+eM≤7cme_M\leq7\,\mathrm{cm}
+and
+eψ≤30∘e_\psi\leq30^\circ." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table 1. </strong> Placement accuracy with increasing numbers of RL rollouts.
+Values are mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+std. “Y” indicates that both mean errors satisfy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>M</mi></msub><mo>≤</mo><mn>7</mn><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow></mrow><annotation encoding="application/x-tex">e_M\leq7\,\mathrm{cm}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>ψ</mi></msub><mo>≤</mo><msup><mn>30</mn><mo>∘</mo></msup></mrow><annotation encoding="application/x-tex">e_\psi\leq30^\circ</annotation></semantics></math>.
+</caption>
+<thead>
+<tr>
+<th scope="col">Domain</th>
+<th scope="col">Method</th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mi>ψ</mi></msub><annotation encoding="application/x-tex">e_\psi</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mo>∘</mo></msup><annotation encoding="application/x-tex">^\circ</annotation></semantics></math>)<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mi>M</mi></msub><annotation encoding="application/x-tex">e_M</annotation></semantics></math>
+(cm)<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+<th scope="col">Criterion met</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Simulation</th>
+<td>Human Expert Teleop</td>
+<td>8.48
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.99</td>
+<td>7.35
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.14</td>
+<td>N</td>
+</tr>
+<tr>
+<th scope="row">Simulation</th>
+<td>VLA-50</td>
+<td>3.85
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.94</td>
+<td>22.44
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.63</td>
+<td>N</td>
+</tr>
+<tr>
+<th scope="row">Simulation</th>
+<td>VLA-50 + 10 RL rollouts</td>
+<td>4.58
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.97</td>
+<td>16.92
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.89</td>
+<td>N</td>
+</tr>
+<tr>
+<th scope="row">Simulation</th>
+<td>VLA-50 + 20 RL rollouts</td>
+<td><strong>0.29
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.27</strong></td>
+<td><strong>2.54
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.48</strong></td>
+<td>Y</td>
+</tr>
+<tr>
+<th scope="row">Simulation</th>
+<td>VLA-50 + 30 RL rollouts</td>
+<td>2.76
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.04</td>
+<td>6.25
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+7.30</td>
+<td>Y</td>
+</tr>
+<tr>
+<th scope="row">Real platform</th>
+<td>VLA-50</td>
+<td>14.50
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+12.46</td>
+<td>9.28
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+4.32</td>
+<td>N</td>
+</tr>
+<tr>
+<th scope="row">Real platform</th>
+<td>VLA-50 + 10 RL rollouts</td>
+<td>21.00
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+17.09</td>
+<td>7.37
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.81</td>
+<td>N</td>
+</tr>
+<tr>
+<th scope="row">Real platform</th>
+<td>VLA-50 + 20 RL rollouts</td>
+<td><strong>12.10
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+5.78</strong></td>
+<td>6.69
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.09</td>
+<td>Y</td>
+</tr>
+<tr>
+<th scope="row">Real platform</th>
+<td>VLA-50 + 30 RL rollouts</td>
+<td>28.90
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+20.15</td>
+<td><strong>6.38
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.01</strong></td>
+<td>Y</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Figures&#160;<a href="#fig:place_sim">5</a> and&#160;<a href="#fig:place_real">6</a> show the trial-level distributions
+underlying the aggregate results in Table&#160;<a href="#tab:rollout_progression">1</a>.</p>
+<figure id="fig:place_sim" data-latex-placement="htbp">
+<figure>
+<img loading="lazy" alt="Simulation trial-level Manhattan placement errors. Box plots show the interquartile range, whiskers show 1.5 times that range, and dots show individual trials. HOIST after 20 RL rollouts has the lowest mean error, 2.54 centimeters; the 30-rollout condition has larger variability. Exact aggregate values appear in the placement table." src="__BASE__papers/figures/sim_placement_manhattan.png">
+<figcaption>Manhattan error.</figcaption>
+</figure>
+<figure>
+<img loading="lazy" alt="Simulation trial-level absolute yaw errors. Box plots and dots show the distribution of trials. HOIST after 20 RL rollouts has the lowest mean yaw error, 0.29 degrees. Exact means and standard deviations appear in the placement table." src="__BASE__papers/figures/sim_placement_yaw.png">
+<figcaption>Yaw error
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|\Delta\psi|</annotation></semantics></math>.</figcaption>
+</figure>
+<figcaption><strong>Figure 5. </strong>Simulation placement errors per trial (box = IQR, whiskers =
+1.5<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>IQR,
+dots = individual trials).</figcaption>
+</figure>
+<figure id="fig:place_real" data-latex-placement="!ht">
+<figure>
+<img loading="lazy" alt="Real-platform trial-level Manhattan placement errors. Mean errors decrease from 9.28 centimeters for VLA-50 to 7.37, 6.69 and 6.38 centimeters after 10, 20 and 30 RL rollouts. The box plots and dots show trial variability; the placement table reports the aggregate values." src="__BASE__papers/figures/real_placement_manhattan.png">
+<figcaption>Manhattan error.</figcaption>
+</figure>
+<figure>
+<img loading="lazy" alt="Real-platform trial-level yaw errors have substantial variability. Mean yaw is 14.50 degrees for VLA-50 and 21.00, 12.10 and 28.90 degrees after 10, 20 and 30 RL rollouts. Refinement does not improve yaw monotonically." src="__BASE__papers/figures/real_placement_yaw.png">
+<figcaption>Yaw error
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|\Delta\psi|</annotation></semantics></math>.</figcaption>
+</figure>
+<figcaption><strong>Figure 6. </strong>Real-platform placement errors per trial.</figcaption>
+</figure>
+<p>Both the +20 and +30 RL policies have mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mi>M</mi></msub><annotation encoding="application/x-tex">e_M</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mi>ψ</mi></msub><annotation encoding="application/x-tex">e_\psi</annotation></semantics></math>
+below the specified success thresholds in simulation and on the real
+platform. The +30 policy is nevertheless worse than +20 on some metrics,
+most notably simulation placement and real-platform yaw. We interpret
+this as a practical convergence plateau: by +20 rollouts, refinement has
+already entered the task-tolerance region, so an additional small
+rollout batch produces limited net improvement and finite-sample
+rollout, optimization, and evaluation variability can cause
+non-monotonic fluctuations. Thus, +30 should be viewed as another
+tolerance-satisfying policy rather than a uniformly better
+checkpoint.</p>
+<h3 id="reinforcement-learning-versus-additional-demonstrations">Reinforcement
+learning versus additional demonstrations</h3>
+<p>Table&#160;<a href="#tab:rl_vs_demos">2</a> compares additional
+demonstrations with same-domain RL rollouts after the initial
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+demonstrations. <span class="smallcaps">HOIST</span> substantially
+reduces Manhattan placement error relative to VLA-80 in both domains,
+and its mean yaw and Manhattan errors remain within the success
+tolerances. Yaw is not uniformly improved on the real platform, so the
+comparison supports RL primarily as a mechanism for correcting the
+closed-loop translational placement errors that remain after imitation
+learning.</p>
+<div id="tab:rl_vs_demos">
+<div aria-label="Table 2. Additional demonstrations versus RL refinement. Values are mean
+±\pm
+std. “Y” indicates that both mean errors satisfy
+eM≤7cme_M\leq7\,\mathrm{cm}
+and
+eψ≤30∘e_\psi\leq30^\circ." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table 2. </strong>Additional demonstrations versus RL refinement. Values are mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+std. “Y” indicates that both mean errors satisfy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>M</mi></msub><mo>≤</mo><mn>7</mn><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow></mrow><annotation encoding="application/x-tex">e_M\leq7\,\mathrm{cm}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>ψ</mi></msub><mo>≤</mo><msup><mn>30</mn><mo>∘</mo></msup></mrow><annotation encoding="application/x-tex">e_\psi\leq30^\circ</annotation></semantics></math>.</caption>
+<thead>
+<tr>
+<th scope="col">Domain</th>
+<th scope="col">Method</th>
+<th scope="col">Demos</th>
+<th scope="col">RL rollouts</th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mi>ψ</mi></msub><annotation encoding="application/x-tex">e_\psi</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mo>∘</mo></msup><annotation encoding="application/x-tex">^\circ</annotation></semantics></math>)<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mi>M</mi></msub><annotation encoding="application/x-tex">e_M</annotation></semantics></math>
+(cm)<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+<th scope="col">Criterion met</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Simulation</th>
+<td>VLA-50</td>
+<td>50</td>
+<td>0</td>
+<td>3.85
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.94</td>
+<td>22.44
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.63</td>
+<td>N</td>
+</tr>
+<tr>
+<th scope="row">Simulation</th>
+<td>VLA-80</td>
+<td>80</td>
+<td>0</td>
+<td>12.14
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.69</td>
+<td>18.58
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.84</td>
+<td>N</td>
+</tr>
+<tr>
+<th scope="row">Simulation</th>
+<td><span class="smallcaps">HOIST
+(Ours)</span></td>
+<td>50</td>
+<td>30</td>
+<td><strong>2.76
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.04</strong></td>
+<td><strong>6.25
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+7.30</strong></td>
+<td>Y</td>
+</tr>
+<tr>
+<th scope="row">Real platform</th>
+<td>VLA-50</td>
+<td>50</td>
+<td>0</td>
+<td><strong>14.50
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+12.46</strong></td>
+<td>9.28
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+4.32</td>
+<td>N</td>
+</tr>
+<tr>
+<th scope="row">Real platform</th>
+<td>VLA-80</td>
+<td>80</td>
+<td>0</td>
+<td>27.00
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+26.64</td>
+<td>8.57
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+2.54</td>
+<td>N</td>
+</tr>
+<tr>
+<th scope="row">Real platform</th>
+<td><span class="smallcaps">HOIST
+(Ours)</span></td>
+<td>50</td>
+<td>30</td>
+<td>28.90
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+20.15</td>
+<td><strong>6.38
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.01</strong></td>
+<td>Y</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<figure id="fig:rl_vs_demos_visual" data-latex-placement="H">
+<figure>
+<img loading="lazy" alt="Three side-by-side simulation views, labeled VLA-50, VLA-80 and HOIST from left to right. Humanoids guide cable-suspended boxes toward target platforms. The quantitative placement comparison is given in the nearby table." src="__BASE__papers/figures/sim.png">
+<figcaption>Simulation: VLA-50, VLA-80, and <span class="smallcaps">HOIST</span>.</figcaption>
+</figure>
+<figure>
+<img loading="lazy" alt="Three side-by-side real-robot views, labeled VLA-50, VLA-80 and HOIST from left to right. A humanoid guides a suspended gray box toward a target marked on a wooden platform. The quantitative comparison is given in the nearby table." src="__BASE__papers/figures/real.png">
+<figcaption>Real humanoid platform: VLA-50, VLA-80, and <span class="smallcaps">HOIST</span>.</figcaption>
+</figure>
+<figcaption><strong>Figure 7. </strong>Qualitative comparison of VLA-50, VLA-80, and <span class="smallcaps">HOIST</span>: (a) simulation and (b) the real humanoid
+platform.</figcaption>
+</figure>
+<h3 id="observation-modality-ablation">Observation-modality
+ablation</h3>
+<p>Table&#160;<a href="#tab:modality_ablation">3</a> evaluates the VLA policy
+before RL refinement under different input modalities. The goal is to
+measure whether depth and navigation-command conditioning improve the
+imitation-learned initialization. All rows use the same number of
+demonstrations and no RL rollouts.</p>
+<div id="tab:modality_ablation">
+<div aria-label="Table 3. Ablation of VLA input modalities before RL
+refinement." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table 3. </strong>Ablation of VLA input modalities before RL
+refinement.</caption>
+<thead>
+<tr>
+<th scope="col">VLA variant</th>
+<th scope="col">Depth</th>
+<th scope="col">Nav command</th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mi>ψ</mi></msub><annotation encoding="application/x-tex">e_\psi</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mo>∘</mo></msup><annotation encoding="application/x-tex">^\circ</annotation></semantics></math>)<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+<th scope="col"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mi>M</mi></msub><annotation encoding="application/x-tex">e_M</annotation></semantics></math>
+(cm)<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Base VLA</th>
+<td>–</td>
+<td>–</td>
+<td>26.6</td>
+<td>12.06</td>
+</tr>
+<tr>
+<th scope="row">+ Depth</th>
+<td></td>
+<td>–</td>
+<td>14.8</td>
+<td>9.57</td>
+</tr>
+<tr>
+<th scope="row">+ Nav command</th>
+<td>–</td>
+<td></td>
+<td>32.5</td>
+<td>11.20</td>
+</tr>
+<tr>
+<th scope="row">+ Nav command + Depth</th>
+<td></td>
+<td></td>
+<td><strong>14.5</strong></td>
+<td><strong>9.28</strong></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Depth improves contact-geometry awareness, while navigation-command
+conditioning improves the use of current base motion. The combined
+variant performs best, supporting the use of both modalities before RL
+refinement.</p>
+<h3 id="residual-motion-analysis">Residual motion analysis</h3>
+<p>Table&#160;<a href="#tab:imu">4</a> reports the simulation IMU statistics
+used to quantify payload residual motion.</p>
+<div id="tab:imu">
+<div aria-label="Table 4. IMU residual motion in simulation. Acceleration is
+gravity-compensated active-frame RMS. Values are mean
+±\pm
+std." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table 4. </strong>IMU residual motion in simulation. Acceleration is
+gravity-compensated active-frame RMS. Values are mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+std.</caption>
+<thead>
+<tr>
+<th scope="col">Method</th>
+<th scope="colgroup" colspan="2">Acc (m/s<sup>2</sup>)</th>
+<th scope="colgroup" colspan="2">Gyro (rad/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row"><span>2-3</span> (lr)<span>4-5</span></th>
+<td>RMS</td>
+<td>Peak</td>
+<td>RMS</td>
+<td>Peak</td>
+</tr>
+<tr>
+<th scope="row">Human Expert Teleop</th>
+<td>8.31
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.11</td>
+<td>14.23
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.20</td>
+<td>0.144
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.033</td>
+<td>0.561
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.116</td>
+</tr>
+<tr>
+<th scope="row">VLA-50</th>
+<td>3.56
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.32</td>
+<td>7.74
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.00</td>
+<td>0.141
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.019</td>
+<td>0.623
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.050</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+10 RL)</th>
+<td>3.75
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.27</td>
+<td>7.77
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.11</td>
+<td>0.087
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.026</td>
+<td>0.642
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.135</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+20 RL)</th>
+<td>4.83
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.23</td>
+<td>10.19
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+3.96</td>
+<td>0.064
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.021</td>
+<td>0.487
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.184</td>
+</tr>
+<tr>
+<th scope="row">HOIST (+30 RL)</th>
+<td>4.84
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.57</td>
+<td>9.33
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+1.75</td>
+<td>0.106
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.032</td>
+<td>0.580
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>±</mi><annotation encoding="application/x-tex">\pm</annotation></semantics></math>
+0.106</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<figure id="fig:imu-residual-motion" data-latex-placement="H">
+<img loading="lazy" alt="Simulation payload-motion comparison. Mean acceleration RMS is 8.31 for human teleoperation, 3.56 for VLA-50, and 3.75, 4.83 and 4.84 meters per second squared after 10, 20 and 30 RL rollouts. Mean angular-velocity RMS is 0.144, 0.141, 0.087, 0.064 and 0.106 radians per second, respectively. Error bars show standard deviation. Exact values are in the nearby IMU table." src="__BASE__papers/figures/figure5.png">
+<figcaption><strong>Figure 8. </strong>Residual-motion analysis from an IMU mounted on the
+suspended payload.</figcaption>
+</figure>
+<p>We further analyze payload dynamics throughout the lifting process
+using an IMU mounted on the suspended load. As shown in Fig.&#160;<a href="#fig:imu-residual-motion">8</a>, compared with the imitation-only
+policy, HOIST yields higher accelerometer readings but reduces gyroscope
+responses by approximately half, suggesting reduced angular motion with
+more active corrective adjustments during lifting. Meanwhile, both
+learned policies exhibit lower accelerometer and gyroscope readings than
+human teleoperation demonstrations, which may reflect the more frequent
+closed-loop corrections performed by human operators.</p>
+<h2 id="discussion-and-limitation">Discussion and Limitation</h2>
+<p>The improvement from 30 RL rollouts suggests that the
+imitation-learned VLA policy has systematic deployment bias. Supervised
+finetuning matches expert actions on the demonstration distribution, but
+the learned policy is not executed under that same distribution: once
+deployed, its own prediction errors affect contact timing, pushing
+strength, and stopping behavior, producing a different closed-loop
+rollout distribution. Thus, the policy may consistently under-push,
+over-push, or stop at a biased terminal position.</p>
+<p>Additional demonstrations add more expert-distribution data, but they
+do not directly identify this deployment-time bias. In contrast,
+autonomous rollouts reveal the biased trajectories generated by the
+current VLA policy itself. HOIST can then use task-level rewards to
+learn an initial-noise correction that steers the frozen policy away
+from these systematic errors. This makes RL rollouts more useful than
+extra demonstrations for correcting final placement accuracy.</p>
+<p>Although the experiments use one physical payload configuration, the
+policy is not evaluated from an identical deterministic payload state in
+every trial. The payload is lowered before each run, and small
+differences in release position, cable length, sway phase and velocity,
+and contact timing propagate through its nonlinear, underactuated
+pendulum dynamics. Crane studies explicitly show that vertical hoisting
+and time-varying cable length alter the coupled sway dynamics and make
+stabilization more challenging&#160;<span class="citation" data-cites="abdel2003dynamics zhang2020adaptive">(<a href="#ref-abdel2003dynamics" role="doc-biblioref">Abdel-Rahman et al.
+2003</a>; <a href="#ref-zhang2020adaptive" role="doc-biblioref">Zhang et
+al. 2020</a>)</span>. Related slewing lifting systems can even exhibit
+chaotic instability under specific fast-cycle conditions with changing
+rope lengths and loads&#160;<span class="citation" data-cites="meehan2025instabilities">(<a href="#ref-meehan2025instabilities" role="doc-biblioref">Meehan
+2025</a>)</span>. Thus, the different descent responses across our
+repeated trials expose HOIST to latent-state and trajectory variation,
+providing evidence that it is not merely replaying or overfitting to one
+fixed payload trajectory.</p>
+<p>The primary limitation of the current system lies in the low-level
+whole-body controller, which has not been fine-tuned for interaction
+with suspended payloads. Specifically, the policy can only influence
+robot execution through a limited interface consisting of navigation
+commands, head pose, base height, and bimanual hand poses, without
+explicitly adapting the applied force to different payload weights.
+Consequently, the system struggles to generate sufficiently large and
+adaptive forces when manipulating heavier objects, limiting its ability
+to handle heavy payloads.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>We presented <span class="smallcaps">HOIST</span>, which initializes
+humanoid hoisting from teleoperated demonstrations and improves final
+placement through rollout-level RL while keeping the whole-body
+controller fixed. The learned initial-noise correction changes command
+sequences, which propagate through humanoid-payload contact dynamics to
+reduce final placement error and residual swing. Future work will expand
+payload and suspension conditions, add force-adaptive control mechanism,
+and study coordination between multiple humanoid robots.</p>
+<h2 id="hoist-algorithm">HOIST Algorithm</h2>
+<p><strong>Algorithm 1: HOIST Training</strong> <span id="alg:hoist" data-label="alg:hoist"></span></p>
+<ol>
+<li><p><strong>Inputs:</strong> VR teleoperation demonstrations
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="script">𝒟</mi><annotation encoding="application/x-tex">\mathcal{D}</annotation></semantics></math>,
+pretrained VLA policy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mtext mathvariant="normal">VLA</mtext></msub><annotation encoding="application/x-tex">\pi_\text{VLA}</annotation></semantics></math>
+(GR00T N1.6), whole-body controller
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mtext mathvariant="normal">WBC</mtext></msub><annotation encoding="application/x-tex">f_\text{WBC}</annotation></semantics></math>
+(SONIC, frozen throughout)</p></li>
+<li><p><strong>Output:</strong> Refined hoisting policy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi>π</mi><mtext mathvariant="normal">VLA</mtext><mo>*</mo></msubsup><mo>,</mo><msubsup><mi>μ</mi><mi>θ</mi><mo>*</mo></msubsup><mo>,</mo><msub><mi>f</mi><mtext mathvariant="normal">WBC</mtext></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\pi_\text{VLA}^*, \mu_\theta^*, f_\text{WBC})</annotation></semantics></math></p></li>
+<li><p><strong>Phase 1 — Supervised Finetuning</strong></p></li>
+<li><p>Collect VR teleoperation demonstrations with multimodal
+observations:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mi>i</mi></msub><mo>=</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>o</mi><mi>t</mi></msub><mo>,</mo><msubsup><mi>u</mi><mi>t</mi><mtext mathvariant="normal">demo</mtext></msubsup><mo>,</mo><msubsup><mi>a</mi><mi>t</mi><mtext mathvariant="normal">motor</mtext></msubsup><msubsup><mo stretchy="false" form="postfix">}</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>T</mi><mi>i</mi></msub></msubsup><mo>,</mo><mspace width="0.167em"></mspace><msub><mi>y</mi><mi>i</mi></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau_i = \bigl(\{o_t, u_t^\text{demo}, a_t^\text{motor}\}_{t=1}^{T_i},\, y_i\bigr)</annotation></semantics></math></p></li>
+<li><p>Each observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>o</mi><mi>t</mi></msub><annotation encoding="application/x-tex">o_t</annotation></semantics></math>
+contains ego RGB/depth, side-view RGB, proprioception, ego velocity,
+navigation command, and language goal
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">y_i</annotation></semantics></math></p></li>
+<li><p>Convert teleoperation commands into VLA action chunks
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><msubsup><mi>U</mi><mi>t</mi><mtext mathvariant="normal">demo</mtext></msubsup><mo>=</mo><mo stretchy="false" form="prefix">[</mo><mi mathvariant="normal">Δ</mi><msub><mi>u</mi><mi>t</mi></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi mathvariant="normal">Δ</mi><msub><mi>u</mi><mrow><mi>t</mi><mo>+</mo><mi>H</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\Delta U_t^\text{demo} = [\Delta u_t,\dots,\Delta u_{t+H-1}]</annotation></semantics></math>
+with horizon
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>=</mo><mn>24</mn></mrow><annotation encoding="application/x-tex">H{=}24</annotation></semantics></math></p></li>
+<li><p>Initialize from the pretrained GR00T N1.6 VLA and attach encoders
+for newly introduced modalities (depth, ego velocity, navigation
+command)</p></li>
+<li><p>Supervise the flow-matching action expert to generate
+demonstration chunks conditioned on VLM features and robot state, using
+4 denoise steps</p></li>
+<li><p>Finetune the final 4 VLM layers, the action expert, and the
+new-modality encoders on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="script">𝒟</mi><annotation encoding="application/x-tex">\mathcal{D}</annotation></semantics></math>;
+keep the remaining VLM backbone and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mtext mathvariant="normal">WBC</mtext></msub><annotation encoding="application/x-tex">f_\text{WBC}</annotation></semantics></math>
+frozen
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇒</mo><annotation encoding="application/x-tex">\Rightarrow</annotation></semantics></math>
+obtain
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>π</mi><mtext mathvariant="normal">VLA</mtext><mo>*</mo></msubsup><annotation encoding="application/x-tex">\pi_\text{VLA}^*</annotation></semantics></math></p></li>
+<li><p><em>Freeze</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>π</mi><mtext mathvariant="normal">VLA</mtext><mo>*</mo></msubsup><annotation encoding="application/x-tex">\pi_\text{VLA}^*</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mtext mathvariant="normal">WBC</mtext></msub><annotation encoding="application/x-tex">f_\text{WBC}</annotation></semantics></math>;
+cache VLM features for rollout-level RL refinement</p></li>
+<li><p><strong>Phase 2 — Iterative Batched RL
+Refinement</strong></p></li>
+<li><p>Initialize noise-steering SAC actor-critic
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>θ</mi></msub><mo>,</mo><msub><mi>Q</mi><mi>ϕ</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mu_\theta, Q_\phi)</annotation></semantics></math></p></li>
+<li><p><strong>For iteration
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">k = 1,2,\dots,K</annotation></semantics></math>:</strong></p>
+<ol>
+<li><p>Collect
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">N=10</annotation></semantics></math>
+autonomous rollouts using
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi>π</mi><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">A</mi></mrow><mo>*</mo></msubsup><mo>,</mo><msub><mi>μ</mi><mi>θ</mi></msub><mo>,</mo><msub><mi>f</mi><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">B</mi><mi mathvariant="normal">C</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\pi^*_{\mathrm{VLA}}, \mu_\theta, f_{\mathrm{WBC}})</annotation></semantics></math></p></li>
+<li><p>The actor deterministically predicts a replacement initial-noise
+tensor
+<span aria-label="Mathematical expression 14" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>a</mi><mi>t</mi><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">L</mi></mrow></msubsup><mo>=</mo><msub><mi>μ</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>o</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="1.0em"></mspace><msubsup><mi>a</mi><mi>t</mi><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">L</mi></mrow></msubsup><mo>∈</mo><msup><mi mathvariant="double-struck">ℝ</mi><mrow><mn>24</mn><mo>×</mo><mn>25</mn></mrow></msup></mrow><annotation encoding="application/x-tex">a_t^{\mathrm{RL}} = \mu_\theta(o_t), \quad a_t^{\mathrm{RL}} \in \mathbb{R}^{24 \times 25}</annotation></semantics></math></span></p></li>
+<li><p>Here, 24 is the action-chunk horizon, and 25 is the per-step
+planner-command dimension covering head target, left/right end-effector
+targets, navigation command, and base-height command</p></li>
+<li><p>Replace the flow-matching action expert’s initial noise with the
+scaled actor output:
+<span aria-label="Mathematical expression 15" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ϵ</mi><mi>t</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow></msubsup><mo>←</mo><msub><mi>s</mi><mi>k</mi></msub><mspace width="0.167em"></mspace><msubsup><mi>a</mi><mi>t</mi><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">L</mi></mrow></msubsup></mrow><annotation encoding="application/x-tex">\epsilon_t^{\mathrm{init}} \leftarrow s_k \, a_t^{\mathrm{RL}}</annotation></semantics></math></span></p></li>
+<li><p>Execute the VLA action chunk through the frozen whole-body
+controller
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">B</mi><mi mathvariant="normal">C</mi></mrow></msub><annotation encoding="application/x-tex">f_{\mathrm{WBC}}</annotation></semantics></math></p></li>
+<li><p><strong>For each rollout
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\tau_i</annotation></semantics></math>:</strong></p>
+<ol>
+<li><p>Observe terminal payload pose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mover><mi>x</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>y</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>ψ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\hat{x}, \hat{y}, \hat{\psi})</annotation></semantics></math>
+and target
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>x</mi><mo>*</mo></msup><mo>,</mo><msup><mi>y</mi><mo>*</mo></msup><mo>,</mo><msup><mi>ψ</mi><mo>*</mo></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x^*, y^*, \psi^*)</annotation></semantics></math></p></li>
+<li><p>Compute terminal errors:
+<span aria-label="Mathematical expression 16" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>x</mi><mo>=</mo><mover><mi>x</mi><mo accent="true">̂</mo></mover><mo>−</mo><msup><mi>x</mi><mo>*</mo></msup><mo>,</mo><mspace width="1.0em"></mspace><mi mathvariant="normal">Δ</mi><mi>y</mi><mo>=</mo><mover><mi>y</mi><mo accent="true">̂</mo></mover><mo>−</mo><msup><mi>y</mi><mo>*</mo></msup><mo>,</mo><mspace width="1.0em"></mspace><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo>=</mo><mover><mi>ψ</mi><mo accent="true">̂</mo></mover><mo>−</mo><msup><mi>ψ</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">\Delta x = \hat{x}-x^*, \quad
+            \Delta y = \hat{y}-y^*, \quad
+            \Delta \psi = \hat{\psi}-\psi^*</annotation></semantics></math></span></p></li>
+<li><p>Compute terminal reward:
+<span aria-label="Mathematical expression 17" tabindex="0" role="region" class="formula-scroll"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mi>T</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">[</mo><mn>1.5</mn><mspace width="-0.167em"></mspace><msup><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><mrow><mi mathvariant="normal">Δ</mi><mi>x</mi></mrow><mrow><mn>100</mn><mspace width="0.167em"></mspace><mtext mathvariant="normal">mm</mtext></mrow></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mspace width="-0.167em"></mspace><mn>2</mn></mrow></msup><mo>+</mo><mn>1.0</mn><mspace width="-0.167em"></mspace><msup><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><mrow><mi mathvariant="normal">Δ</mi><mi>y</mi></mrow><mrow><mn>80</mn><mspace width="0.167em"></mspace><mtext mathvariant="normal">mm</mtext></mrow></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mspace width="-0.167em"></mspace><mn>2</mn></mrow></msup><mo>+</mo><mn>1.0</mn><mspace width="-0.167em"></mspace><msup><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><mrow><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo stretchy="false" form="prefix">|</mo></mrow><msup><mn>30</mn><mo>∘</mo></msup></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mspace width="-0.167em"></mspace><mn>2</mn></mrow></msup><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">r_T = \exp\!\left(-\left[
+            1.5\!\left(\tfrac{\Delta x}{100\,\text{mm}}\right)^{\!2}
+          + 1.0\!\left(\tfrac{\Delta y}{80\,\text{mm}}\right)^{\!2}
+          + 1.0\!\left(\tfrac{|\Delta\psi|}{30^\circ}\right)^{\!2}
+          \right]\right)</annotation></semantics></math></span></p></li>
+</ol></li>
+<li><p>Convert rollouts into an offline replay buffer
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">ℬ</mi><mrow><mn>0</mn><mo>:</mo><mi>k</mi><mi>N</mi></mrow></msub><annotation encoding="application/x-tex">\mathcal{B}_{0:kN}</annotation></semantics></math></p></li>
+<li><p>Train/update
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>θ</mi></msub><mo>,</mo><msub><mi>Q</mi><mi>ϕ</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mu_\theta, Q_\phi)</annotation></semantics></math>
+with offline SAC on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">ℬ</mi><mrow><mn>0</mn><mo>:</mo><mi>k</mi><mi>N</mi></mrow></msub><annotation encoding="application/x-tex">\mathcal{B}_{0:kN}</annotation></semantics></math>
+for fixed gradient steps</p></li>
+<li><p>Resume from previous RL checkpoint for the next stage</p></li>
+</ol></li>
+<li><p><strong>Return</strong> refined hoisting policy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi>π</mi><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">A</mi></mrow><mo>*</mo></msubsup><mo>,</mo><msubsup><mi>μ</mi><mi>θ</mi><mo>*</mo></msubsup><mo>,</mo><msub><mi>f</mi><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">B</mi><mi mathvariant="normal">C</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\pi^*_{\mathrm{VLA}}, \mu^*_\theta, f_{\mathrm{WBC}})</annotation></semantics></math></p></li>
+</ol>
+<h2 id="implementation-details-and-hyperparameters">Implementation
+Details and Hyperparameters</h2>
+<div id="tab:vla_ft">
+<div aria-label="Table 5. VLA supervised finetuning details." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table 5. </strong>VLA supervised finetuning details.</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th scope="col">Parameter</th>
+<th scope="col">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Pretrained backbone</th>
+<td>GR00T N1.6</td>
+</tr>
+<tr>
+<th scope="row">VLM backbone</th>
+<td>Eagle-Block2A-2B-v2</td>
+</tr>
+<tr>
+<th scope="row">Finetuned modules</th>
+<td>Final 4 VLM layers; flow-matching action
+expert; new-modality encoders</td>
+</tr>
+<tr>
+<th scope="row">Frozen modules</th>
+<td>Remaining VLM layers; whole-body
+controller</td>
+</tr>
+<tr>
+<th scope="row">Input modalities</th>
+<td>Ego RGB, ego depth, side-view RGB,
+proprioception, ego velocity, nav command, language goal</td>
+</tr>
+<tr>
+<th scope="row">Action chunk horizon</th>
+<td></td>
+</tr>
+<tr>
+<th scope="row">Flow-matching denoise steps</th>
+<td></td>
+</tr>
+<tr>
+<th scope="row">Batch size</th>
+<td></td>
+</tr>
+<tr>
+<th scope="row">Learning rate</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>4</mn></mrow></msup></mrow><annotation encoding="application/x-tex">1\times10^{-4}</annotation></semantics></math></td>
+</tr>
+<tr>
+<th scope="row">LR schedule</th>
+<td>Cosine</td>
+</tr>
+<tr>
+<th scope="row">Warmup ratio</th>
+<td></td>
+</tr>
+<tr>
+<th scope="row">Warmup steps</th>
+<td>steps</td>
+</tr>
+<tr>
+<th scope="row">Weight decay</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">1\times10^{-5}</annotation></semantics></math></td>
+</tr>
+<tr>
+<th scope="row">Training steps</th>
+<td>,000</td>
+</tr>
+<tr>
+<th scope="row">Equivalent epochs</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>∼</mo><annotation encoding="application/x-tex">\sim</annotation></semantics></math>40</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div id="tab:rl">
+<div aria-label="Table 6. RL rollout refinement details." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table 6. </strong>RL rollout refinement details.</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th scope="col">Parameter</th>
+<th scope="col">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Reward type</th>
+<td>Terminal-only</td>
+</tr>
+<tr>
+<th scope="row">Reward formula</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mspace width="-0.167em"></mspace><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mo>−</mo><mo stretchy="false" form="prefix">[</mo><mn>1.5</mn><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Δ</mi><mi>x</mi><mi>/</mi><mn>100</mn><mspace width="0.167em"></mspace><mtext mathvariant="normal">mm</mtext><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><mn>1.0</mn><mo stretchy="false" form="prefix">(</mo><mi mathvariant="normal">Δ</mi><mi>y</mi><mi>/</mi><mn>80</mn><mspace width="0.167em"></mspace><mtext mathvariant="normal">mm</mtext><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><mn>1.0</mn><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="prefix">|</mo><mi mathvariant="normal">Δ</mi><mi>ψ</mi><mo stretchy="false" form="prefix">|</mo><mi>/</mi><msup><mn>30</mn><mo>∘</mo></msup><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo stretchy="false" form="postfix">]</mo><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\exp\!\bigl(-[1.5(\Delta x/100\,\text{mm})^2
+                              + 1.0(\Delta y/80\,\text{mm})^2
+                              + 1.0(|\Delta\psi|/30^\circ)^2]\bigr)</annotation></semantics></math></td>
+</tr>
+<tr>
+<th scope="row">RL rollouts per iteration</th>
+<td></td>
+</tr>
+<tr>
+<th scope="row">Total RL rollouts (HOIST)</th>
+<td></td>
+</tr>
+<tr>
+<th scope="row">Actor input</th>
+<td>Observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>o</mi><mi>t</mi></msub><annotation encoding="application/x-tex">o_t</annotation></semantics></math>
+with cached VLM features</td>
+</tr>
+<tr>
+<th scope="row">Actor output</th>
+<td>Deterministic replacement initial-noise
+tensor</td>
+</tr>
+<tr>
+<th scope="row">Noise tensor shape</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>24</mn><mo>×</mo><mn>25</mn></mrow><annotation encoding="application/x-tex">24 \times 25</annotation></semantics></math>
+(chunk horizon
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+command dimension)</td>
+</tr>
+<tr>
+<th scope="row">Command dimensions</th>
+<td>Head target; left/right end-effector
+targets; nav command; base height</td>
+</tr>
+<tr>
+<th scope="row">Frozen modules</th>
+<td>GR00T N1.6 backbone, SONIC WBC</td>
+</tr>
+<tr>
+<th scope="row">Trainable modules</th>
+<td>Noise-steering actor-critic</td>
+</tr>
+<tr>
+<th scope="row">Batch size</th>
+<td></td>
+</tr>
+<tr>
+<th scope="row">Learning rate</th>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>4</mn></mrow></msup></mrow><annotation encoding="application/x-tex">3\times10^{-4}</annotation></semantics></math></td>
+</tr>
+<tr>
+<th scope="row">Gradient steps / iter.</th>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div id="tab:hw">
+<div aria-label="Table 7. Hardware and sensing setup." tabindex="0" role="region" class="table-scroll"><table>
+<caption><strong>Table 7. </strong>Hardware and sensing setup.</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th scope="col">Component</th>
+<th scope="col">Specification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Robot platform</th>
+<td>Unitree G1</td>
+</tr>
+<tr>
+<th scope="row">Whole-body controller</th>
+<td>SONIC (GR00T WBC, frozen)</td>
+</tr>
+<tr>
+<th scope="row">VR teleoperation device</th>
+<td>PICO VR headset and controllers</td>
+</tr>
+<tr>
+<th scope="row">Payload size / mass</th>
+<td>54 cm
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+54 cm
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+50 cm / 2.5 kg</td>
+</tr>
+<tr>
+<th scope="row">Suspension length</th>
+<td>35 cm</td>
+</tr>
+<tr>
+<th scope="row">Target zone size</th>
+<td>59 cm
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+59 cm</td>
+</tr>
+<tr>
+<th scope="row">Ego RGB/depth camera</th>
+<td>Intel RealSense D435i</td>
+</tr>
+<tr>
+<th scope="row">Side-view RGB camera</th>
+<td>Intel RealSense D455</td>
+</tr>
+<tr>
+<th scope="row">VLA control frequency</th>
+<td>50 Hz</td>
+</tr>
+<tr>
+<th scope="row">Trial reset procedure</th>
+<td>Manual reset / warm-start from
+demonstration replay</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<h2 class="unnumbered" id="credit-authorship-contribution-statement">CRediT authorship
+contribution statement</h2>
+<p>Songyang Liu: Writing – original draft, Methodology, Validation.
+Shunyu Yao: Writing – original draft, Methodology, Validation,
+Visualization. Dingyuan Huang: Resources. Shuai Li: Conceptualization,
+Writing – review &amp; editing, Funding acquisition, Supervision.</p>
+<h2 class="unnumbered" id="declaration-of-competing-interest">Declaration of competing
+interest</h2>
+<p>The authors declare that they have no known competing financial
+interests or personal relationships that could have appeared to
+influence the work reported in this paper.</p>
+<h2 class="unnumbered" id="data-availability">Data availability</h2>
+<p>Data will be made available on request.</p>
+<h2 id="references">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-abdel2003dynamics" class="csl-entry" role="listitem">
+Abdel-Rahman, Eihab M, Ali H Nayfeh, and Ziyad N Masoud. 2003.
+<span>“Dynamics and Control of Cranes: A Review.”</span> <em>Journal of
+Vibration and Control</em> 9 (7): 863–908.
+</div>
+<div id="ref-allshire2025visual" class="csl-entry" role="listitem">
+Allshire, Arthur, Hongsuk Choi, Junyi Zhang, et al. 2025. <span>“Visual
+Imitation Enables Contextual Humanoid Control.”</span> <em>arXiv
+Preprint arXiv:2505.03729</em>.
+</div>
+<div id="ref-bjorck2025gr00t" class="csl-entry" role="listitem">
+<span class="nocase">Bjorck, Johan, Fernando Castañeda, Nikita
+Cherniadev, et al.</span> 2025. <span>“Gr00t N1: An Open Foundation
+Model for Generalist Humanoid Robots.”</span> <em>arXiv Preprint
+arXiv:2503.14734</em>.
+</div>
+<div id="ref-bock2016construction" class="csl-entry" role="listitem">
+Bock, Thomas, and Thomas Linner. 2016. <em>Construction Robots:
+Elementary Technologies and Single-Task Construction Robots</em>.
+Cambridge University Press.
+</div>
+<div id="ref-chen2025chip" class="csl-entry" role="listitem">
+<span class="nocase">Chen, Sirui, Zi-ang Cao, Zhengyi Luo, et al.</span>
+2025. <span>“CHIP: Adaptive Compliance for Humanoid Control Through
+Hindsight Perturbation.”</span> <em>arXiv Preprint
+arXiv:2512.14689</em>.
+</div>
+<div id="ref-elguea2023review" class="csl-entry" role="listitem">
+Elguea-Aguinaco, Íñigo, Antonio Serrano-Muñoz, Dimitrios Chrysostomou,
+Ibai Inziarte-Hidalgo, Simon Bøgh, and Nestor Arana-Arexolaleiba. 2023.
+<span>“A Review on Reinforcement Learning for Contact-Rich Robotic
+Manipulation Tasks.”</span> <em>Robotics and Computer-Integrated
+Manufacturing</em> 81: 102517.
+</div>
+<div id="ref-garcia2015comprehensive" class="csl-entry" role="listitem">
+Garcıa, Javier, and Fernando Fernández. 2015. <span>“A Comprehensive
+Survey on Safe Reinforcement Learning.”</span> <em>Journal of Machine
+Learning Research</em> 16 (1): 1437–80.
+</div>
+<div id="ref-gu2023human" class="csl-entry" role="listitem">
+Gu, Shangding, Alap Kshirsagar, Yali Du, Guang Chen, Jan Peters, and
+Alois Knoll. 2023. <span>“A Human-Centered Safe Robot Reinforcement
+Learning Framework with Interactive Behaviors.”</span> <em>Frontiers in
+Neurorobotics</em> 17: 1280341.
+</div>
+<div id="ref-haarnoja2018sac" class="csl-entry" role="listitem">
+Haarnoja, Tuomas, Aurick Zhou, Pieter Abbeel, and Sergey Levine. 2018.
+<span>“Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement
+Learning with a Stochastic Actor.”</span> <em>Proceedings of the 35th
+International Conference on Machine Learning</em>, Proceedings of
+machine learning research, vol. 80: 1861–70.
+</div>
+<div id="ref-han2023vr" class="csl-entry" role="listitem">
+Han, Steve. 2023. <em>VR Teleoperation Interface for Learning
+Loco-Manipulation of Humanoid Robots</em>.
+</div>
+<div id="ref-hjorth2022human" class="csl-entry" role="listitem">
+Hjorth, Sebastian, and Dimitrios Chrysostomou. 2022. <span>“Human–Robot
+Collaboration in Industrial Environments: A Literature Review on
+Non-Destructive Disassembly.”</span> <em>Robotics and
+Computer-Integrated Manufacturing</em> 73: 102208. <a rel="noopener noreferrer" href="https://doi.org/10.1016/j.rcim.2021.102208">https://doi.org/10.1016/j.rcim.2021.102208</a>.
+</div>
+<div id="ref-hoffman2020precision" class="csl-entry" role="listitem">
+Hoffman, Rachel, and H Harry Asada. 2020. <span>“Precision Assembly of
+Heavy Objects Suspended with Multiple Cables from a Crane.”</span>
+<em>IEEE Robotics and Automation Letters</em> 5 (4): 6876–83.
+</div>
+<div id="ref-youtubeHoistingExampleGXIMQnndCVU" class="csl-entry" role="listitem">
+Holy maker. 2026. <em><span class="nocase">The construction process for
+a modular concrete home takes just two weeks. Precast Concrete (PC)
+Factory.</span></em> YouTube video. <a rel="noopener noreferrer" href="https://www.youtube.com/watch?v=GXIMQnndCVU&t=1133s">https://www.youtube.com/watch?v=GXIMQnndCVU&amp;t=1133s</a>.
+</div>
+<div id="ref-ku2014dynamic" class="csl-entry" role="listitem">
+Ku, Namkug, and Sol Ha. 2014. <span>“Dynamic Response Analysis of Heavy
+Load Lifting Operation in Shipyard Using Multi-Cranes.”</span> <em>Ocean
+Engineering</em> 83: 63–75. <a rel="noopener noreferrer" href="https://doi.org/10.1016/j.oceaneng.2014.03.026">https://doi.org/10.1016/j.oceaneng.2014.03.026</a>.
+</div>
+<div id="ref-lee2026nonprehensile" class="csl-entry" role="listitem">
+Lee, Hoi-Yin, Peng Zhou, Anqing Duan, Wanyu Ma, Chenguang Yang, and
+David Navarro-Alarcon. 2026. <span>“Non-Prehensile Tool-Object
+Manipulation by Integrating <span>LLM</span>-Based Planning and
+Manoeuvrability-Driven Controls.”</span> <em>Robotics and
+Computer-Integrated Manufacturing</em> 100: 103231. <a rel="noopener noreferrer" href="https://doi.org/10.1016/j.rcim.2026.103231">https://doi.org/10.1016/j.rcim.2026.103231</a>.
+</div>
+<div id="ref-liu2022robotlearning" class="csl-entry" role="listitem">
+Liu, Zhihao, Quan Liu, Wenjun Xu, Lihui Wang, and Zude Zhou. 2022.
+<span>“Robot Learning Towards Smart Robotic Manufacturing: A
+Review.”</span> <em>Robotics and Computer-Integrated Manufacturing</em>
+77: 102360. <a rel="noopener noreferrer" href="https://doi.org/10.1016/j.rcim.2022.102360">https://doi.org/10.1016/j.rcim.2022.102360</a>.
+</div>
+<div id="ref-gr00twbc2025" class="csl-entry" role="listitem">
+Luo, Zhengyi, Ye Yuan, Tingwu Wang, Chenran Li, Sirui Chen, Fernando
+Castañeda, et al. 2025. <em><span>GR00T Whole-Body Control</span></em>.
+<a rel="noopener noreferrer" href="https://github.com/NVlabs/GR00T-WholeBodyControl">https://github.com/NVlabs/GR00T-WholeBodyControl</a>.
+</div>
+<div id="ref-luo2025sonic" class="csl-entry" role="listitem">
+<span class="nocase">Luo, Zhengyi, Ye Yuan, Tingwu Wang, Chenran Li,
+Sirui Chen, Fernando Castaneda, et al.</span> 2025. <span>“Sonic:
+Supersizing Motion Tracking for Natural Humanoid Whole-Body
+Control.”</span> <em>arXiv Preprint arXiv:2511.07820</em>.
+</div>
+<div id="ref-meehan2025instabilities" class="csl-entry" role="listitem">
+Meehan, Paul A. 2025. <span>“Prediction and Control of Nonlinear
+Instabilities in Slewing Boom Lifting Machines.”</span> <em>Nonlinear
+Dynamics</em> 113: 28675–98. <a rel="noopener noreferrer" href="https://doi.org/10.1007/s11071-025-11657-4">https://doi.org/10.1007/s11071-025-11657-4</a>.
+</div>
+<div id="ref-mojallizadeh2023modeling" class="csl-entry" role="listitem">
+Mojallizadeh, Mohammad Rasool, Bernard Brogliato, and Christophe Prieur.
+2023. <span>“Modeling and Control of Overhead Cranes: A Tutorial
+Overview and Perspectives.”</span> <em>Annual Reviews in Control</em>
+56: 100877.
+</div>
+<div id="ref-mukherjee2022survey" class="csl-entry" role="listitem">
+Mukherjee, Debasmita, Kashish Gupta, Li Hsin Chang, and Homayoun
+Najjaran. 2022. <span>“A Survey of Robot Learning Strategies for
+Human–Robot Collaboration in Industrial Settings.”</span> <em>Robotics
+and Computer-Integrated Manufacturing</em> 73: 102231. <a rel="noopener noreferrer" href="https://doi.org/10.1016/j.rcim.2021.102231">https://doi.org/10.1016/j.rcim.2021.102231</a>.
+</div>
+<div id="ref-murooka2015whole" class="csl-entry" role="listitem">
+Murooka, Masaki, Shunichi Nozawa, Yohei Kakiuchi, Kei Okada, and
+Masayuki Inaba. 2015. <span>“Whole-Body Pushing Manipulation with
+Contact Posture Planning of Large and Heavy Object for Humanoid
+Robot.”</span> <em>2015 IEEE International Conference on Robotics and
+Automation (ICRA)</em>, 5682–89.
+</div>
+<div id="ref-niosh2006crane" class="csl-entry" role="listitem">
+National Institute for Occupational Safety and Health. 2006. <em>NIOSH
+Alert: Preventing Worker Injuries and Deaths from Mobile Crane Tip-over,
+Boom Collapse, and Uncontrolled Hoisted Loads</em>. DHHS (NIOSH)
+Publication No. 2006-142. U.S. Department of Health; Human Services,
+Centers for Disease Control; Prevention.
+</div>
+<div id="ref-cdc2021liftzone" class="csl-entry" role="listitem">
+National Institute for Occupational Safety and Health. 2021.
+<em>Preventing Struck-by Injuries in Construction: Lift Zone
+Safety</em>. CDC/NIOSH Science Blog.
+</div>
+<div id="ref-oshaStruckBy" class="csl-entry" role="listitem">
+Occupational Safety and Health Administration. 2011. <em>Construction
+Focus Four: Struck-by Hazards</em>. OSHA Training Material.
+</div>
+<div id="ref-peng2018deepmimic" class="csl-entry" role="listitem">
+Peng, Xue Bin, Pieter Abbeel, Sergey Levine, and Michiel Van de Panne.
+2018. <span>“Deepmimic: Example-Guided Deep Reinforcement Learning of
+Physics-Based Character Skills.”</span> <em>ACM Transactions On Graphics
+(TOG)</em> 37 (4): 1–14.
+</div>
+<div id="ref-peng2018sfv" class="csl-entry" role="listitem">
+Peng, Xue Bin, Angjoo Kanazawa, Jitendra Malik, Pieter Abbeel, and
+Sergey Levine. 2018. <span>“Sfv: Reinforcement Learning of Physical
+Skills from Videos.”</span> <em>ACM Transactions On Graphics (TOG)</em>
+37 (6): 1–14.
+</div>
+<div id="ref-qiang2021anti" class="csl-entry" role="listitem">
+Qiang, Hai-yan, You-gang Sun, Jin-chao Lyu, and Da-shan Dong. 2021.
+<span>“Anti-Sway and Positioning Adaptive Control of a Double-Pendulum
+Effect Crane System with Neural Network Compensation.”</span>
+<em>Frontiers in Robotics and AI</em> 8: 639734.
+</div>
+<div id="ref-rajeswaran2017learning" class="csl-entry" role="listitem">
+Rajeswaran, Aravind, Vikash Kumar, Abhishek Gupta, et al. 2017.
+<span>“Learning Complex Dexterous Manipulation with Deep Reinforcement
+Learning and Demonstrations.”</span> <em>arXiv Preprint
+arXiv:1709.10087</em>.
+</div>
+<div id="ref-ramli2017control" class="csl-entry" role="listitem">
+Ramli, Liyana, Zaharuddin Mohamed, Auwalu M Abdullahi, Hazriq Izzuan
+Jaafar, and Izzuddin M Lazim. 2017. <span>“Control Strategies for Crane
+Systems: A Comprehensive Review.”</span> <em>Mechanical Systems and
+Signal Processing</em> 95: 1–23.
+</div>
+<div id="ref-rosen2018testing" class="csl-entry" role="listitem">
+Rosen, Eric, David Whitney, Elizabeth Phillips, Daniel Ullman, and
+Stefanie Tellex. 2018. <span>“Testing Robot Teleoperation Using a
+Virtual Reality Interface with ROS Reality.”</span> <em>Proceedings of
+the 1st International Workshop on Virtual, Augmented, and Mixed Reality
+for HRI (VAM-HRI)</em>, 1–4.
+</div>
+<div id="ref-ross2011reduction" class="csl-entry" role="listitem">
+Ross, Stéphane, Geoffrey Gordon, and Drew Bagnell. 2011. <span>“A
+Reduction of Imitation Learning and Structured Prediction to No-Regret
+Online Learning.”</span> <em>Proceedings of the Fourteenth International
+Conference on Artificial Intelligence and Statistics</em>, 627–35.
+</div>
+<div id="ref-simonic2024hierarchical" class="csl-entry" role="listitem">
+Simonič, Mihael, Aleš Ude, and Bojan Nemec. 2024. <span>“Hierarchical
+Learning of Robotic Contact Policies.”</span> <em>Robotics and
+Computer-Integrated Manufacturing</em> 86: 102657. <a rel="noopener noreferrer" href="https://doi.org/10.1016/j.rcim.2023.102657">https://doi.org/10.1016/j.rcim.2023.102657</a>.
+</div>
+<div id="ref-bls2023crane" class="csl-entry" role="listitem">
+U.S. Bureau of Labor Statistics. 2023. <em>Fatal Occupational Injuries
+Involving Cranes, 2011–17</em>. BLS Injuries, Illnesses, and Fatalities
+Factsheet.
+</div>
+<div id="ref-wagenmaker2025steering" class="csl-entry" role="listitem">
+Wagenmaker, Andrew, Mitsuhiko Nakamoto, Yunchu Zhang, et al. 2025.
+<span>“Steering Your Diffusion Policy with Latent Space Reinforcement
+Learning.”</span> <em>arXiv Preprint arXiv:2506.15799</em>.
+</div>
+<div id="ref-xu2020site" class="csl-entry" role="listitem">
+Xu, Xinghui, and B Garcia De Soto. 2020. <span>“On-Site Autonomous
+Construction Robots: A Review of Research Areas, Technologies, and
+Suggestions for Advancement.”</span> <em>ISARC. Proceedings of the
+International Symposium on Automation and Robotics in Construction</em>
+37: 385–92.
+</div>
+<div id="ref-yoshida2007dexterous" class="csl-entry" role="listitem">
+Yoshida, Eiichi, Vincent Hugel, Pierre Blazevic, Kazuhito Yokoi, and
+Kensuke Harada. 2007. <span>“Dexterous Humanoid Whole-Body Manipulation
+by Pivoting.”</span> <em>Humanoid Robots, Human-Like Machines</em>.
+</div>
+<div id="ref-zhang2020adaptive" class="csl-entry" role="listitem">
+Zhang, Menghua, Yong-Feng Zhang, Bing Ji, Changhui Ma, and Xingong
+Cheng. 2020. <span>“Adaptive Sway Reduction for Tower Crane Systems with
+Varying Cable Lengths.”</span> <em>Automation in Construction</em> 119:
+103342. <a rel="noopener noreferrer" href="https://doi.org/10.1016/j.autcon.2020.103342">https://doi.org/10.1016/j.autcon.2020.103342</a>.
+</div>
+<div id="ref-zhang2018deep" class="csl-entry" role="listitem">
+Zhang, Tianhao, Zoe McCarthy, Owen Jow, et al. 2018. <span>“Deep
+Imitation Learning for Complex Manipulation Tasks from Virtual Reality
+Teleoperation.”</span> <em>2018 IEEE International Conference on
+Robotics and Automation (ICRA)</em>, 5628–35.
+</div>
+<div id="ref-zhang2025falcon" class="csl-entry" role="listitem">
+Zhang, Yuanhang, Yifu Yuan, Prajwal Gurunath, et al. 2025.
+<span>“Falcon: Learning Force-Adaptive Humanoid
+Loco-Manipulation.”</span> <em>arXiv Preprint arXiv:2505.06776</em>.
+</div>
+<div id="ref-zhao2025resmimic" class="csl-entry" role="listitem">
+Zhao, Siheng, Yanjie Ze, Yue Wang, et al. 2025. <span>“Resmimic: From
+General Motion Tracking to Humanoid Whole-Body Loco-Manipulation via
+Residual Learning.”</span> <em>arXiv Preprint arXiv:2510.05070</em>.
+</div>
+<div id="ref-zhou2025variable" class="csl-entry" role="listitem">
+Zhou, Zhengxue, Xingyu Yang, and Xuping Zhang. 2025. <span>“Variable
+Impedance Control on Contact-Rich Manipulation of a Collaborative
+Industrial Mobile Manipulator: An Imitation Learning Approach.”</span>
+<em>Robotics and Computer-Integrated Manufacturing</em> 92: 102896. <a rel="noopener noreferrer" href="https://doi.org/10.1016/j.rcim.2024.102896">https://doi.org/10.1016/j.rcim.2024.102896</a>.
+</div>
+<div id="ref-zhu2022cranelift" class="csl-entry" role="listitem">
+Zhu, Aimin, Zhiqian Zhang, and Wei Pan. 2022. <span>“Crane-Lift Path
+Planning for High-Rise Modular Integrated Construction Through
+Metaheuristic Optimization and Virtual Prototyping.”</span>
+<em>Automation in Construction</em> 141: 104434. <a rel="noopener noreferrer" href="https://doi.org/10.1016/j.autcon.2022.104434">https://doi.org/10.1016/j.autcon.2022.104434</a>.
+</div>
+</div>

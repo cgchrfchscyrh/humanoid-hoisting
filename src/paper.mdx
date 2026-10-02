@@ -1,218 +1,86 @@
----
-# This title is used for the browser tab and the link-preview card (see the
-# "description" and "thumbnail" keys below). The title displayed at the top of
-# the page is set separately, on the <Header> component in the body.
-title: Academic Project Page Template
-
-# The color theme of the page. Defaults to "device" (the preference set in the user's brower or operating system). Setting this to "light" or "dark" will override the user's preference. This is useful if your figures only look good in one theme.
-theme: device
-
-# This is the icon that appears in the user's browser tab. To customize, change the favicon.svg file in /public/, or add your own file to /public/ and change the filename here.
-favicon: favicon.svg
-
-# These keys are optional. If a link to your project page is in a Google search result, text message, or social media post, it will often appear as a "link preview card" based on its title, description, favicon, and thumbnail. After you publish your page, you can double check that these previews look right using [this tool](https://linkpreview.xyz/)
-description: Simple project page template for your research paper, built with Astro and Tailwind
-thumbnail: screenshot-light.png
----
-
 import Header from "./components/Header.astro";
-import Video from "./components/Video.astro";
-import HighlightedSection from "./components/HighlightedSection.astro";
-import SmallCaps from "./components/SmallCaps.astro";
-import Figure from "./components/Figure.astro";
-import Picture from "./components/Picture.astro";
-import ModelViewer from "./components/ModelViewer.astro"
-import TwoColumns from "./components/TwoColumns.astro";
-import YouTubeVideo from "./components/YouTubeVideo.astro";
-import Carousel from "./components/Carousel.astro";
-import CarouselSlide from "./components/CarouselSlide.astro";
-import Wide from "./components/Wide.astro";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/starwind/tabs";
-import { Comparison } from "./components/Comparison.tsx";
+import Demo from "./components/Demo.astro";
+import ResearchFigure from "./components/ResearchFigure.astro";
+import Results from "./components/Results.astro";
+import Citation from "./components/Citation.astro";
+import ResidualData from "./components/ResidualData.astro";
+import ConstructionContext from "./components/ConstructionContext.astro";
+import overview from "./assets/figure2.jpg";
+import pipeline from "./assets/figure4.jpg";
+import learning from "./assets/figure3.jpg";
+import residual from "./assets/figure5.png";
 
-import outside from "./assets/outside.mp4";
-import dogsDiffc from "./assets/dogs-diffc.png"
-import dogsTrue from "./assets/dogs-true.png"
-import dogsMsillm from "@/assets/dogs-msillm.jpg"
+<Header />
 
-<Header
-  title="Academic Project Page Template"
-  conference="Conference Name"
-  authors={[
-    {
-      name: "Roman Hauksson",
-      url: "https://roman.technology",
-      institution: "University of Texas at Dallas",
-      notes: ["*", "†"],
-    },
-    { name: "Author Two", institution: "Institution Two", notes: ["*", "†"] },
-    { name: "Author Three", institution: "Institution Three", notes: ["*"] },
-    { name: "Author Four", institution: "Institution Four" },
-  ]}
-  notes={[
-    { symbol: "*", text: "author note one" },
-    { symbol: "†", text: "author note two" },
-  ]}
-  links={[
-    { name: "Paper", url: "https://github.com/RomanHauksson/academic-project-astro-template", icon: "ri:file-pdf-2-line" },
-    { name: "Code", url: "https://github.com/RomanHauksson/academic-project-astro-template", icon: "ri:github-line" },
-    { name: "arXiv", url: "https://github.com/RomanHauksson/academic-project-astro-template", icon: "academicons:arxiv" },
-    { name: "Slides", url: "https://github.com/RomanHauksson/academic-project-astro-template", icon: "ri:slideshow-2-line" },
-  ]}
->
-  {/*
-    Optionally place a cover image or video behind the header. Import the
-    asset (from src/assets/, so images are optimized) and pass it through the
-    "background" slot using the Picture or Video component:
+<section className="takeaway-strip wide" aria-label="Key results">
 
-      <Picture slot="background" src={cover} alt="" />
-      <Video slot="background" src={outside} controls={false} />
-  */}
-  <Picture slot="background" src={dogsTrue} alt="" priority />
-</Header>
+  <div><span className="stat-label">Simulation · +20 RL rollouts</span><strong>19.9 <span>cm</span></strong><p>less mean position error<br />than imitation alone</p></div>
+  <div><span className="stat-label">Real humanoid · +30 RL rollouts</span><strong>31.3<span>%</span></strong><p>lower mean position error<br />than imitation alone</p></div>
+  <div><span className="stat-label">Learning from limited interaction</span><strong>50 <span>+ 30</span></strong><p>demonstrations + RL rollouts<br />per domain</p></div>
 
-<HighlightedSection>
+</section>
 
-## Abstract
+<section className="content-section" id="overview">
 
-This is a template you can use to create a professional-looking, accessible, and performant project page for your research paper. [See the code for the template and instructions on how to use it yourself on GitHub](https://github.com/RomanHauksson/academic-project-astro-template). It's made with the [Astro web framework](https://astro.build/) and styled with [Tailwind](https://tailwindcss.com/). You write the content in [MDX](https://mdxjs.com/), which enables markdown formatting like **bold**, _italics_, and ~strikethrough~, as well as custom components like <SmallCaps>small caps.</SmallCaps>
+  <div className="section-heading"><span className="eyebrow">01 / Overview</span><h2>The lift is only<br />the beginning.</h2></div>
+  <p className="lead">Lifting equipment carries the weight. People guide the placement.</p>
+  <p>On a construction site, prefabricated elements must reach their installation positions with the right alignment. Lifting equipment supports the load while the crew guides it into place.</p>
+  <ConstructionContext />
+  <h3 className="task-heading">A suspended load changes the control problem.</h3>
+  <p className="lead">A suspended payload can swing, respond with delay, and keep moving after contact ends. The robot has to learn both how to guide it and when to stop.</p>
+  <p>We study <strong>humanoid hoisting</strong>: positioning an externally suspended payload through whole-body motion and intermittent contact. The robot must coordinate locomotion, balance, bimanual pushing, and stopping while the load descends toward its target.</p>
+  <div className="wide"><ResearchFigure src={overview} alt="Three panels contrast directly actuated pick-and-place, an underactuated suspended payload, and accurate HOIST placement." label="The task." caption="Unlike conventional pick-and-place, the humanoid influences the suspended load indirectly. HOIST learns to coordinate contact and stopping for accurate final placement." /></div>
+  <details className="abstract-details" open>
+<summary>Abstract <span>Read the paper summary</span></summary>
+    <p>Manipulating suspended payloads with humanoid robots is challenging because the robot can only influence an underactuated, oscillatory load through whole-body motion and intermittent contact. Imitation learning provides safe initial behavior but does not directly optimize final placement, while reinforcement learning from scratch is unsafe and sample-inefficient on real humanoids. We present HOIST—<strong>H</strong>umanoid <strong>O</strong>ptimized with <strong>I</strong>mitation and <strong>S</strong>ample-efficient <strong>T</strong>uning for manipulating suspended loads. HOIST first finetunes a high-level vision-language-action (VLA) policy from virtual-reality (VR) teleoperation demonstrations and executes its commands through a whole-body controller. It then uses VLA rollouts and iterative batched RL to improve placement accuracy and stopping behavior. Experiments in simulation and on a real humanoid show that HOIST improves over imitation-only and additional-demonstration baselines; compared with pure VLA rollouts, HOIST reduces translational placement error by 19.9 cm and raw angular error by 3.56°, demonstrating the potential of humanoids for underactuated material-handling tasks.</p>
+    <p className="source-note">The 19.9 cm and 3.56° reductions correspond to the simulation policy after 20 RL rollouts, relative to VLA-50.</p>
 
-</HighlightedSection>
+</details>
 
-## Visuals
+</section>
 
-### Image
+<section className="method-section section-band" id="method">
+<div className="section-inner">
+  <div className="section-heading"><span className="eyebrow">02 / Method</span><h2>Imitate first.<br /><span className="accent-text">Refine through experience.</span></h2></div>
+  <p className="lead">HOIST starts with demonstrated behavior, then learns to correct the placement errors that emerge during autonomous execution.</p>
+  <div className="method-steps wide">
+    <article><span className="step-number">01</span><h3>Demonstrate</h3><p>Collect 50 whole-body hoisting demonstrations with VR teleoperation, capturing approach, contact, guidance, and stopping.</p><span className="step-tag">VR teleoperation</span></article>
+    <article><span className="step-number">02</span><h3>Learn to imitate</h3><p>Finetune a GR00T N1.6 VLA to predict planner-command chunks. A frozen whole-body controller executes the motion.</p><span className="step-tag">Vision-language-action policy</span></article>
+    <article><span className="step-number">03</span><h3>Refine with RL</h3><p>Use batches of 10 autonomous rollouts to learn initial-noise steering, optimizing final placement while the VLA and controller stay frozen.</p><span className="step-tag">Sample-efficient refinement</span></article>
+  </div>
+  <div className="wide"><ResearchFigure src={pipeline} alt="HOIST architecture showing VR demonstrations, the vision-language backbone, multimodal action expert, frozen whole-body controller, and initial-noise steering reinforcement learning." description="VR demonstrations provide the initial behavior. Ego-view RGB, side-view RGB, language and navigation commands condition the vision-language backbone. Robot state and depth are encoded for the flow-matching action expert, which outputs a 24-step chunk of 25-dimensional planner commands. A frozen whole-body controller executes head, bimanual hand, navigation and base-height targets. During reinforcement learning, a SAC actor steers initial noise using batches of 10 autonomous rollouts and terminal position and yaw rewards; the VLA and controller remain frozen." label="The HOIST pipeline." caption="RGB, depth, robot state, and navigation commands condition the VLA. RL steers the initial noise of the frozen flow-matching action expert, rather than retraining the full policy." /></div>
+  <div className="method-note"><span className="note-marker" aria-hidden="true">↗</span><p><strong>A small update with a task-level objective.</strong> Only the noise-steering actor-critic is trained during RL. Terminal placement feedback changes the selected command trajectory while preserving the pretrained execution stack.</p></div>
+</div>
+</section>
 
-Use the `Picture` component to display images. If you have a figure in PDF format, you can pass in its path as the `src` prop and it will be converted into a web-friendly image automatically.
+<Demo />
 
-<Picture src={dogsDiffc} alt="Photo of two running dogs, lossily compressed using the DiffC algorithm" />
+<section className="content-section" id="results">
 
-### Video
+  <div className="section-heading"><span className="eyebrow">03 / Experiments</span><h2>Better placement.<br />With limited additional interaction.</h2></div>
+  <p className="lead">Evaluated in simulation and on a real humanoid, with the same frozen whole-body controller across methods.</p>
+  <p>Each domain starts from 50 teleoperated demonstrations. HOIST adds up to 30 same-domain RL rollouts. We measure final position and yaw after the payload lands and settles.</p>
+  <div className="wide"><Results /></div>
 
-<Video src={outside} />
+</section>
 
-### Wide visual
+<section className="content-section behavior-section" id="behavior">
 
-I constrained the maximum width of the text column to make sure it's readable even when the screen is wide. But images and other visuals should "break out" and take up more horizontal space: for this, try wrapping them in the `Wide` component.
+  <div className="section-heading"><span className="eyebrow">04 / Behavior</span><h2>Learning when to push.<br />And when to stop.</h2></div>
+  <p>Imitation provides feasible motions, but matching demonstration actions does not directly optimize final placement. Rollout feedback exposes the policy’s own contact and stopping errors, allowing HOIST to refine its closed-loop behavior.</p>
+  <div className="wide"><ResearchFigure src={learning} alt="Motivation figure comparing pure imitation, reinforcement learning from scratch, and imitation-initialized HOIST." label="Why imitation and RL?" caption="The framework combines an imitation-learned starting point with task-level refinement for suspended-load positioning." /></div>
+  <h3>More precise placement, less angular motion</h3>
+  <p>At the +20 rollout checkpoint in simulation, mean payload angular-velocity RMS decreases from 0.141 to 0.064 rad/s relative to VLA-50. Acceleration RMS increases from 3.56 to 4.83 m/s², consistent with more active corrective motion.</p>
+  <ResearchFigure src={residual} alt="Simulation bar charts of payload acceleration RMS and angular-velocity RMS for teleoperation, VLA-50, and HOIST after 10, 20, and 30 RL rollouts." caption="Payload IMU statistics in simulation. Error bars show standard deviation; the strongest angular-motion reduction occurs at +20 RL rollouts." />
+  <ResidualData />
+  <aside className="scope-note"><h3>Scope and next steps</h3><p>The experiments use one physical payload configuration: a 2.5 kg box measuring 54 × 54 × 50 cm. The fixed low-level controller limits force adaptation for heavier loads. Broader payload variation and adaptive whole-body force control remain directions for future work.</p></aside>
 
-<Wide>
-  <Picture src={dogsDiffc} alt="Photo of two running dogs, lossily compressed using the DiffC algorithm" />
-</Wide>
+</section>
 
-### Figure with caption
-
-Wrap a visual in a `Figure` component to add a caption.
-
-<Figure>
-  <Picture slot="figure" src={dogsDiffc} alt="Photo of two running dogs, lossily compressed using the DiffC algorithm" />
-  <Fragment slot="caption">A photo of two dogs running side-by-side in shallow water, lossily compressed using the [DiffC algorithm](https://jeremyiv.github.io/diffc-project-page/).</Fragment>
-</Figure>
-
-### Comparison slider
-
-Use the `Comparison` component to compare two visuals with an interactive slider.
-
-<Comparison client:idle >
-  <Picture slot="itemOne" src={dogsDiffc} alt="Photo of two running dogs, lossily compressed using the DiffC algorithm" />
-  <Picture slot="itemTwo" src={dogsTrue} alt="True photo of two dogs running side-by-side in shallow water" />
-</Comparison>
-
-### Tab panels
-
-Tab panels are a great way to display a labeled collection of related visuals without taking up too much space.
-
-<Tabs defaultValue="true">
-  <TabsList>
-    <TabsTrigger value="true">Ground truth</TabsTrigger>
-    <TabsTrigger value="diffc">DiffC (Flux-dev)</TabsTrigger>
-    <TabsTrigger value="msillm">MS-ILLM</TabsTrigger>
-  </TabsList>
-  <TabsContent value="true">
-    <Picture
-      src={dogsTrue}
-      alt="True photo of two dogs running side-by-side in shallow water"
-    />
-  </TabsContent>
-  <TabsContent value="diffc">
-    <Picture
-      src={dogsDiffc}
-      alt="Photo of two running dogs, lossily compressed using the DiffC algorithm"
-    />
-  </TabsContent>
-  <TabsContent value="msillm">
-    <Picture
-      src={dogsMsillm}
-      alt="Photo of two running dogs, lossily compressed using MS-ILLM"
-    />
-  </TabsContent>
-</Tabs>
-
-### Carousel
-
-A carousel is another useful pattern for a collection of visuals that don't necessarily have meaningful labels.
-
-<Carousel>
-  <CarouselSlide>
-    <Picture src={dogsTrue} alt="True photo of two dogs running side-by-side in shallow water" />
-  </CarouselSlide>
-  <CarouselSlide>
-    <Picture src={dogsDiffc} alt="Photo of two running dogs, lossily compressed using the DiffC algorithm" />
-  </CarouselSlide>
-  <CarouselSlide>
-    <Picture
-      src={dogsMsillm}
-      alt="Photo of two running dogs, lossily compressed using MS-ILLM"
-    />
-  </CarouselSlide>
-</Carousel>
-
-## Two columns
-
-Use the two columns component to display two columns of content. In this example, the first column contains a YouTube video embed and the second column contains an interactive 3D model viewer. By default, they display side by side, but if the screen is narrow enough (for example, on mobile), they're arranged vertically.
-
-<TwoColumns>
-  <YouTubeVideo slot="left" videoId="wjZofJX0v4M" />
-  <ModelViewer slot="right" src="/BoxVertexColors.glb" alt="A cube colored with a rainbow gradient" />
-</TwoColumns>
-
-## $\LaTeX$
-
-You can also add $\LaTeX$ formulas, rendered during the build process using [$\KaTeX$](https://katex.org/) so they're quick to load for visitors of your project page. You can write them inline, like this: $a^2 + b^2 = c^2$. Or, you can write them as a block:
-
-$$
-\int_a^b f(x) dx
-$$
-
-## Citation
-
-If you copy your bibliography into `./bibliography.bib`, you can cite papers using their BibTeX keys, and they'll be automatically formatted and included in the bibliography section at the end. For example: [@vaswani2017attention]. Note that these citations are distinct from footnotes[^mynote], which show up in a separate section if you use them.
-
-[^mynote]: On the web, they should really be called "endnotes", since each page constitutes a full document.
-
-## Table
-
-Add simple tables using [GitHub Flavored Markdown syntax](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-tables):
-
-| Model | Accuracy | F1 score | Training time (hours) |
-| :--- | :---: | :---: | :---: |
-| BERT-base | 0.89 | 0.87 | 4.5 |
-| RoBERTa-large | 0.92 | 0.91 | 7.2 |
-| DistilBERT | 0.86 | 0.84 | 2.1 |
-| XLNet | 0.90 | 0.89 | 6.8 |
-
-## BibTeX citation
-
-Displaying the BibTeX entry for your paper in a code block makes it easy to copy and paste.
-
-```bibtex
-@misc{roman2024academic,
-  author = "{Roman Hauksson}",
-  title = "Academic Project Page Template",
-  year = "2024",
-  howpublished = "\url{https://research-template.roman.technology}",
-}
-```
-
-## Bibliography
-
-[^ref]
+<section className="citation-section section-band" id="citation">
+<div className="section-inner">
+  <div className="section-heading"><span className="eyebrow">05 / Citation</span><h2>Building on this work?</h2></div>
+  <p>If you find HOIST useful in your research, please consider citing our manuscript.</p>
+  <Citation />
+</div>
+</section>

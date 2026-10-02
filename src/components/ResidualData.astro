@@ -1,0 +1,66 @@
+---
+const rows = [
+  [
+    "Human expert teleoperation",
+    "8.31 ± 1.11",
+    "14.23 ± 1.20",
+    "0.144 ± 0.033",
+    "0.561 ± 0.116",
+  ],
+  ["VLA-50", "3.56 ± 0.32", "7.74 ± 0.00", "0.141 ± 0.019", "0.623 ± 0.050"],
+  [
+    "HOIST +10 RL",
+    "3.75 ± 0.27",
+    "7.77 ± 0.11",
+    "0.087 ± 0.026",
+    "0.642 ± 0.135",
+  ],
+  [
+    "HOIST +20 RL",
+    "4.83 ± 0.23",
+    "10.19 ± 3.96",
+    "0.064 ± 0.021",
+    "0.487 ± 0.184",
+  ],
+  [
+    "HOIST +30 RL",
+    "4.84 ± 0.57",
+    "9.33 ± 1.75",
+    "0.106 ± 0.032",
+    "0.580 ± 0.106",
+  ],
+];
+---
+
+<details class="data-details">
+  <summary>Read residual-motion chart values as a table</summary><div
+    class="table-scroll"
+    role="region"
+    aria-label="Residual-motion data"
+    tabindex="0"
+  >
+    <table>
+      <caption
+        >Simulation payload IMU results, mean ± standard deviation</caption
+      ><thead
+        ><tr
+          ><th scope="col">Method</th><th scope="col"
+            >Acceleration RMS (m/s²)</th
+          ><th scope="col">Acceleration peak (m/s²)</th><th scope="col"
+            >Angular velocity RMS (rad/s)</th
+          ><th scope="col">Angular velocity peak (rad/s)</th></tr
+        ></thead
+      ><tbody
+        >{
+          rows.map((row) => (
+            <tr>
+              <th scope="row">{row[0]}</th>
+              {row.slice(1).map((cell) => (
+                <td>{cell}</td>
+              ))}
+            </tr>
+          ))
+        }</tbody>
+    </table>
+  </div>
+</details>

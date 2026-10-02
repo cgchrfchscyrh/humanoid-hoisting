@@ -1,0 +1,58 @@
+{
+  "main": {
+    "references": {
+      "fig:1": "1",
+      "fig:overview": "2",
+      "fig:learning-idea": "3",
+      "fig:pipeline": "4",
+      "fig:place_sim": "5",
+      "fig:place_real": "6",
+      "fig:rl_vs_demos_visual": "7",
+      "fig:imu-residual-motion": "8",
+      "tab:rollout_progression": "1",
+      "tab:rl_vs_demos": "2",
+      "tab:modality_ablation": "3",
+      "tab:imu": "4",
+      "tab:vla_ft": "5",
+      "tab:rl": "6",
+      "tab:hw": "7",
+      "eq:teleop_trajectory": "7",
+      "eq:demo_chunk": "8",
+      "eq:rl_noise_action": "9",
+      "eq:noise_steering": "10",
+      "eq:terminal_reward": "11",
+      "alg:hoist": "1",
+      "sec:problem_formulation": "3.1",
+      "sec:overview": "3.2",
+      "sec:teleop_data": "3.2.1",
+      "sec:vla_policy": "3.2.2",
+      "sec:wbc": "3.2.3",
+      "sec:rl_refinement": "3.2.4",
+      "sec:evaluation_metrics": "4.2"
+    },
+    "counts": {
+      "figure": 8,
+      "table": 7,
+      "equation": 13
+    }
+  },
+  "supplementary": {
+    "references": {
+      "fig:place_sim": "S1",
+      "fig:place_real": "S2",
+      "fig:imu": "S3",
+      "tab:place_sim": "S1",
+      "tab:place_real": "S2",
+      "tab:imu": "S3",
+      "tab:vla_ft": "S4",
+      "tab:rl": "S5",
+      "tab:hw": "S6",
+      "alg:hoist": "S1"
+    },
+    "counts": {
+      "figure": 3,
+      "table": 6,
+      "equation": 0
+    }
+  }
+}

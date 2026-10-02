@@ -1,0 +1,83 @@
+---
+import { Picture } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import construction from "../assets/construction/mta-precast-wall.jpg";
+import credit from "../assets/construction/ATTRIBUTION.json";
+---
+
+<div class="construction-context wide">
+  <figure class="construction-photo">
+    <div class="construction-photo-label">
+      Construction context · Precast installation
+    </div>
+    <a
+      class="construction-photo-link"
+      href={construction.src}
+      target="_blank"
+      rel="noopener"
+      aria-label="Open the construction photograph in a new tab: workers beside a suspended precast wall"
+    >
+      <Picture
+        src={construction}
+        alt="A precast concrete wall section hangs from a lifting machine's hook and slings beside workers inside the West Cavern Terminal. The equipment supports the wall while the crew works at its installation position."
+        formats={["webp"]}
+        widths={[640, 960, 1440, 2000]}
+        sizes="(max-width: 760px) 92vw, 720px"
+        loading="lazy"
+      />
+      <span class="figure-expand" aria-hidden="true">↗</span>
+    </a>
+    <figcaption>
+      Precast platform-wall installation, West Cavern Terminal, 2017.<br />
+      Photo: <a href={credit.source}>{credit.creator}</a> · <a
+        href={credit.licenseUrl}>CC BY 2.0</a
+      >. Resized and compressed for the web; image content unchanged.
+    </figcaption>
+  </figure>
+  <div class="construction-question">
+    <span class="eyebrow">From construction to robotics</span>
+    <h3>Can a humanoid learn to guide the load?</h3>
+    <p>
+      Supporting a load and placing it precisely are different tasks. A
+      suspended element must be guided toward its target while its motion
+      settles.
+    </p>
+    <p>
+      HOIST studies the guidance problem: coordinating whole-body movement,
+      contact, and stopping as an externally supported payload descends.
+    </p>
+    <p class="construction-scope">
+      <strong>Our testbed.</strong> Simulation and a laboratory humanoid with a 2.5
+      kg suspended box. The construction photograph illustrates the motivation; the
+      experiments evaluate this controlled task.
+    </p>
+  </div>
+</div>
+
+<aside class="industry-resources" aria-labelledby="industry-resources-title">
+  <h3 id="industry-resources-title">See the work on site</h3>
+  <p>
+    Industry examples show the steps around a lift: guiding an element, aligning
+    it, and making its connections.
+  </p>
+  <div class="industry-video-links">
+    <a href="https://www.youtube.com/watch?v=-X3LcfsuGhE">
+      <Icon name="ri:play-circle-line" aria-hidden="true" />
+      <span
+        ><strong>Precast column installation</strong><span
+          >Peikko · Watch on YouTube</span
+        ></span
+      >
+      <span class="industry-link-arrow" aria-hidden="true">↗</span>
+    </a>
+    <a href="https://www.nccbuilt.com/videos">
+      <Icon name="ri:play-circle-line" aria-hidden="true" />
+      <span
+        ><strong>Floor-module lifting and placement</strong><span
+          >NCC · Watch on the producer’s website</span
+        ></span
+      >
+      <span class="industry-link-arrow" aria-hidden="true">↗</span>
+    </a>
+  </div>
+</aside>

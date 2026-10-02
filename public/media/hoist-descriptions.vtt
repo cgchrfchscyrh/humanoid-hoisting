@@ -1,0 +1,16 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.000
+HOIST: Humanoid Optimization with Imitation and Sample-Efficient Tuning for Manipulating Suspended Loads. The opening diagram shows teleoperation, a vision-language-action policy, whole-body control, and reinforcement-learning refinement.
+
+00:00:04.000 --> 00:00:08.000
+Three panels contrast direct pick-and-place, guiding an externally suspended load, and HOIST. The suspended load can continue swinging after contact; the humanoid must guide it toward the target and stop.
+
+00:00:08.000 --> 00:00:16.000
+The motivation figure contrasts imitation-only placement errors, unsafe exploration from reinforcement learning from scratch, and HOIST's combination of imitation and refinement.
+
+00:00:16.000 --> 00:00:42.000
+Real humanoid experiments appear side by side. Left: VLA-50. Center: VLA-80. Right: HOIST. A humanoid guides a suspended gray box toward a marked landing area on a wooden platform. The panel labels identify each method. On-screen text states one-times speed and fully autonomous operation.
+
+00:00:42.000 --> 00:01:35.000
+Simulation experiments appear side by side in the same order: VLA-50, VLA-80, and HOIST. Humanoids contact cable-suspended boxes above marked target platforms, guiding the loads during descent. The repeated trials illustrate differences in final placement and stopping. Numerical outcomes are provided in the results tables below the video.

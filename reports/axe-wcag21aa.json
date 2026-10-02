@@ -1,0 +1,167 @@
+{
+  "date": "2026-10-02T23:20:05.607Z",
+  "engine": "axe-core via Playwright",
+  "target": "WCAG 2.1 A and AA",
+  "scans": [
+    {
+      "name": "/ desktop",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "nodes": 20
+        },
+        {
+          "id": "video-caption",
+          "nodes": 3
+        }
+      ],
+      "passes": 26
+    },
+    {
+      "name": "home with data tables and transcript open",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "nodes": 20
+        },
+        {
+          "id": "video-caption",
+          "nodes": 3
+        }
+      ],
+      "passes": 31
+    },
+    {
+      "name": "/ mobile",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "nodes": 17
+        },
+        {
+          "id": "video-caption",
+          "nodes": 3
+        }
+      ],
+      "passes": 31
+    },
+    {
+      "name": "/paper/ desktop",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 71
+        }
+      ],
+      "passes": 25
+    },
+    {
+      "name": "/paper/ mobile",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 193
+        }
+      ],
+      "passes": 26
+    },
+    {
+      "name": "/supplementary/ desktop",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 20
+        }
+      ],
+      "passes": 23
+    },
+    {
+      "name": "/supplementary/ mobile",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 98
+        }
+      ],
+      "passes": 24
+    },
+    {
+      "name": "/accessibility/ desktop",
+      "violations": [],
+      "incomplete": [],
+      "passes": 16
+    },
+    {
+      "name": "/accessibility/ mobile",
+      "violations": [],
+      "incomplete": [],
+      "passes": 16
+    }
+  ],
+  "checks": [
+    "/: one H1",
+    "/: every image has alt text",
+    "/: no autoplay",
+    "/: skip link is first keyboard stop",
+    "/: skip link focuses main content",
+    "Real results keyboard selection",
+    "Result tabs support arrow keys",
+    "Keyboard starts both hero clips and exposes pause action",
+    "Keyboard pauses both hero clips",
+    "Shared control reflects individual-player playback",
+    "Clips stop at the end without looping",
+    "Replay restarts both clips",
+    "Hero has two independently controlled non-autoplaying videos",
+    "Citation copies with keyboard-accessible button",
+    "All three silent videos have timed visual descriptions",
+    "/: no page-level horizontal overflow at 320 CSS pixels",
+    "/: no page-level horizontal overflow at 768 CSS pixels",
+    "/: no page overflow with WCAG text spacing",
+    "/paper/: one H1",
+    "/paper/: every image has alt text",
+    "/paper/: no autoplay",
+    "/paper/: skip link is first keyboard stop",
+    "/paper/: skip link focuses main content",
+    "/paper/: no page-level horizontal overflow at 320 CSS pixels",
+    "/paper/: no page-level horizontal overflow at 768 CSS pixels",
+    "/paper/: no page overflow with WCAG text spacing",
+    "/supplementary/: one H1",
+    "/supplementary/: every image has alt text",
+    "/supplementary/: no autoplay",
+    "/supplementary/: skip link is first keyboard stop",
+    "/supplementary/: skip link focuses main content",
+    "/supplementary/: no page-level horizontal overflow at 320 CSS pixels",
+    "/supplementary/: no page-level horizontal overflow at 768 CSS pixels",
+    "/supplementary/: no page overflow with WCAG text spacing",
+    "/accessibility/: one H1",
+    "/accessibility/: every image has alt text",
+    "/accessibility/: no autoplay",
+    "/accessibility/: skip link is first keyboard stop",
+    "/accessibility/: skip link focuses main content",
+    "/accessibility/: no page-level horizontal overflow at 320 CSS pixels",
+    "/accessibility/: no page-level horizontal overflow at 768 CSS pixels",
+    "/accessibility/: no page overflow with WCAG text spacing",
+    "Both result domains remain available without JavaScript",
+    "Native hero players remain available without JavaScript"
+  ],
+  "errors": []
+}

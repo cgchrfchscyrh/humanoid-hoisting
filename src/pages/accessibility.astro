@@ -1,0 +1,57 @@
+---
+import ReadingLayout from "../layouts/ReadingLayout.astro";
+import { asset } from "../data/project";
+---
+
+<ReadingLayout
+  title="Accessibility and assistance"
+  description="Reading options and accessibility assistance for the HOIST research project."
+>
+  <h1>Accessibility and assistance</h1>
+  <p>
+    We aim to make this research website usable by everyone, following WCAG 2.1
+    Level AA.
+  </p>
+  <h2>Reading and viewing options</h2>
+  <ul>
+    <li>
+      Read the <a href={asset("paper/")}>full paper in HTML</a> or the <a
+        href={asset("supplementary/")}>supplementary material in HTML</a
+      >. These versions include headings, table headers, mathematical notation,
+      and figure descriptions.
+    </li><li>
+      The <a href={asset("") + "#demo"}>demonstration video</a> is silent and plays
+      only when you start it. A time-based descriptive transcript accompanies it.
+      The two silent introductory clips also have visual descriptions and individual
+      player controls, plus a shared play/pause button. Source credits appear below
+      the introduction.
+    </li><li>
+      Results are available as labeled numbers and tables. Color is not the only
+      way to distinguish methods or outcomes.
+    </li><li>
+      All controls support a keyboard. Use Tab to move between controls, Enter
+      to follow links, Space or Enter to activate buttons, and the arrow keys to
+      switch result tabs.
+    </li><li>The page supports browser zoom and reduced-motion preferences.</li>
+  </ul>
+  <h2>Request assistance or report a barrier</h2>
+  <p>
+    If you have trouble using this site or need research materials in another
+    format, email <a href="mailto:liusongyang@ufl.edu"
+      >Songyang Liu at liusongyang@ufl.edu</a
+    >. Please include the page or material involved and describe what is not
+    working. Do not send sensitive medical information.
+  </p>
+  <p>
+    You can also find university services and contacts at <a
+      href="https://accessibility.ufl.edu/">Accessibility at UF</a
+    >.
+  </p>
+  <h2>Evaluation</h2>
+  <p>
+    We use automated axe checks together with keyboard, responsive-layout,
+    text-spacing, and content reviews. Automated checks alone do not establish
+    complete WCAG conformance. Research documents and media are reviewed
+    separately from the webpage.
+  </p>
+</ReadingLayout>
