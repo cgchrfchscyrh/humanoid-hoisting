@@ -2,6 +2,8 @@
 
 基于 [Academic Project Astro Template](https://github.com/RomanHauksson/academic-project-astro-template)，内容采用本目录的 **RCIM journal 稿件**。网页保留英文，维护说明使用中文。首页、论文全文、补充材料和无障碍说明共四个页面。
 
+[在线网页](https://cgchrfchscyrh.github.io/humanoid-hoisting/) · [GitHub 仓库](https://github.com/cgchrfchscyrh/humanoid-hoisting)
+
 ## 预览与构建
 
 使用 Node.js 24 或更新版本；`.nvmrc` 选择版本 24。
@@ -80,7 +82,7 @@ npm run build
 ## GitHub Pages 部署
 
 1. 在正式发布前完成单位的品牌/域名流程，以及 `ACCESSIBILITY.md` 中的人工复查。
-2. 将项目源文件提交到目标仓库的 `main` 分支，保留 `.github/workflows/astro.yml`。`.gitignore` 已排除原始研究文件夹、`node_modules/` 和构建产物。
+2. 将项目源文件提交到 `cgchrfchscyrh/humanoid-hoisting` 仓库的 `main` 分支，保留 `.github/workflows/astro.yml`。`.gitignore` 已排除原始研究文件夹、`node_modules/` 和构建产物。
 3. 在 **Settings → Pages** 中选择 **GitHub Actions**。
 4. 推送后工作流执行依赖安全审计、类型检查、构建和 axe 检查；检查失败会阻止部署。
 
@@ -90,7 +92,9 @@ Pages 自动提供站点域名和仓库子路径。其他静态服务可以设�
 SITE_URL=https://example.com BASE_PATH=/hoist/ npm run build
 ```
 
-独立域名根路径使用 `BASE_PATH=/`。正式域名用于 canonical、社交预览和论文元数据；不要将示例域名作为公开地址。GitHub Pages 的技术支持不替代 UF 的域名与品牌要求。本次未创建远程仓库，也未执行公开部署。
+在本地模拟当前 GitHub Pages 子路径时，构建和预览都需要设置 `BASE_PATH=/humanoid-hoisting/`，测试地址也要包含该子路径。
+
+独立域名根路径使用 `BASE_PATH=/`。正式域名用于 canonical、社交预览和论文元数据；不要将示例域名作为公开地址。GitHub Pages 的技术支持不替代 UF 的域名与品牌要求。本地目录已关联 `https://github.com/cgchrfchscyrh/humanoid-hoisting.git`。推送 `main` 会运行检查并部署到上面的在线地址。
 
 ## 来源与许可
 

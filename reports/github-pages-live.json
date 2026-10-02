@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-02T23:29:36.214Z",
+  "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/",
+  "pages": ["home", "paper/", "supplementary/", "accessibility/"],
+  "resources": 45,
+  "errors": [],
+  "headers": {
+    "strict-transport-security": "max-age=31556952",
+    "content-type": "text/html; charset=utf-8"
+  },
+  "checks": [
+    "HTTPS homepage returned 200",
+    "Both online hero videos play and pause",
+    "390px mobile layout has no page overflow",
+    "Results tab works under deployed CSP"
+  ],
+  "deployed_commit": "1352631a65760ebcf18886d5268fdf33ec0e4ed8",
+  "workflow": "https://github.com/cgchrfchscyrh/humanoid-hoisting/actions/runs/37077609352"
+}

@@ -13,3 +13,9 @@ test-results/
 
 # Downloadable build artifact
 hoist-static-site.zip
+
+# Local review materials and machine-specific configuration
+research/
+.aws/
+.codex/
+.agents/
