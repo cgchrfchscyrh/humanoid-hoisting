@@ -3,21 +3,12 @@ import { Icon } from "astro-icon/components";
 import { project, asset } from "../data/project";
 const links = [
   {
-    name: "Paper",
+    name: "arXiv",
     url: project.paperUrl || asset("paper/"),
-    icon: "ri:file-text-line",
-  },
-  { name: "Video", url: "#demo", icon: "ri:play-circle-line" },
-  {
-    name: "Supplementary",
-    url: asset("supplementary/"),
-    icon: "ri:attachment-2",
+    icon: "academicons:arxiv",
   },
   ...(project.codeUrl
     ? [{ name: "Code", url: project.codeUrl, icon: "ri:github-line" }]
-    : []),
-  ...(project.arxivUrl
-    ? [{ name: "arXiv", url: project.arxivUrl, icon: "academicons:arxiv" }]
     : []),
 ];
 ---

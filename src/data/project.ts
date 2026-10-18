@@ -16,7 +16,7 @@ export const project = {
     { name: "Shuai Li", email: "shuai.li@ufl.edu", note: "†" },
   ],
   // Add public URLs when available. Empty links are omitted from the page.
-  paperUrl: "",
+  paperUrl: "https://arxiv.org/pdf/2606.00252",
   codeUrl: "",
   arxivUrl: "",
 };
