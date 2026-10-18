@@ -41,3 +41,7 @@ The build remains static with local fonts and media, a hash-based HTML CSP, and 
 Automated accessibility checks are not full WCAG/ADA certification. Original manuscript PDFs and screen-reader usability require separate assessment. See `ACCESSIBILITY.md` for scope and `reports/` for dated evidence.
 
 Template attribution: [Roman Hauksson’s Academic Project Astro Template](https://github.com/RomanHauksson/academic-project-astro-template), based on [Nerfies](https://nerfies.github.io/), under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
+## Deployment record
+
+The [18 October 2026 deployment](https://github.com/cgchrfchscyrh/humanoid-hoisting/actions/runs/39156391028) succeeded for `ae4f357`. CI passed 9 axe scans and 63 functional checks with no violations/errors. Live verification covered four pages, 28 resources, three video range responses, controlled autoplay, reduced motion, keyboard pause, and 320-pixel reflow. Evidence: `reports/ci/axe-wcag21aa.json` and `reports/visual-refresh-live.json`.

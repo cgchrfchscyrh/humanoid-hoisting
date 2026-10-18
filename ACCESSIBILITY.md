@@ -21,3 +21,9 @@ The RCIM manuscript, original scientific figures, result values, supplementary c
 Research media and external imagery retain their source and license credits. Website styling uses neutral charcoal, gray, and white. No new third-party player, analytics, or data collection was added.
 
 Contact: liusongyang@ufl.edu.
+
+## Published verification
+
+[Deployment 39156391028](https://github.com/cgchrfchscyrh/humanoid-hoisting/actions/runs/39156391028) published `ae4f357` after lint, production audit, build, 9 axe scans, and 63 functional checks passed with zero violations or errors. The CI report is retained in `reports/ci/axe-wcag21aa.json`.
+
+Live verification covered four pages, 28 referenced resources, and three MP4 range responses. Silent automatic playback, keyboard pause, pause persistence, reduced-motion behavior, and 320 CSS-pixel reflow passed with no browser errors. HTTPS enforcement and the HTML CSP were verified. Provider-controlled response headers are recorded in `reports/visual-refresh-live.json`; absent security headers are not claimed as configured.

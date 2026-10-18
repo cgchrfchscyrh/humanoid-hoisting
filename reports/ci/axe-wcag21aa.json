@@ -1,0 +1,190 @@
+{
+  "date": "2026-10-18T18:56:18.982Z",
+  "engine": "axe-core via Playwright",
+  "target": "WCAG 2.1 A and AA",
+  "scans": [
+    {
+      "name": "/ desktop",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "nodes": 2
+        },
+        {
+          "id": "video-caption",
+          "nodes": 3
+        }
+      ],
+      "passes": 26
+    },
+    {
+      "name": "home with scientific data and media descriptions expanded",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "nodes": 2
+        },
+        {
+          "id": "video-caption",
+          "nodes": 3
+        }
+      ],
+      "passes": 31
+    },
+    {
+      "name": "/ mobile",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "nodes": 17
+        },
+        {
+          "id": "video-caption",
+          "nodes": 3
+        }
+      ],
+      "passes": 31
+    },
+    {
+      "name": "/paper/ desktop",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 71
+        }
+      ],
+      "passes": 25
+    },
+    {
+      "name": "/paper/ mobile",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 195
+        }
+      ],
+      "passes": 26
+    },
+    {
+      "name": "/supplementary/ desktop",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 20
+        }
+      ],
+      "passes": 23
+    },
+    {
+      "name": "/supplementary/ mobile",
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 99
+        }
+      ],
+      "passes": 24
+    },
+    {
+      "name": "/accessibility/ desktop",
+      "violations": [],
+      "incomplete": [],
+      "passes": 16
+    },
+    {
+      "name": "/accessibility/ mobile",
+      "violations": [],
+      "incomplete": [],
+      "passes": 16
+    }
+  ],
+  "checks": [
+    "/: loads",
+    "/: one H1",
+    "/: informative image alternatives",
+    "/: no institutional promotion or disclaimer",
+    "/: unique IDs",
+    "/: first keyboard stop is skip link",
+    "/: visible focus",
+    "/: skip link focuses main",
+    "Reduced-motion page starts with all videos paused and native controls",
+    "All silent videos retain timed descriptions",
+    "No redundant visible duration labels",
+    "Keyboard selects real-platform results",
+    "Arrow key selects simulation results",
+    "Citation copies",
+    "/: reflows at 320",
+    "/: reflows at 768",
+    "/: text-spacing reflow",
+    "/paper/: loads",
+    "/paper/: one H1",
+    "/paper/: informative image alternatives",
+    "/paper/: no institutional promotion or disclaimer",
+    "/paper/: unique IDs",
+    "/paper/: first keyboard stop is skip link",
+    "/paper/: visible focus",
+    "/paper/: skip link focuses main",
+    "/paper/: reflows at 320",
+    "/paper/: reflows at 768",
+    "/paper/: text-spacing reflow",
+    "/supplementary/: loads",
+    "/supplementary/: one H1",
+    "/supplementary/: informative image alternatives",
+    "/supplementary/: no institutional promotion or disclaimer",
+    "/supplementary/: unique IDs",
+    "/supplementary/: first keyboard stop is skip link",
+    "/supplementary/: visible focus",
+    "/supplementary/: skip link focuses main",
+    "/supplementary/: reflows at 320",
+    "/supplementary/: reflows at 768",
+    "/supplementary/: text-spacing reflow",
+    "/accessibility/: loads",
+    "/accessibility/: one H1",
+    "/accessibility/: informative image alternatives",
+    "/accessibility/: no institutional promotion or disclaimer",
+    "/accessibility/: unique IDs",
+    "/accessibility/: first keyboard stop is skip link",
+    "/accessibility/: visible focus",
+    "/accessibility/: skip link focuses main",
+    "/accessibility/: reflows at 320",
+    "/accessibility/: reflows at 768",
+    "/accessibility/: text-spacing reflow",
+    "Both visible hero videos autoplay muted",
+    "Keyboard pauses every video",
+    "Global manual pause survives leaving and returning to view",
+    "Keyboard explicitly resumes playback",
+    "Experiment video starts when scrolled into view",
+    "Offscreen hero videos pause",
+    "Individual manual pause survives returning to view",
+    "reduced-motion: no automatic playback",
+    "reduced-motion: explicit playback remains available",
+    "save-data: no automatic playback",
+    "save-data: explicit playback remains available",
+    "Without JavaScript both result domains remain readable",
+    "Without JavaScript native players remain available"
+  ],
+  "errors": [],
+  "limitations": [
+    "Automated checks do not establish complete ADA/WCAG conformance.",
+    "Original manuscript content and attachments are unchanged; full assistive-technology review remains separate."
+  ]
+}

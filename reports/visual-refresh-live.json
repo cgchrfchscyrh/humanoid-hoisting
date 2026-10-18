@@ -1,0 +1,293 @@
+{
+  "date": "2026-10-18",
+  "site": "https://cgchrfchscyrh.github.io/humanoid-hoisting/",
+  "commit": "ae4f35718c82ba68d79e9eea01c41f76cb35548b",
+  "run": "https://github.com/cgchrfchscyrh/humanoid-hoisting/actions/runs/39156391028",
+  "pages": [
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/",
+      "status": 200,
+      "headers": {
+        "accept-ranges": "bytes",
+        "access-control-allow-origin": "*",
+        "age": "0",
+        "cache-control": "max-age=600",
+        "content-encoding": "gzip",
+        "content-length": "9844",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sun, 18 Oct 2026 18:57:59 GMT",
+        "etag": "W/\"6ad51675-8c14\"",
+        "expires": "Sun, 18 Oct 2026 19:07:59 GMT",
+        "last-modified": "Sun, 18 Oct 2026 18:56:53 GMT",
+        "server": "GitHub.com",
+        "strict-transport-security": "max-age=31556952",
+        "vary": "Accept-Encoding",
+        "via": "1.1 varnish",
+        "x-cache": "MISS",
+        "x-cache-hits": "0",
+        "x-fastly-request-id": "0265e1b4673f31bd9fc4766be756fd2e088cc3d2",
+        "x-github-edge-region": "iad",
+        "x-github-request-id": "EDC4:2A79B3:21C34B:259673:6AD516B7",
+        "x-proxy-cache": "MISS",
+        "x-served-by": "cache-mia-kfll1870049-MIA",
+        "x-timer": "S1792349880.776492,VS0,VE52"
+      }
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/paper/",
+      "status": 200,
+      "headers": {
+        "accept-ranges": "bytes",
+        "access-control-allow-origin": "*",
+        "age": "0",
+        "cache-control": "max-age=600",
+        "content-encoding": "gzip",
+        "content-length": "30535",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sun, 18 Oct 2026 18:58:00 GMT",
+        "etag": "W/\"6ad51675-2305a\"",
+        "expires": "Sun, 18 Oct 2026 19:08:00 GMT",
+        "last-modified": "Sun, 18 Oct 2026 18:56:53 GMT",
+        "server": "GitHub.com",
+        "strict-transport-security": "max-age=31556952",
+        "vary": "Accept-Encoding",
+        "via": "1.1 varnish",
+        "x-cache": "MISS",
+        "x-cache-hits": "0",
+        "x-fastly-request-id": "daf73662a8f4afb2babb66d807b3002ea9ee06a4",
+        "x-github-edge-region": "iad",
+        "x-github-request-id": "F0FE:1BE009:2283D8:26596F:6AD516B8",
+        "x-proxy-cache": "MISS",
+        "x-served-by": "cache-mia-kfll1870049-MIA",
+        "x-timer": "S1792349881.848461,VS0,VE56"
+      }
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/supplementary/",
+      "status": 200,
+      "headers": {
+        "accept-ranges": "bytes",
+        "access-control-allow-origin": "*",
+        "age": "0",
+        "cache-control": "max-age=600",
+        "content-encoding": "gzip",
+        "content-length": "8988",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sun, 18 Oct 2026 18:58:01 GMT",
+        "etag": "W/\"6ad51675-cebc\"",
+        "expires": "Sun, 18 Oct 2026 19:08:01 GMT",
+        "last-modified": "Sun, 18 Oct 2026 18:56:53 GMT",
+        "server": "GitHub.com",
+        "strict-transport-security": "max-age=31556952",
+        "vary": "Accept-Encoding",
+        "via": "1.1 varnish",
+        "x-cache": "MISS",
+        "x-cache-hits": "0",
+        "x-fastly-request-id": "8d55b58618592839e8cbedb734ca1dd756153463",
+        "x-github-edge-region": "iad",
+        "x-github-request-id": "540E:257968:22C00F:26957B:6AD516B5",
+        "x-origin-cache": "HIT",
+        "x-proxy-cache": "MISS",
+        "x-served-by": "cache-mia-kfll1870049-MIA",
+        "x-timer": "S1792349882.719104,VS0,VE39"
+      }
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/accessibility/",
+      "status": 200,
+      "headers": {
+        "accept-ranges": "bytes",
+        "access-control-allow-origin": "*",
+        "age": "0",
+        "cache-control": "max-age=600",
+        "content-encoding": "gzip",
+        "content-length": "1742",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sun, 18 Oct 2026 18:58:02 GMT",
+        "etag": "W/\"6ad51675-e96\"",
+        "expires": "Sun, 18 Oct 2026 19:08:02 GMT",
+        "last-modified": "Sun, 18 Oct 2026 18:56:53 GMT",
+        "server": "GitHub.com",
+        "strict-transport-security": "max-age=31556952",
+        "vary": "Accept-Encoding",
+        "via": "1.1 varnish",
+        "x-cache": "MISS",
+        "x-cache-hits": "0",
+        "x-fastly-request-id": "fade233ed9b632b627d3c0fe302b622695fe60ac",
+        "x-github-edge-region": "iad",
+        "x-github-request-id": "5FA4:3CB115:297415B:2BEA48C:6AD516B9",
+        "x-origin-cache": "HIT",
+        "x-proxy-cache": "MISS",
+        "x-served-by": "cache-mia-kfll1870049-MIA",
+        "x-timer": "S1792349882.346729,VS0,VE37"
+      }
+    }
+  ],
+  "resources": [
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/_astro/SiteFooter.BeRdmbjS.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/media/construction-guidance-poster.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/media/construction-guidance.mp4",
+      "status": 200,
+      "contentType": "video/mp4"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/media/construction-guidance-descriptions.vtt",
+      "status": 200,
+      "contentType": "text/vtt; charset=utf-8"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/media/hoist-guidance-poster.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/media/hoist-guidance.mp4",
+      "status": 200,
+      "contentType": "video/mp4"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/media/hoist-guidance-descriptions.vtt",
+      "status": 200,
+      "contentType": "text/vtt; charset=utf-8"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/_astro/figure2.p7N50t_e_2eolSR.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/_astro/figure4.Bk8EWL5s_fPFxl.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/media/video-poster.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/media/hoist.mp4",
+      "status": 200,
+      "contentType": "video/mp4"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/media/hoist-descriptions.vtt",
+      "status": 200,
+      "contentType": "text/vtt; charset=utf-8"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/_astro/sim.BbTta-av_Z85Mkf.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/_astro/real.CT50Z1-A_kLKjf.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/_astro/figure5.Dlp1OB9y_Z1a0fPO.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/figure1.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/figure2.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/figure3.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/figure4.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/sim_placement_manhattan.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/sim_placement_yaw.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/real_placement_manhattan.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/real_placement_yaw.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/sim.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/real.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/figure5.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/imu_acc_norm.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://cgchrfchscyrh.github.io/humanoid-hoisting/papers/figures/imu_gyro_norm.png",
+      "status": 200,
+      "contentType": "image/png"
+    }
+  ],
+  "media": [
+    {
+      "name": "construction-guidance.mp4",
+      "status": 206,
+      "contentRange": "bytes 0-1023/1552705"
+    },
+    {
+      "name": "hoist-guidance.mp4",
+      "status": 206,
+      "contentRange": "bytes 0-1023/1332906"
+    },
+    {
+      "name": "hoist.mp4",
+      "status": 206,
+      "contentRange": "bytes 0-1023/5294411"
+    }
+  ],
+  "autoplayMuted": true,
+  "keyboardPause": true,
+  "manualPausePersists": true,
+  "reducedMotionPaused": true,
+  "mobile320NoOverflow": true,
+  "errors": [],
+  "headerLimitations": "GitHub Pages controls HTTP response headers; only observed headers recorded. HTML CSP is present.",
+  "httpsEnforced": true
+}
