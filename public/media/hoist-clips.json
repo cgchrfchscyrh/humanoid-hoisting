@@ -1,0 +1,109 @@
+{
+  "reviewed": "2026-10-18",
+  "creator": "HOIST authors",
+  "source": "hoist.mp4",
+  "source_sha256": "a4057079f1156bc7f39ef335134fcd7084ae0fa48b732d428a09f351fe71f7dd",
+  "source_dimensions": [
+    1280,
+    720
+  ],
+  "source_duration_seconds": 95,
+  "source_audio_streams": 0,
+  "source_segment_boundaries": {
+    "real_world": [
+      15,
+      45
+    ],
+    "simulation": [
+      45,
+      95
+    ]
+  },
+  "segment_boundary_verification": "Scene-change detection and visual frame review identify the real-world segment as 15–45 seconds and simulation as 45–95 seconds. These exact boundaries correct older approximate website descriptions.",
+  "editing": "H.264, yuv420p, 30 fps, faststart; original playback speed and source order; no audio. The original file is unchanged. Cropped views retain the robot, load and target; their webpage captions and text alternatives identify the simulation context.",
+  "continuity": "The Abstract, Method and simulation Results clips are consecutive excerpts of the same comparative simulation, not independent experiments. The real-world Results clip retains all three method panels for the complete real-world segment.",
+  "clips": [
+    {
+      "file": "hoist-task-overview.mp4",
+      "section": "Abstract",
+      "source_seconds": [
+        45,
+        60
+      ],
+      "duration_seconds": 15,
+      "width": 396,
+      "height": 432,
+      "crop": {
+        "x": 884,
+        "y": 144,
+        "width": 396,
+        "height": 432
+      },
+      "poster": "hoist-task-overview-poster.jpg",
+      "poster_excerpt_seconds": 4,
+      "descriptions": "hoist-task-overview-descriptions.vtt",
+      "caption": "A humanoid guides a cable-suspended load toward a landing target in simulation.",
+      "text_alternative": "A simulated humanoid stands beside a yellow box suspended from an overhead cable. The box descends above a rectangular landing platform while the humanoid reaches toward it and guides it with its hands. The frame isolates the HOIST panel of the authors’ comparative simulation; the original source labels it as fully autonomous at one-times speed.",
+      "bytes": 356402
+    },
+    {
+      "file": "hoist-contact-guidance.mp4",
+      "section": "Method",
+      "source_seconds": [
+        60,
+        76
+      ],
+      "duration_seconds": 16,
+      "width": 396,
+      "height": 432,
+      "crop": {
+        "x": 884,
+        "y": 144,
+        "width": 396,
+        "height": 432
+      },
+      "poster": "hoist-contact-guidance-poster.jpg",
+      "poster_excerpt_seconds": 4,
+      "descriptions": "hoist-contact-guidance-descriptions.vtt",
+      "caption": "HOIST adjusts hand contact as the suspended load descends in simulation.",
+      "text_alternative": "This excerpt continues the same simulation shown in the task overview. The humanoid maintains and adjusts hand contact with the yellow box as it descends closer to the rectangular target platform. The footage shows policy execution, not training or VR demonstration collection. The frame isolates the HOIST panel of the authors’ comparative simulation.",
+      "bytes": 360142
+    },
+    {
+      "file": "hoist-real-comparison.mp4",
+      "section": "Results",
+      "source_seconds": [
+        15,
+        45
+      ],
+      "duration_seconds": 30,
+      "width": 1280,
+      "height": 720,
+      "crop": null,
+      "poster": "hoist-real-comparison-poster.jpg",
+      "poster_excerpt_seconds": 4,
+      "descriptions": "hoist-real-comparison-descriptions.vtt",
+      "caption": "Real-world load placement: VLA-50, VLA-80, and HOIST.",
+      "text_alternative": "Three labeled panels compare real humanoid experiments: VLA-50 on the left, VLA-80 in the center, and HOIST on the right. Each humanoid faces a gray box suspended above a wooden platform with an outlined target region. As the lifting system lowers the load, the robots reach toward the box and guide it with their hands. The final views show the boxes’ placement relative to the marked targets. Original panel labels and the fully autonomous, one-times-speed annotation remain visible. Numerical performance is reported separately in the results tables.",
+      "bytes": 4300274
+    },
+    {
+      "file": "hoist-sim-comparison.mp4",
+      "section": "Results",
+      "source_seconds": [
+        76,
+        95
+      ],
+      "duration_seconds": 19,
+      "width": 1280,
+      "height": 720,
+      "crop": null,
+      "poster": "hoist-sim-comparison-poster.jpg",
+      "poster_excerpt_seconds": 4,
+      "descriptions": "hoist-sim-comparison-descriptions.vtt",
+      "caption": "Final placement in simulation: VLA-50, VLA-80, and HOIST.",
+      "text_alternative": "Three labeled panels show the final phase of the same comparative simulation excerpted in the task overview and method sections: VLA-50 on the left, VLA-80 in the center, and HOIST on the right. The cable-suspended boxes descend and settle over rectangular landing platforms as each humanoid maintains or adjusts contact. The final frames show their differing positions and orientations relative to the platforms. Original method labels remain visible; numerical performance is reported separately in the results tables.",
+      "bytes": 1055336
+    }
+  ]
+}

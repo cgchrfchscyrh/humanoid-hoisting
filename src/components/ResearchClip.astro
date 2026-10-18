@@ -1,0 +1,53 @@
+---
+import { asset } from "../data/project";
+
+interface Props {
+  id: string;
+  file: string;
+  caption: string;
+  description: string;
+  width?: number;
+  height?: number;
+}
+
+const { id, file, caption, description, width = 1280, height = 720 } = Astro.props;
+---
+
+<figure class="research-clip" id={id}>
+  <video
+    id={`${id}-video`}
+    controls
+    controlslist="nodownload"
+    muted
+    playsinline
+    preload="none"
+    poster={asset(`media/${file}-poster.jpg`)}
+    width={width}
+    height={height}
+    aria-labelledby={`${id}-caption`}
+    aria-describedby={`${id}-description`}
+  >
+    <source src={asset(`media/${file}.mp4`)} type="video/mp4" />
+    <track
+      kind="descriptions"
+      src={asset(`media/${file}-descriptions.vtt`)}
+      srclang="en"
+      label="English visual descriptions"
+    />
+    Video playback is unavailable. Read the visual description below.
+  </video>
+  <figcaption id={`${id}-caption`}>{caption}</figcaption>
+  <details class="clip-description">
+    <summary aria-label={`Video description: ${caption}`}>Video description</summary>
+    <p id={`${id}-description`}>{description}</p>
+  </details>
+</figure>
+
+<style>
+  .research-clip { margin: 0; min-width: 0; }
+  video { aspect-ratio: auto; object-fit: contain; border-radius: 6px; }
+  figcaption { margin: 12px 0 0; max-width: none; color: #454545; font-size: 15px; }
+  .clip-description { margin-top: 8px; color: #595959; font-size: 13px; }
+  summary { cursor: pointer; width: fit-content; }
+  .clip-description p { margin: 12px 0 0; line-height: 1.75; }
+</style>

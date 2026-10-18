@@ -1,20 +1,13 @@
 <script>
   const videos = [...document.querySelectorAll<HTMLVideoElement>("video")];
-  const button = document.querySelector<HTMLButtonElement>("#hero-playback-toggle");
-  const status = document.querySelector<HTMLElement>("#hero-playback-status");
   const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const connection = (navigator as Navigator & {
     connection?: { saveData?: boolean; addEventListener?: (type: string, listener: () => void) => void };
   }).connection;
   const pausedByUser = new Set<HTMLVideoElement>();
   const internalPauses = new Set<HTMLVideoElement>();
-  const internalStarts = new Set<HTMLVideoElement>();
   const visible = new Set<HTMLVideoElement>();
-  let manualOverride = false;
-  const allowed = () => manualOverride || (!motion.matches && !connection?.saveData);
-  const update = () => {
-    if (button) button.textContent = videos.some(v => !v.paused && !v.ended) ? "Pause videos" : "Play videos";
-  };
+  const autoplayAllowed = () => !document.hidden && !motion.matches && !connection?.saveData;
   const pause = (video: HTMLVideoElement) => {
     if (!video.paused) {
       internalPauses.add(video);
@@ -22,13 +15,11 @@
     }
   };
   const play = async (video: HTMLVideoElement) => {
-    if (!video.paused || pausedByUser.has(video) || !allowed()) return;
+    if (!video.paused || pausedByUser.has(video) || !visible.has(video) || !autoplayAllowed()) return;
     video.muted = true;
-    video.loop = true;
-    internalStarts.add(video);
     try { await video.play(); }
-    catch { internalStarts.delete(video); }
-    update();
+    catch { /* Native controls remain available when autoplay is blocked. */ }
+    if (!visible.has(video) || document.hidden) pause(video);
   };
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
@@ -44,41 +35,22 @@
   }, { threshold: [0, 0.2] });
   for (const video of videos) {
     video.muted = true;
+    video.loop = true;
     video.addEventListener("play", () => {
-      if (internalStarts.has(video)) internalStarts.delete(video);
-      else pausedByUser.delete(video);
-      update();
+      // Native play is an explicit choice, including with reduced motion or Save-Data.
+      pausedByUser.delete(video);
     });
     video.addEventListener("pause", () => {
       if (internalPauses.has(video)) internalPauses.delete(video);
       else pausedByUser.add(video);
-      update();
     });
-    video.addEventListener("ended", update);
     observer.observe(video);
   }
-  if (button) {
-    button.hidden = false;
-    update();
-    button.addEventListener("click", () => {
-      if (videos.some(v => !v.paused && !v.ended)) {
-        for (const video of videos) { pausedByUser.add(video); pause(video); }
-      } else {
-        manualOverride = true;
-        pausedByUser.clear();
-        for (const video of visible) void play(video);
-        if (status) status.textContent = "Use each video’s controls to pause it individually.";
-      }
-      update();
-    });
-  }
   const preferencesChanged = () => {
-    manualOverride = false;
     for (const video of videos) {
-      if (!allowed()) pause(video);
+      if (!autoplayAllowed()) pause(video);
       else if (visible.has(video)) void play(video);
     }
-    update();
   };
   motion.addEventListener("change", preferencesChanged);
   connection?.addEventListener?.("change", preferencesChanged);
