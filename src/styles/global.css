@@ -1851,3 +1851,73 @@ math {
     padding-top: 40px;
   }
 }
+
+/* Media-led research presentation. Titles stay clear of complete video frames. */
+.comparison-hero {
+  background: #fff;
+  color: var(--ink);
+  padding: 38px max(20px, calc((100% - 1240px) / 2)) 0;
+}
+.comparison-hero .hero-intro,
+.comparison-hero .hero-publication {
+  position: static;
+  padding: 0;
+  border: 0;
+}
+.comparison-hero .hero-name {
+  color: var(--ink);
+  font-size: clamp(44px, 6vw, 72px);
+  letter-spacing: -0.06em;
+}
+.comparison-hero .hero-paper-title {
+  color: var(--ink);
+  max-width: 1050px;
+  font-size: clamp(22px, 2.5vw, 36px);
+  font-weight: 500;
+  line-height: 1.25;
+  margin-bottom: 24px;
+}
+.comparison-hero .authors a { color: var(--ink); }
+.comparison-hero .author-notes { color: #555; margin: 10px 0 18px; }
+.comparison-hero .resource-links { margin-bottom: 30px; }
+.comparison-hero .button { background: #252525; color: #fff; border-color: #252525; }
+.comparison-hero .button:hover { background: #444; }
+.comparison-hero :focus-visible { outline-color: #333; }
+.comparison-hero .hero-scenes { background: transparent; gap: 18px; }
+.comparison-hero .hero-scene::before { display: none; }
+.comparison-hero .hero-scene video {
+  width: 100%;
+  height: clamp(240px, 33vw, 445px);
+  object-fit: contain;
+  background: #161616;
+  border-radius: 6px;
+}
+.comparison-hero .hero-scene figcaption { padding: 10px 0; color: #595959; font-size: 12px; }
+.comparison-hero .hero-scene figcaption strong { color: var(--ink); font-size: 18px; }
+.comparison-hero .scene-index { display: none; }
+.comparison-hero .hero-playback { padding: 14px 0 10px; color: #555; flex-direction: row; }
+.comparison-hero .hero-playback button { background: #252525; color: #fff; border-color: #252525; }
+.comparison-hero .hero-playback a { text-decoration: underline; }
+.hero-context { padding-top: 0; }
+.hero-context summary { cursor: pointer; }
+.content-section { padding-block: 62px; }
+.section-heading { margin-bottom: 24px; }
+.section-heading h2 { font-size: clamp(28px, 3vw, 38px); line-height: 1.2; }
+.content-section > p { font-size: 17px; line-height: 1.8; }
+.section-band { padding-block: 60px; }
+.method-steps { margin-block: 24px 0; }
+.method-steps article { padding: 20px 22px; }
+.method-steps article p { font-size: 15px; }
+.demo-section { padding-top: 60px; }
+.demo-section .section-heading { max-width: var(--content); margin-inline: auto; }
+.video-transcript, .motion-analysis { border-block: 1px solid var(--line); padding-block: 16px; margin-top: 22px; }
+.motion-analysis summary { cursor: pointer; font-weight: 500; }
+.site-footer { padding-block: 30px; }
+@media (max-width: 700px) {
+  .comparison-hero { padding-top: 28px; }
+  .comparison-hero .hero-scenes { grid-template-columns: minmax(0, 1fr); }
+  .comparison-hero .hero-scene video { height: auto; aspect-ratio: 4 / 3; object-fit: contain; }
+  .comparison-hero .hero-publication .authors { font-size: 15px; }
+  .content-section, .section-band { padding-block: 44px; }
+  .nav-links { flex-wrap: wrap; }
+}

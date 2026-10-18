@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-18",
+  "reference": "https://vision-language-kinematics.github.io/",
+  "scope": "Media-led presentation; no reference research content or media copied.",
+  "mainVisibleWords": 398,
+  "sections": [
+    "Abstract",
+    "Method",
+    "Experiments",
+    "Results",
+    "Citation"
+  ],
+  "desktopWidth": 1440,
+  "mobileWidth": 320,
+  "horizontalOverflow": false,
+  "manuscriptAndMediaFilesUnchanged": true,
+  "autoplay": "Silent viewport-based playback; explicit global/native pause; manual pause persists; reduced-motion and Save-Data opt out.",
+  "axeScans": 9,
+  "functionalChecks": 63,
+  "violations": 0,
+  "limitations": "Technical review only; not full ADA/WCAG certification."
+}

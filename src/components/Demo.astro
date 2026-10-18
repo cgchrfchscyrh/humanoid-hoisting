@@ -8,6 +8,7 @@ import { asset } from "../data/project";
   id="demo"
   aria-label="HOIST demonstration video"
 >
+  <div class="section-heading"><h2>Experiments</h2></div>
   <div class="video-frame">
     <div class="video-heading">
       <span><span class="status-dot"></span> HOIST in action</span><span
@@ -17,6 +18,7 @@ import { asset } from "../data/project";
     <video
       id="hoist-demo"
       controls
+      muted
       playsinline
       preload="none"
       poster={asset("media/video-poster.jpg")}
@@ -45,7 +47,6 @@ import { asset } from "../data/project";
       >Download video <Icon name="ri:arrow-down-line" /></a
     >
   </div>
-  <p class="media-kind">Silent video · 1 minute 35 seconds · No spoken audio</p>
   <details class="video-description video-transcript">
     <summary>Read the descriptive video transcript</summary>
     <ol>

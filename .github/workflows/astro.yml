@@ -69,6 +69,9 @@ jobs:
       - name: Audit production dependencies
         run: npm run audit:security
         working-directory: ${{ env.BUILD_PATH }}
+      - name: Lint source
+        run: npm run lint
+        working-directory: ${{ env.BUILD_PATH }}
       - name: Check Astro and TypeScript
         run: npm run check
         working-directory: ${{ env.BUILD_PATH }}

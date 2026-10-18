@@ -4,83 +4,49 @@ import ResearchFigure from "./components/ResearchFigure.astro";
 import Results from "./components/Results.astro";
 import Citation from "./components/Citation.astro";
 import ResidualData from "./components/ResidualData.astro";
-import ConstructionContext from "./components/ConstructionContext.astro";
+import MediaControls from "./components/MediaControls.astro";
 import overview from "./assets/figure2.jpg";
 import pipeline from "./assets/figure4.jpg";
-import learning from "./assets/figure3.jpg";
 import residual from "./assets/figure5.png";
 
 <Header />
 
-<section className="takeaway-strip wide" aria-label="Key results">
-
-  <div><span className="stat-label">Simulation · +20 RL rollouts</span><strong>19.9 <span>cm</span></strong><p>less mean position error<br />than imitation alone</p></div>
-  <div><span className="stat-label">Real humanoid · +30 RL rollouts</span><strong>31.3<span>%</span></strong><p>lower mean position error<br />than imitation alone</p></div>
-  <div><span className="stat-label">Learning from limited interaction</span><strong>50 <span>+ 30</span></strong><p>demonstrations + RL rollouts<br />per domain</p></div>
-
-</section>
-
 <section className="content-section" id="overview">
-
-  <div className="section-heading"><span className="eyebrow">01 / Overview</span><h2>The lift is only<br />the beginning.</h2></div>
-  <p className="lead">Lifting equipment carries the weight. People guide the placement.</p>
-  <p>On a construction site, prefabricated elements must reach their installation positions with the right alignment. Lifting equipment supports the load while the crew guides it into place.</p>
-  <ConstructionContext />
-  <h3 className="task-heading">A suspended load changes the control problem.</h3>
-  <p className="lead">A suspended payload can swing, respond with delay, and keep moving after contact ends. The robot has to learn both how to guide it and when to stop.</p>
-  <p>We study <strong>humanoid hoisting</strong>: positioning an externally suspended payload through whole-body motion and intermittent contact. The robot must coordinate locomotion, balance, bimanual pushing, and stopping while the load descends toward its target.</p>
-  <div className="wide"><ResearchFigure src={overview} alt="Three panels contrast directly actuated pick-and-place, an underactuated suspended payload, and accurate HOIST placement." label="The task." caption="Unlike conventional pick-and-place, the humanoid influences the suspended load indirectly. HOIST learns to coordinate contact and stopping for accurate final placement." /></div>
-  <details className="abstract-details" open>
-<summary>Abstract <span>Read the paper summary</span></summary>
-    <p>Manipulating suspended payloads with humanoid robots is challenging because the robot can only influence an underactuated, oscillatory load through whole-body motion and intermittent contact. Imitation learning provides safe initial behavior but does not directly optimize final placement, while reinforcement learning from scratch is unsafe and sample-inefficient on real humanoids. We present HOIST—<strong>H</strong>umanoid <strong>O</strong>ptimized with <strong>I</strong>mitation and <strong>S</strong>ample-efficient <strong>T</strong>uning for manipulating suspended loads. HOIST first finetunes a high-level vision-language-action (VLA) policy from virtual-reality (VR) teleoperation demonstrations and executes its commands through a whole-body controller. It then uses VLA rollouts and iterative batched RL to improve placement accuracy and stopping behavior. Experiments in simulation and on a real humanoid show that HOIST improves over imitation-only and additional-demonstration baselines; compared with pure VLA rollouts, HOIST reduces translational placement error by 19.9 cm and raw angular error by 3.56°, demonstrating the potential of humanoids for underactuated material-handling tasks.</p>
-    <p className="source-note">The 19.9 cm and 3.56° reductions correspond to the simulation policy after 20 RL rollouts, relative to VLA-50.</p>
-
-</details>
-
+  <div className="section-heading"><h2>Abstract</h2></div>
+  <p>HOIST learns to guide an externally suspended payload through whole-body motion and intermittent contact. We initialize a vision-language-action policy from 50 VR demonstrations, then refine placement and stopping with small batches of reinforcement-learning rollouts while keeping the policy and whole-body controller frozen. In simulation, 20 additional rollouts reduce mean position error from 22.44 to 2.54 cm. On a real humanoid, 30 rollouts reduce it from 9.28 to 6.38 cm. These experiments evaluate a controlled suspended-box task; construction footage illustrates its motivation.</p>
+  <div className="wide"><ResearchFigure src={overview} alt="Three panels contrast directly actuated pick-and-place, an underactuated suspended payload, and HOIST placement." label="The task." caption="Guide the load through contact, then stop at the target." /></div>
 </section>
 
 <section className="method-section section-band" id="method">
 <div className="section-inner">
-  <div className="section-heading"><span className="eyebrow">02 / Method</span><h2>Imitate first.<br /><span className="accent-text">Refine through experience.</span></h2></div>
-  <p className="lead">HOIST starts with demonstrated behavior, then learns to correct the placement errors that emerge during autonomous execution.</p>
+  <div className="section-heading"><h2>Method</h2></div>
+  <div className="wide"><ResearchFigure src={pipeline} alt="HOIST pipeline: VR demonstrations initialize a vision-language-action policy, and reinforcement learning steers initial noise while the policy and whole-body controller remain frozen." description="VR demonstrations provide the initial behavior. Ego-view RGB, side-view RGB, language and navigation commands condition the vision-language backbone. Robot state and depth are encoded for the flow-matching action expert, which outputs a 24-step chunk of 25-dimensional planner commands. A frozen whole-body controller executes head, bimanual hand, navigation and base-height targets. During reinforcement learning, a SAC actor steers initial noise using batches of 10 autonomous rollouts and terminal position and yaw rewards; the VLA and controller remain frozen." caption="Demonstrate → imitate → refine with task-level feedback." /></div>
   <div className="method-steps wide">
-    <article><span className="step-number">01</span><h3>Demonstrate</h3><p>Collect 50 whole-body hoisting demonstrations with VR teleoperation, capturing approach, contact, guidance, and stopping.</p><span className="step-tag">VR teleoperation</span></article>
-    <article><span className="step-number">02</span><h3>Learn to imitate</h3><p>Finetune a GR00T N1.6 VLA to predict planner-command chunks. A frozen whole-body controller executes the motion.</p><span className="step-tag">Vision-language-action policy</span></article>
-    <article><span className="step-number">03</span><h3>Refine with RL</h3><p>Use batches of 10 autonomous rollouts to learn initial-noise steering, optimizing final placement while the VLA and controller stay frozen.</p><span className="step-tag">Sample-efficient refinement</span></article>
+    <article><span className="step-number">01</span><h3>Demonstrate</h3><p>Collect 50 whole-body trajectories with VR teleoperation.</p></article>
+    <article><span className="step-number">02</span><h3>Imitate</h3><p>Finetune the VLA to command a frozen whole-body controller.</p></article>
+    <article><span className="step-number">03</span><h3>Refine</h3><p>Train initial-noise steering with batches of 10 rollouts.</p></article>
   </div>
-  <div className="wide"><ResearchFigure src={pipeline} alt="HOIST architecture showing VR demonstrations, the vision-language backbone, multimodal action expert, frozen whole-body controller, and initial-noise steering reinforcement learning." description="VR demonstrations provide the initial behavior. Ego-view RGB, side-view RGB, language and navigation commands condition the vision-language backbone. Robot state and depth are encoded for the flow-matching action expert, which outputs a 24-step chunk of 25-dimensional planner commands. A frozen whole-body controller executes head, bimanual hand, navigation and base-height targets. During reinforcement learning, a SAC actor steers initial noise using batches of 10 autonomous rollouts and terminal position and yaw rewards; the VLA and controller remain frozen." label="The HOIST pipeline." caption="RGB, depth, robot state, and navigation commands condition the VLA. RL steers the initial noise of the frozen flow-matching action expert, rather than retraining the full policy." /></div>
-  <div className="method-note"><span className="note-marker" aria-hidden="true">↗</span><p><strong>A small update with a task-level objective.</strong> Only the noise-steering actor-critic is trained during RL. Terminal placement feedback changes the selected command trajectory while preserving the pretrained execution stack.</p></div>
 </div>
 </section>
 
 <Demo />
 
 <section className="content-section" id="results">
-
-  <div className="section-heading"><span className="eyebrow">03 / Experiments</span><h2>Better placement.<br />With limited additional interaction.</h2></div>
-  <p className="lead">Evaluated in simulation and on a real humanoid, with the same frozen whole-body controller across methods.</p>
-  <p>Each domain starts from 50 teleoperated demonstrations. HOIST adds up to 30 same-domain RL rollouts. We measure final position and yaw after the payload lands and settles.</p>
+  <div className="section-heading"><h2>Results</h2></div>
+  <p>Final placement after the load settles. Lower position error does not imply uniformly better yaw.</p>
   <div className="wide"><Results /></div>
-
-</section>
-
-<section className="content-section behavior-section" id="behavior">
-
-  <div className="section-heading"><span className="eyebrow">04 / Behavior</span><h2>Learning when to push.<br />And when to stop.</h2></div>
-  <p>Imitation provides feasible motions, but matching demonstration actions does not directly optimize final placement. Rollout feedback exposes the policy’s own contact and stopping errors, allowing HOIST to refine its closed-loop behavior.</p>
-  <div className="wide"><ResearchFigure src={learning} alt="Motivation figure comparing pure imitation, reinforcement learning from scratch, and imitation-initialized HOIST." label="Why imitation and RL?" caption="The framework combines an imitation-learned starting point with task-level refinement for suspended-load positioning." /></div>
-  <h3>More precise placement, less angular motion</h3>
-  <p>At the +20 rollout checkpoint in simulation, mean payload angular-velocity RMS decreases from 0.141 to 0.064 rad/s relative to VLA-50. Acceleration RMS increases from 3.56 to 4.83 m/s², consistent with more active corrective motion.</p>
-  <ResearchFigure src={residual} alt="Simulation bar charts of payload acceleration RMS and angular-velocity RMS for teleoperation, VLA-50, and HOIST after 10, 20, and 30 RL rollouts." caption="Payload IMU statistics in simulation. Error bars show standard deviation; the strongest angular-motion reduction occurs at +20 RL rollouts." />
-  <ResidualData />
-  <aside className="scope-note"><h3>Scope and next steps</h3><p>The experiments use one physical payload configuration: a 2.5 kg box measuring 54 × 54 × 50 cm. The fixed low-level controller limits force adaptation for heavier loads. Broader payload variation and adaptive whole-body force control remain directions for future work.</p></aside>
-
+  <details className="motion-analysis">
+    <summary>Motion analysis & study scope</summary>
+    <ResearchFigure src={residual} alt="Simulation bar charts of payload acceleration RMS and angular-velocity RMS for teleoperation, VLA-50, and HOIST after 10, 20, and 30 RL rollouts." caption="At +20 rollouts, angular-velocity RMS falls from 0.141 to 0.064 rad/s; acceleration RMS rises from 3.56 to 4.83 m/s². Error bars show standard deviation." />
+    <ResidualData />
+    <p>The physical experiments use one 2.5 kg box measuring 54 × 54 × 50 cm. Heavier loads and adaptive force control remain future work.</p>
+  </details>
 </section>
 
 <section className="citation-section section-band" id="citation">
 <div className="section-inner">
-  <div className="section-heading"><span className="eyebrow">05 / Citation</span><h2>Building on this work?</h2></div>
-  <p>If you find HOIST useful in your research, please consider citing our manuscript.</p>
+  <div className="section-heading"><h2>Citation</h2></div>
   <Citation />
 </div>
 </section>
+<MediaControls />

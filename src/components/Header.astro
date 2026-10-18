@@ -3,11 +3,11 @@ import { Icon } from "astro-icon/components";
 import { project, asset } from "../data/project";
 const links = [
   {
-    name: "Read the paper",
+    name: "Paper",
     url: project.paperUrl || asset("paper/"),
     icon: "ri:file-text-line",
   },
-  { name: "Full research video", url: "#demo", icon: "ri:play-circle-line" },
+  { name: "Video", url: "#demo", icon: "ri:play-circle-line" },
   {
     name: "Supplementary",
     url: asset("supplementary/"),
@@ -23,19 +23,37 @@ const links = [
 ---
 
 <header class="comparison-hero" id="top">
-  <div class="hero-stage">
-    <div class="hero-intro">
-      <p class="hero-kicker">Learning to guide the load</p>
-      <h1>
-        <span class="hero-name">HOIST</span><span class="hero-paper-title"
-          >{project.subtitle}</span
-        >
-      </h1>
-      <p class="hero-mission">
-        Lifting equipment carries the weight.<br class="small-screen-break" /> Can
-        a humanoid learn to guide the placement?
-      </p>
+  <div class="hero-intro">
+    <h1><span class="hero-name">HOIST</span><span class="hero-paper-title">{project.subtitle}</span></h1>
+  </div>
+  <div class="hero-publication">
+    <div class="authors">
+      {
+        project.authors.map((author) => (
+          <span>
+            <a href={`mailto:${author.email}`}>{author.name}</a>
+            {author.note && <sup>{author.note}</sup>}
+          </span>
+        ))
+      }
     </div>
+    <p class="author-notes">
+      <span>* Equal contribution</span><span>† Corresponding author</span>
+    </p>
+    <div class="resource-links">
+      {
+        links.map((link) => (
+          <a class="button" href={link.url}>
+            <>
+              <Icon name={link.icon} />
+              <span>{link.name}</span>
+            </>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+  <div class="hero-stage">
     <div class="hero-scenes">
       <figure class="hero-scene">
         <video
@@ -65,8 +83,8 @@ const links = [
           >
         </video>
         <figcaption id="construction-scene-caption">
-          <span class="scene-index">01 / The real-world task</span><strong
-            >People guide a suspended load.</strong
+          <span class="scene-index">Construction</span><strong
+            >Human guidance</strong
           ><span
             >Construction footage · <a
               href="https://www.dvidshub.net/video/760467/crane-2"
@@ -100,70 +118,20 @@ const links = [
           >
         </video>
         <figcaption id="robot-scene-caption">
-          <span class="scene-index">02 / Our research</span><strong
-            >A humanoid learns to do the guiding.</strong
-          ><span>HOIST · Autonomous laboratory demonstration</span>
+          <span class="scene-index">HOIST</span><strong
+            >Humanoid guidance</strong
+          ><span>Laboratory experiment</span>
         </figcaption>
       </figure>
     </div>
-    <div class="hero-playback">
-      <button
-        id="hero-playback-toggle"
-        type="button"
-        aria-controls="construction-clip robot-clip"
-        hidden
-      >
-        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"
-          ><path class="play-symbol" d="M7 4v16l14-8z" fill="currentColor"
-          ></path><path
-            class="pause-symbol"
-            d="M5 4h5v16H5zm9 0h5v16h-5z"
-            fill="currentColor"></path></svg
-        >
-        <span>Play both clips</span>
-      </button>
-      <span>26-second silent excerpts · Play at your own pace</span>
-      <p class="sr-only" id="hero-playback-status" role="status"></p>
-    </div>
   </div>
-  <div class="hero-publication">
-    <div class="authors">
-      {
-        project.authors.map((author) => (
-          <span>
-            <a href={`mailto:${author.email}`}>{author.name}</a>
-            {author.note && <sup>{author.note}</sup>}
-          </span>
-        ))
-      }
-    </div>
-    <p class="affiliation">
-      <strong>{project.institution}</strong><span>{project.department}</span>
-    </p>
-    <p class="author-notes">
-      <span>* Equal contribution</span><span>† Corresponding author</span>
-    </p>
-    <div class="resource-links">
-      {
-        links.map((link) => (
-          <a class="button" href={link.url}>
-            <>
-              <Icon name={link.icon} />
-              <span>{link.name}</span>
-            </>
-          </a>
-        ))
-      }
-    </div>
+  <div class="hero-playback">
+    <button id="hero-playback-toggle" type="button" aria-controls="construction-clip robot-clip hoist-demo" hidden>Pause videos</button>
+    <a href="#video-notes">Video descriptions & sources</a>
+    <p class="sr-only" id="hero-playback-status" role="status"></p>
   </div>
 </header>
-<div class="hero-context wide">
-  <p>
-    <strong>From construction practice to a laboratory research task.</strong> HOIST
-    learns to approach, guide, and stop a suspended payload through whole-body contact.
-    Our physical experiments use a 2.5 kg box; the construction clip illustrates the
-    motivation.
-  </p>
+<div class="hero-context wide" id="video-notes">
   <details class="hero-media-notes">
     <summary>Video sources and visual descriptions</summary>
     <div class="hero-description-grid">
@@ -177,7 +145,7 @@ const links = [
         <p>
           Source: <a href="https://www.dvidshub.net/video/760467/crane-2"
             >“CRANE #2” — U.S. Navy video, Defense VI Records Center / DVIDS</a
-          >. Excerpt: 01:38–02:04; audio removed for this visual comparison.
+          >. Audio removed.
           Listed as public domain in the United States, subject to <a
             href="https://www.dvidshub.net/about/copyright"
             >DVIDS usage conditions</a
@@ -200,8 +168,8 @@ const links = [
           into place.
         </p>
         <p>
-          Source: the authors’ <a href="#demo">full HOIST research video</a>,
-          00:16–00:42. Cropped to the right-hand HOIST panel; playback speed is
+          Source: the authors’ <a href="#demo">HOIST research video</a>,
+          cropped to the right-hand HOIST panel; playback speed is
           unchanged. This excerpt contains no audio. The two clips show
           different settings and are paired to explain the research motivation.
         </p>
@@ -212,53 +180,3 @@ const links = [
     </div>
   </details>
 </div>
-
-<script>
-  const button = document.querySelector<HTMLButtonElement>(
-    "#hero-playback-toggle",
-  );
-  const clips = ["construction-clip", "robot-clip"].map(
-    (id) => document.getElementById(id) as HTMLVideoElement,
-  );
-  const status = document.querySelector<HTMLElement>("#hero-playback-status");
-  if (button && clips.every(Boolean)) {
-    const update = () => {
-      const playing = clips.some((clip) => !clip.paused && !clip.ended);
-      button.querySelector("span")!.textContent = playing
-        ? "Pause clips"
-        : clips.every((clip) => clip.ended)
-          ? "Replay both clips"
-          : "Play both clips";
-      button.classList.toggle("is-playing", playing);
-    };
-    button.hidden = false;
-    for (const clip of clips) {
-      for (const event of ["play", "pause", "ended", "error"])
-        clip.addEventListener(event, update);
-    }
-    button.addEventListener("click", async () => {
-      if (clips.some((clip) => !clip.paused && !clip.ended)) {
-        clips.forEach((clip) => clip.pause());
-        if (status) status.textContent = "";
-        update();
-        return;
-      }
-      if (clips.some((clip) => clip.ended))
-        clips.forEach((clip) => {
-          clip.currentTime = 0;
-        });
-      button.disabled = true;
-      const playback = clips.map((clip) => clip.play());
-      update();
-      const results = await Promise.allSettled(playback);
-      button.disabled = false;
-      if (status)
-        status.textContent = results.some(
-          (result) => result.status === "rejected",
-        )
-          ? "A clip could not start. Use its individual player controls or the source links below."
-          : "";
-      update();
-    });
-  }
-</script>
