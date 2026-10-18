@@ -1889,6 +1889,7 @@ math {
 .visual-story .method-steps article { padding: 20px 0; border: 0; border-bottom: 1px solid var(--line); }
 .visual-story .method-steps article:first-child { padding-top: 0; }
 .visual-story .method-steps article:last-child { border-bottom: 0; }
+.visual-story .step-number { position: static; display: block; }
 .visual-story .method-steps h3 { margin: 8px 0; }
 .visual-story .method-steps p { margin-bottom: 0; }
 .comparison-clips { display: grid; gap: 36px; margin-bottom: 40px; }
