@@ -101,13 +101,9 @@ try {
       await page.locator("#panel-simulation summary").click();
       await page.locator(".motion-analysis > summary").click();
       await page.getByText("Read residual-motion chart values as a table", { exact: true }).click();
-      const descriptions = page.locator("details.clip-description > summary");
-      check(await descriptions.count() === videoCount - 2, "Every research excerpt has an expandable visual description");
-      for (const summary of await descriptions.all()) {
-        await summary.focus();
-        await page.keyboard.press("Enter");
-        check(await summary.evaluate(s => s.parentElement.open), "Research video description expands with keyboard");
-      }
+      check(await page.locator("figure:has(video) > figcaption, details.clip-description").count() === 0, "Video captions and per-player description blocks are removed");
+      check(await page.locator("#vision h2").count() === 1, "Story connects a controlled task to the larger collaborative vision");
+      check(await page.locator("#video-notes .research-media-notes section").count() === 4, "Complete research-video alternatives are consolidated in media notes");
       await page.getByText("Video sources and visual descriptions", { exact: true }).click();
       await scan("home with scientific data and media descriptions expanded");
       await page.getByRole("button", { name: "Copy citation" }).click();

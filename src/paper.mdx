@@ -4,6 +4,7 @@ import ResearchFigure from "./components/ResearchFigure.astro";
 import Results from "./components/Results.astro";
 import Citation from "./components/Citation.astro";
 import ResidualData from "./components/ResidualData.astro";
+import VideoNotes from "./components/VideoNotes.astro";
 import MediaControls from "./components/MediaControls.astro";
 import overview from "./assets/figure2.jpg";
 import pipeline from "./assets/figure4.jpg";
@@ -12,19 +13,19 @@ import residual from "./assets/figure5.png";
 <Header />
 
 <section className="content-section" id="overview">
-  <div className="section-heading"><h2>Abstract</h2></div>
+  <div className="section-heading"><h2>Guide a load you do not carry.</h2></div>
   <div className="visual-story wide">
     <div className="story-copy">
-      <p>HOIST learns to guide an externally suspended payload through whole-body motion and intermittent contact. We initialize a vision-language-action policy from 50 VR demonstrations, then refine placement and stopping with small batches of reinforcement-learning rollouts while keeping the policy and whole-body controller frozen. In simulation, 20 additional rollouts reduce mean position error from 22.44 to 2.54 cm. On a real humanoid, 30 rollouts reduce it from 9.28 to 6.38 cm. These experiments evaluate a controlled suspended-box task; construction footage illustrates its motivation.</p>
+      <p>A crane supports the weight, but someone still guides the load into place. HOIST studies this smaller coordination problem with a humanoid and a suspended box: approach, make contact, align, and stop. Imitation supplies the initial behavior; small batches of reinforcement-learning trials refine placement. Simulation and laboratory experiments test this controlled task.</p>
       <ResearchFigure src={overview} alt="Three panels contrast directly actuated pick-and-place, an underactuated suspended payload, and HOIST placement." label="The task." caption="Guide the load through contact, then stop at the target." />
     </div>
-    <ResearchClip id="task-overview" file="hoist-task-overview" width={396} height={432} caption="A humanoid approaches a suspended load in simulation." description="A simulated humanoid stands beside a box suspended by overhead cables above a rectangular target platform. It moves closer and brings its hands toward the box as the load descends. This is the opening of the HOIST panel from the authors’ simulation comparison, cropped to show the robot and payload at the original playback speed. The Method clip continues this same run." />
+    <ResearchClip id="task-overview" />
   </div>
 </section>
 
 <section className="method-section section-band" id="method">
 <div className="section-inner">
-  <div className="section-heading"><h2>Method</h2></div>
+  <div className="section-heading"><h2>Learn contact, then refine placement.</h2></div>
   <div className="wide"><ResearchFigure src={pipeline} alt="HOIST pipeline: VR demonstrations initialize a vision-language-action policy, and reinforcement learning steers initial noise while the policy and whole-body controller remain frozen." description="VR demonstrations provide the initial behavior. Ego-view RGB, side-view RGB, language and navigation commands condition the vision-language backbone. Robot state and depth are encoded for the flow-matching action expert, which outputs a 24-step chunk of 25-dimensional planner commands. A frozen whole-body controller executes head, bimanual hand, navigation and base-height targets. During reinforcement learning, a SAC actor steers initial noise using batches of 10 autonomous rollouts and terminal position and yaw rewards; the VLA and controller remain frozen." caption="Demonstrate → imitate → refine with task-level feedback." /></div>
   <div className="visual-story wide">
     <div className="method-steps">
@@ -32,18 +33,18 @@ import residual from "./assets/figure5.png";
       <article><span className="step-number">02</span><h3>Imitate</h3><p>Finetune the VLA to command a frozen whole-body controller.</p></article>
       <article><span className="step-number">03</span><h3>Refine</h3><p>Train initial-noise steering with batches of 10 rollouts.</p></article>
     </div>
-    <ResearchClip id="contact-guidance" file="hoist-contact-guidance" width={396} height={432} caption="HOIST guides the descending box through contact in simulation." description="Continuing the Abstract clip, the simulated humanoid keeps its hands near the side of the cable-suspended box and adjusts its posture as the box descends toward the raised target. The crop shows the HOIST policy executing the task, not VR demonstration collection or the training process. Playback remains at the original speed; the simulation comparison in Results shows the final placement from this same run alongside the two baselines." />
+    <ResearchClip id="contact-guidance" />
   </div>
 </div>
 </section>
 
 <section className="content-section" id="results">
-  <div className="section-heading"><h2>Results</h2></div>
+  <div className="section-heading"><h2>Test the final placement.</h2></div>
+  <p>Compare where the load settles in simulation and laboratory trials. Better position accuracy does not imply uniformly better yaw.</p>
   <div className="comparison-clips wide" id="demo">
-    <ResearchClip id="real-comparison" file="hoist-real-comparison" caption="Real humanoid: VLA-50, VLA-80, and HOIST guide the load to its target." description="Three labeled panels show the real humanoid trials: VLA-50 on the left, VLA-80 in the center, and HOIST on the right. In each panel a humanoid approaches a gray box hanging from straps, guides it with its hands as it descends, and finishes beside a wooden platform with a marked rectangular target. The boxes end in different positions and orientations. The complete real-platform segment is shown at the source’s original speed, without audio. These are qualitative comparisons; the numerical results below report placement and yaw errors." />
-    <ResearchClip id="sim-comparison" file="hoist-sim-comparison" caption="Simulation: compare the final placement across the three policies." description="The closing portion of the same simulation shown in Abstract and Method now includes all three labeled panels: VLA-50 on the left, VLA-80 in the center, and HOIST on the right. Cable-suspended boxes descend onto raised rectangular targets while the humanoids adjust their hands and stance. As the boxes settle, the panels show different final offsets and orientations. The excerpt is unsped, silent footage from the authors’ comparison; it is not a separate additional trial." />
+    <ResearchClip id="real-comparison" />
+    <ResearchClip id="sim-comparison" />
   </div>
-  <p>Final placement after the load settles. Lower position error does not imply uniformly better yaw.</p>
   <div className="wide"><Results /></div>
   <details className="motion-analysis">
     <summary>Motion analysis & study scope</summary>
@@ -53,10 +54,16 @@ import residual from "./assets/figure5.png";
   </details>
 </section>
 
+<section className="content-section" id="vision">
+  <div className="section-heading"><h2>From a placement to a coordinated lift.</h2></div>
+  <p>Guiding one suspended box is a step toward coordinated construction work. A complete lift would also need lifting equipment, site geometry, human crews, and changing loads to work together. Connecting these pieces calls for robot learning, lifting and structural expertise, planning, and field operations; the present experiments do not establish that complete system.</p>
+</section>
+
 <section className="citation-section section-band" id="citation">
 <div className="section-inner">
   <div className="section-heading"><h2>Citation</h2></div>
   <Citation />
 </div>
 </section>
+<VideoNotes />
 <MediaControls />

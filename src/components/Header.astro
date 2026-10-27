@@ -58,7 +58,7 @@ const links = [
           height="480"
           poster={asset("media/construction-guidance-poster.jpg")}
           aria-label="Construction context: workers guide a crane-suspended concrete cap"
-          aria-describedby="construction-scene-caption construction-visual-description"
+          aria-describedby="construction-visual-description"
         >
           <source
             src={asset("media/construction-guidance.mp4")}
@@ -70,11 +70,8 @@ const links = [
             srclang="en"
             label="English visual descriptions"
           />
-          Video playback is unavailable. Read the visual description below.
+          Video playback is unavailable. Read the text alternative in the media notes.
         </video>
-        <figcaption id="construction-scene-caption">
-          Workers guide a crane-suspended concrete cap into place.
-        </figcaption>
       </figure>
       <figure class="hero-scene">
         <video
@@ -88,7 +85,7 @@ const links = [
           height="432"
           poster={asset("media/hoist-guidance-poster.jpg")}
           aria-label="HOIST laboratory demonstration: a humanoid guides a suspended box toward its target"
-          aria-describedby="robot-scene-caption robot-visual-description"
+          aria-describedby="robot-visual-description"
         >
           <source src={asset("media/hoist-guidance.mp4")} type="video/mp4" />
           <track
@@ -97,55 +94,9 @@ const links = [
             srclang="en"
             label="English visual descriptions"
           />
-          Video playback is unavailable. Read the visual description below.
+          Video playback is unavailable. Read the text alternative in the media notes.
         </video>
-        <figcaption id="robot-scene-caption">
-          HOIST guides a suspended box onto a marked target.
-        </figcaption>
       </figure>
     </div>
   </div>
 </header>
-<div class="hero-context wide" id="video-notes">
-  <details class="hero-media-notes">
-    <summary>Video sources and visual descriptions</summary>
-    <div class="hero-description-grid">
-      <div>
-        <p id="construction-visual-description">
-          <strong>Left — construction context.</strong> Workers on an unfinished building
-          guide a concrete cap hanging from a crane cable. They steady and align the
-          piece by hand as it is lowered toward the top of a masonry wall. A wider
-          shot shows the cable, the workers, and the surrounding structure.
-        </p>
-        <p>
-          Source: <a href="https://www.dvidshub.net/video/760467/crane-2"
-            >“CRANE #2” — U.S. Navy video, Defense VI Records Center / DVIDS</a
-          >. Audio removed.
-          Listed as public domain in the United States, subject to <a
-            href="https://www.dvidshub.net/about/copyright"
-            >DVIDS usage conditions</a
-          >.
-        </p>
-        <p class="source-disclaimer">
-          The appearance of U.S. Department of War (DoW) visual information does
-          not imply or constitute DoW endorsement.
-        </p>
-      </div>
-      <div>
-        <p id="robot-visual-description">
-          <strong>Right — HOIST laboratory demonstration.</strong> A humanoid approaches
-          a gray box suspended from overhead straps. It contacts the box with both
-          hands and adjusts its position as the box descends onto a wooden platform,
-          toward a marked rectangular target. The robot stops after guiding the payload
-          into place.
-        </p>
-        <p>
-          Source: the authors’ <a href="#real-comparison">real humanoid comparison</a>,
-          cropped to the right-hand HOIST panel; playback speed is
-          unchanged. This excerpt contains no audio. The two clips show
-          different settings and are paired to explain the research motivation.
-        </p>
-      </div>
-    </div>
-  </details>
-</div>

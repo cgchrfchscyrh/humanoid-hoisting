@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-18T19:24:05.643Z",
+  "date": "2026-10-27T15:47:40.505Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -136,11 +136,9 @@
     "No redundant visible duration labels",
     "Keyboard selects real-platform results",
     "Arrow key selects simulation results",
-    "Every research excerpt has an expandable visual description",
-    "Research video description expands with keyboard",
-    "Research video description expands with keyboard",
-    "Research video description expands with keyboard",
-    "Research video description expands with keyboard",
+    "Video captions and per-player description blocks are removed",
+    "Story connects a controlled task to the larger collaborative vision",
+    "Complete research-video alternatives are consolidated in media notes",
     "Citation copies",
     "/: reflows at 320",
     "/: reflows at 768",

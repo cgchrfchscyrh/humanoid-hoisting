@@ -1,16 +1,10 @@
 ---
 import { asset } from "../data/project";
 
-interface Props {
-  id: string;
-  file: string;
-  caption: string;
-  description: string;
-  width?: number;
-  height?: number;
-}
-
-const { id, file, caption, description, width = 1280, height = 720 } = Astro.props;
+import clips from "../data/research-clips.json";
+interface Props { id: string; }
+const { id } = Astro.props;
+const { file, caption, description, width, height } = clips.find(clip => clip.id === id)!;
 ---
 
 <figure class="research-clip" id={id}>
@@ -24,7 +18,7 @@ const { id, file, caption, description, width = 1280, height = 720 } = Astro.pro
     poster={asset(`media/${file}-poster.jpg`)}
     width={width}
     height={height}
-    aria-labelledby={`${id}-caption`}
+    aria-label={caption}
     aria-describedby={`${id}-description`}
   >
     <source src={asset(`media/${file}.mp4`)} type="video/mp4" />
@@ -34,13 +28,9 @@ const { id, file, caption, description, width = 1280, height = 720 } = Astro.pro
       srclang="en"
       label="English visual descriptions"
     />
-    Video playback is unavailable. Read the visual description below.
+    Video playback is unavailable. Read the text alternative in the media notes.
   </video>
-  <figcaption id={`${id}-caption`}>{caption}</figcaption>
-  <details class="clip-description">
-    <summary aria-label={`Video description: ${caption}`}>Video description</summary>
-    <p id={`${id}-description`}>{description}</p>
-  </details>
+  <p id={`${id}-description`} class="sr-only">{description}</p>
 </figure>
 
 <style>

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "task-overview",
+    "file": "hoist-task-overview",
+    "width": 396,
+    "height": 432,
+    "caption": "A humanoid approaches a suspended load in simulation.",
+    "description": "A simulated humanoid stands beside a box suspended by overhead cables above a rectangular target platform. It moves closer and brings its hands toward the box as the load descends. This is the opening of the HOIST panel from the authors’ simulation comparison, cropped to show the robot and payload at the original playback speed. The Method clip continues this same run."
+  },
+  {
+    "id": "contact-guidance",
+    "file": "hoist-contact-guidance",
+    "width": 396,
+    "height": 432,
+    "caption": "HOIST guides the descending box through contact in simulation.",
+    "description": "Continuing the Abstract clip, the simulated humanoid keeps its hands near the side of the cable-suspended box and adjusts its posture as the box descends toward the raised target. The crop shows the HOIST policy executing the task, not VR demonstration collection or the training process. Playback remains at the original speed; the simulation comparison in Results shows the final placement from this same run alongside the two baselines."
+  },
+  {
+    "id": "real-comparison",
+    "file": "hoist-real-comparison",
+    "width": 1280,
+    "height": 720,
+    "caption": "Real humanoid: VLA-50, VLA-80, and HOIST guide the load to its target.",
+    "description": "Three labeled panels show the real humanoid trials: VLA-50 on the left, VLA-80 in the center, and HOIST on the right. In each panel a humanoid approaches a gray box hanging from straps, guides it with its hands as it descends, and finishes beside a wooden platform with a marked rectangular target. The boxes end in different positions and orientations. The complete real-platform segment is shown at the source’s original speed, without audio. These are qualitative comparisons; the numerical results below report placement and yaw errors."
+  },
+  {
+    "id": "sim-comparison",
+    "file": "hoist-sim-comparison",
+    "width": 1280,
+    "height": 720,
+    "caption": "Simulation: compare the final placement across the three policies.",
+    "description": "The closing portion of the same simulation shown in Abstract and Method now includes all three labeled panels: VLA-50 on the left, VLA-80 in the center, and HOIST on the right. Cable-suspended boxes descend onto raised rectangular targets while the humanoids adjust their hands and stance. As the boxes settle, the panels show different final offsets and orientations. The excerpt is unsped, silent footage from the authors’ comparison; it is not a separate additional trial."
+  }
+]
