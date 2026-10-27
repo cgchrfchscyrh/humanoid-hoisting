@@ -103,6 +103,7 @@ try {
       await page.getByText("Read residual-motion chart values as a table", { exact: true }).click();
       check(await page.locator("figure:has(video) > figcaption, details.clip-description").count() === 0, "Video captions and per-player description blocks are removed");
       check(await page.locator("#vision h2").count() === 1, "Story connects a controlled task to the larger collaborative vision");
+      check(await page.locator(".vision-connections li").count() === 3 && await page.locator(".vision-scene svg[role=img]").count() === 1, "Visual bridge shows three collaboration needs and an accessible future scene");
       check(await page.locator("#video-notes .research-media-notes section").count() === 4, "Complete research-video alternatives are consolidated in media notes");
       await page.getByText("Video sources and visual descriptions", { exact: true }).click();
       await scan("home with scientific data and media descriptions expanded");

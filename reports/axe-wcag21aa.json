@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-27T15:47:40.505Z",
+  "date": "2026-10-27T16:22:57.301Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -13,14 +13,14 @@
         },
         {
           "id": "color-contrast",
-          "nodes": 2
+          "nodes": 4
         },
         {
           "id": "video-caption",
           "nodes": 6
         }
       ],
-      "passes": 25
+      "passes": 28
     },
     {
       "name": "home with scientific data and media descriptions expanded",
@@ -32,14 +32,14 @@
         },
         {
           "id": "color-contrast",
-          "nodes": 2
+          "nodes": 4
         },
         {
           "id": "video-caption",
           "nodes": 6
         }
       ],
-      "passes": 29
+      "passes": 32
     },
     {
       "name": "/ mobile",
@@ -58,7 +58,7 @@
           "nodes": 6
         }
       ],
-      "passes": 29
+      "passes": 32
     },
     {
       "name": "/paper/ desktop",
@@ -138,6 +138,7 @@
     "Arrow key selects simulation results",
     "Video captions and per-player description blocks are removed",
     "Story connects a controlled task to the larger collaborative vision",
+    "Visual bridge shows three collaboration needs and an accessible future scene",
     "Complete research-video alternatives are consolidated in media notes",
     "Citation copies",
     "/: reflows at 320",

@@ -1,4 +1,5 @@
 ---
+import stories from "../data/vision-stories.json";
 import { Icon } from "astro-icon/components";
 import { project, asset } from "../data/project";
 const links = [
@@ -15,7 +16,7 @@ const links = [
 
 <header class="comparison-hero" id="top">
   <div class="hero-intro">
-    <h1><span class="hero-name">HOIST</span><span class="hero-paper-title">{project.subtitle}</span></h1>
+    <h1 class="project-display-title">{stories.hoist.headlineLines.map(line => <span class="display-line">{line}{" "}</span>)}</h1>
   </div>
   <div class="hero-publication">
     <div class="authors">
