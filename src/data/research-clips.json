@@ -10,7 +10,7 @@
   {
     "id": "sim-result",
     "file": "hoist-sim-result",
-    "width": 396,
+    "width": 384,
     "height": 432,
     "caption": "Simulation: HOIST guides the load onto its landing platform.",
     "description": "The final phase of a HOIST simulation. A cable-suspended box descends toward a rectangular platform as the humanoid adjusts hand contact and stance, and the box settles into its final position and orientation. Black gutters and title bands are removed; the robot, load, and target are retained at original speed without audio."
