@@ -1689,7 +1689,15 @@ math {
 .world-card video { aspect-ratio: 16 / 9; object-fit: cover; background: #fff; border-radius: 0; }
 .gallery-notes-link { display: block; width: fit-content; margin-top: 18px; font-size: 13px; text-decoration: underline; }
 .research-demonstrations { margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--line); padding-bottom: 20px; }
-.research-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 36px; max-width: 880px; margin-inline: auto; }
+.research-pair { --clip-bubble: clamp(230px, 17vw, 300px); display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 32px; width: min(calc(100vw - 48px), 1560px); margin-left: 50%; transform: translateX(-50%); }
+.research-pair > section { display: grid; column-gap: 24px; align-items: start; }
+.research-pair > section:first-child { grid-template-columns: var(--clip-bubble) minmax(0,1fr); grid-template-areas: ". title" "bubble clip"; }
+.research-pair > section:last-child { grid-template-columns: minmax(0,1fr) var(--clip-bubble); grid-template-areas: "title ." "clip bubble"; }
+.research-pair h3 { grid-area: title; }
+.research-pair .research-clip { grid-area: clip; }
+.clip-bubble { grid-area: bubble; }
+.clip-bubble-real::after { right: -8px; transform: rotate(45deg); }
+.clip-bubble-sim::after { left: -8px; transform: rotate(-135deg); }
 .research-pair h3 { font-weight: 500; font-size: 21px; margin: 0 0 12px; }
 .method-map { display: grid; grid-template-columns: clamp(270px, 20vw, 320px) minmax(0,1fr) clamp(270px, 20vw, 320px); grid-template-areas: "demonstrate figure practice" "learn figure control"; gap: 24px 32px; width: min(calc(100vw - 48px), 1760px); margin-left: 50%; transform: translateX(-50%); }
 .method-map-figure { grid-area: figure; min-width: 0; }
@@ -1708,6 +1716,10 @@ math {
   .method-map { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-areas: "figure figure" "demonstrate learn" "control practice"; gap: 20px; width: min(calc(100vw - 40px), var(--wide)); }
   .method-bubble { align-self: stretch; font-size: 15px; }
   .method-bubble::after { display: none; }
+  .research-pair { width: 100%; max-width: 880px; margin-inline: auto; transform: none; }
+  .research-pair > section { display: block; }
+  .clip-bubble { margin-top: 18px; }
+  .clip-bubble::after { display: block; top: -8px; right: auto; left: 32px; transform: rotate(-45deg); }
 }
 .research-pair video { height: auto; aspect-ratio: auto; background: #fff; border-radius: 0; }
 .research-pair .research-clip video { aspect-ratio: 8 / 9; object-fit: cover; }

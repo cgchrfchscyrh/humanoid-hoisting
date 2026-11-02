@@ -1,5 +1,11 @@
 # Accessibility review — 18 October 2026
 
+## Video explanation bubbles — 2 November 2026
+
+The real and simulation videos each have a short plain-language bubble: beside the video on wide screens and directly below it on narrower ones. The bubbles add to, and do not replace, the linked text alternatives and timed descriptions.
+
+Build, lint, and the updated browser suite passed: **9 axe scans and 92 functional checks**, with no violations or failures. Layouts from 320 to 1920 CSS pixels were reviewed. Existing PDF and screen-reader limitations still apply.
+
 ## Method figure bubbles — 2 November 2026
 
 The method explanation now appears as four bubbles beside the matching figure panels on wide screens, and below the figure on narrower ones. Number badges identify the panels without relying on color or position, and reading order stays 0, 1–2, 3, 4.
