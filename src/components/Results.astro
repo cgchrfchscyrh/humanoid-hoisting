@@ -1,7 +1,7 @@
 ---
 import ResearchFigure from "./ResearchFigure.astro";
-import sim from "../assets/sim-comparison-clean.jpg";
-import real from "../assets/real-comparison-clean.jpg";
+import sim from "../assets/sim-hoist-result.jpg";
+import real from "../assets/real-hoist-result.jpg";
 const domains = [
   {
     id: "simulation",
@@ -169,11 +169,10 @@ const domains = [
             </p>
           </div>
           <div class="comparison-visual">
-            <div class="method-labels" aria-hidden="true"><span>VLA-50</span><span>VLA-80</span><span>HOIST (ours)</span></div>
             <ResearchFigure
               src={domain.figure}
-              alt={`${domain.title} comparison of VLA-50, VLA-80, and HOIST positioning the suspended payload`}
-              caption="End-of-trial views; method labels follow the same left-to-right order as the videos above."
+              alt={`${domain.title}: HOIST positioning the suspended payload at the end of a trial`}
+              caption="End-of-trial view of HOIST."
             />
           </div>
         </div>

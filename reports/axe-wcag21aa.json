@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-02T15:33:21.952Z",
+  "date": "2026-11-02T20:44:10.066Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -51,7 +51,7 @@
         },
         {
           "id": "color-contrast",
-          "nodes": 17
+          "nodes": 18
         },
         {
           "id": "video-caption",
@@ -196,8 +196,8 @@
     "Real-world excerpt plays when visible: world-container-transfer",
     "Real-world excerpt plays when visible: world-vehicle-unloading",
     "Real-world excerpt plays when visible: world-crane-positioning",
-    "Research excerpt autoplays muted when visible: real-comparison-video",
-    "Research excerpt autoplays muted when visible: sim-comparison-video",
+    "Research excerpt autoplays muted when visible: real-result-video",
+    "Research excerpt autoplays muted when visible: sim-result-video",
     "Research excerpt autoplays muted when visible: task-overview-video",
     "Research excerpt autoplays muted when visible: contact-guidance-video",
     "Offscreen real-world videos pause",

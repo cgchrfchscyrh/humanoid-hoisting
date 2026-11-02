@@ -13,24 +13,22 @@
     "width": 396,
     "height": 432,
     "caption": "HOIST guides the descending box through contact in simulation.",
-    "description": "Continuing the task-overview clip, the simulated humanoid keeps its hands near the side of the cable-suspended box and adjusts its posture as the box descends toward the raised target. The crop shows the HOIST policy executing the task, not VR demonstration collection or the training process. Playback remains at the original speed; the simulation comparison above shows the final placement from this same run alongside the two baselines."
+    "description": "Continuing the task-overview clip, the simulated humanoid keeps its hands near the side of the cable-suspended box and adjusts its posture as the box descends toward the raised target. The crop shows the HOIST policy executing the task, not VR demonstration collection or the training process. Playback remains at the original speed; the simulation clip above shows the final placement from this same run."
   },
   {
-    "id": "real-comparison",
-    "file": "hoist-real-comparison-clean",
-    "width": 1152,
+    "id": "real-result",
+    "file": "hoist-real-result",
+    "width": 384,
     "height": 432,
-    "caption": "Real humanoid: VLA-50, VLA-80, and HOIST guide the load to its target.",
-    "description": "Three panels show the real humanoid trials: VLA-50 on the left, VLA-80 in the center, and HOIST on the right. A gray box hangs from straps above a wooden platform with an outlined target. Each robot reaches toward the box and adjusts hand contact as the load descends. The final views show different placement offsets and orientations. This is the complete real-platform segment of the authors\u2019 comparison, at original speed and without audio. Method labels are placed above the video; black gutters and title bands are removed while the robot, load, and target views are retained. The charts below report measured position and yaw errors.",
-    "comparison": true
+    "caption": "Real humanoid: HOIST guides the load to its target.",
+    "description": "A real humanoid running HOIST faces a gray box hanging from straps above a wooden platform with an outlined target. The robot reaches toward the box and adjusts hand contact as the load descends, and the box reaches the platform. This is the HOIST panel of the real-platform segment of the authors\u2019 comparison, at original speed and without audio; black gutters and title bands are removed while the robot, load, and target are retained. The charts below report measured position and yaw errors."
   },
   {
-    "id": "sim-comparison",
-    "file": "hoist-sim-comparison-clean",
-    "width": 1186,
+    "id": "sim-result",
+    "file": "hoist-sim-result",
+    "width": 396,
     "height": 432,
-    "caption": "Simulation: compare the final placement across the three policies.",
-    "description": "Three panels show the final phase of one comparative simulation: VLA-50 on the left, VLA-80 in the center, and HOIST on the right. Cable-suspended boxes descend toward rectangular platforms as the humanoids adjust hand contact and stance. The boxes settle with different final positions and orientations. The task-overview and Method clips below show earlier portions of this same simulation, not additional independent trials. Method labels appear above the video. Black gutters and title bands are removed; the robot, load, and target views are retained at original speed without audio.",
-    "comparison": true
+    "caption": "Simulation: HOIST guides the load onto its landing platform.",
+    "description": "The final phase of a HOIST simulation. A cable-suspended box descends toward a rectangular platform as the humanoid adjusts hand contact and stance, and the box settles into its final position and orientation. The task-overview and Method clips below show earlier portions of this same simulation, not additional independent trials. Black gutters and title bands are removed; the robot, load, and target are retained at original speed without audio."
   }
 ]

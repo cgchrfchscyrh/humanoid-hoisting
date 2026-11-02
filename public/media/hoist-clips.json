@@ -21,7 +21,7 @@
   },
   "segment_boundary_verification": "Scene-change detection and visual frame review identify the real-world segment as 15\u201345 seconds and simulation as 45\u201395 seconds. These exact boundaries correct older approximate website descriptions.",
   "editing": "H.264, yuv420p, 30 fps, faststart; original playback speed and source order; no audio. The original file is unchanged. Cropped views retain the robot, load and target; their webpage captions and text alternatives identify the simulation context.",
-  "continuity": "The Abstract, Method and simulation Results clips are consecutive excerpts of the same comparative simulation, not independent experiments. The real-world Results clip retains all three method panels for the complete real-world segment.",
+  "continuity": "The Abstract, Method and simulation Results clips are consecutive excerpts of the same comparative simulation, not independent experiments. The web page shows only the HOIST panel of the real-world and simulation Results clips.",
   "clips": [
     {
       "file": "hoist-task-overview.mp4",
@@ -107,75 +107,55 @@
     }
   ],
   "web_presentation_2026_11_02": {
-    "note": "Original source and previous excerpts are preserved. The real and simulation comparisons now follow the real-world gallery.",
+    "note": "Original source and previous excerpts are preserved, except the three-panel -clean excerpts, which these HOIST-only clips replace. The real and simulation results follow the real-world gallery.",
     "files": [
-      "hoist-real-comparison-clean.mp4",
-      "hoist-sim-comparison-clean.mp4"
+      "hoist-real-result.mp4",
+      "hoist-sim-result.mp4"
     ],
-    "source_files": [
-      "hoist-real-comparison.mp4",
-      "hoist-sim-comparison.mp4"
-    ],
-    "crop_per_panel": {
+    "source": "hoist.mp4",
+    "source_seconds": {
       "real": [
-        [
-          0,
-          144,
-          384,
-          432
-        ],
-        [
-          448,
-          144,
-          384,
-          432
-        ],
-        [
-          896,
-          144,
-          384,
-          432
-        ]
+        15.2,
+        45
       ],
       "simulation": [
-        [
-          0,
-          144,
-          398,
-          432
-        ],
-        [
-          444,
-          144,
-          392,
-          432
-        ],
-        [
-          884,
-          144,
-          396,
-          432
-        ]
+        76,
+        95
+      ]
+    },
+    "crop": {
+      "real": [
+        896,
+        144,
+        384,
+        432
+      ],
+      "simulation": [
+        884,
+        144,
+        396,
+        432
       ]
     },
     "output_dimensions": {
       "real": [
-        1152,
+        384,
         432
       ],
       "simulation": [
-        1186,
+        396,
         432
       ]
     },
-    "editing": "Crop each recorded panel to the robot, load and target region, removing empty black gutters and title bands; join the panels in original VLA-50, VLA-80, HOIST order. Method labels are HTML above the player. Preserve timing, source speed, and silent audio state. End-state poster images use the same crop.",
+    "editing": "Crop the HOIST panel to the robot, load and target region, removing the VLA-50 and VLA-80 panels, black gutters and title bands. The real clip starts at 15.2 s to omit the six-frame wipe from the preceding slide. Preserve timing, source speed, and silent audio state. Posters and end-of-trial result figures use the same crop.",
     "poster_seconds": [
       4,
       4
     ],
-    "end_state_frame_seconds": [
-      28,
-      17
-    ]
+    "end_state_source_seconds": [
+      43,
+      93
+    ],
+    "social_preview": "social-preview.jpg joins the real and simulation HOIST end-of-trial views."
   }
 }
