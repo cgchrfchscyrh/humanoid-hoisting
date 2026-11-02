@@ -1,0 +1,40 @@
+{
+  "reviewed": "2026-11-02",
+  "scope": "HOIST landing-page copy, real-world 3x3 gallery, research-media presentation, compact citation",
+  "layout": {
+    "desktop": "3 columns; nine independent real-world excerpts; real humanoid and simulation comparisons immediately follow",
+    "narrow": "1 column at 320 CSS pixels, 2 at tablet widths",
+    "citation": "25px heading, 12px code, reduced section padding and box width"
+  },
+  "automated": {
+    "axe_scans": 9,
+    "checks": 94,
+    "violations": 0,
+    "errors": [],
+    "production_dependency_vulnerabilities": 0
+  },
+  "media": {
+    "new_world_clips": 9,
+    "research_comparisons": 2,
+    "new_video_bytes": 9335678,
+    "decode_checks_passed": true,
+    "audio_streams": 0,
+    "visual_review": "Reviewed source contact sheets and edited clips; removed title cards, unrelated ending cuts, encoded black/color gutters and CSS letterboxing. Research crops preserve robot, load and target. Labels are accessible HTML/text alternatives. External clips have source links and DVIDS credits."
+  },
+  "manual_checks": [
+    "Desktop three-column gallery and complete research panels visually reviewed.",
+    "320 CSS pixel layout visually reviewed; document does not overflow.",
+    "Compact citation wraps on narrow screens.",
+    "Main navigation, native video keyboard playback and pause memory verified in Chromium.",
+    "Reduced motion and SaveData suppress automatic playback; native play remains available."
+  ],
+  "preserved": [
+    "Original research video and image files",
+    "Original manuscript HTML, PDFs, and supplementary materials"
+  ],
+  "evidence_boundary": "The nine external clips are context only. HOIST evidence remains laboratory and simulation tests with a suspended box. Field deployment and crane coordination are future work.",
+  "limitations": [
+    "Automated scans and Chromium keyboard checks do not establish full ADA/WCAG certification.",
+    "Manual screen-reader review, other browsers, and original PDF tagging/reading order have not been fully evaluated."
+  ]
+}

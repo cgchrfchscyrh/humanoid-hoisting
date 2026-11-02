@@ -1,7 +1,7 @@
 ---
 import ResearchFigure from "./ResearchFigure.astro";
-import sim from "../assets/sim.png";
-import real from "../assets/real.png";
+import sim from "../assets/sim-comparison-clean.jpg";
+import real from "../assets/real-comparison-clean.jpg";
 const domains = [
   {
     id: "simulation",
@@ -9,7 +9,7 @@ const domains = [
     figure: sim,
     summary: "From 22.44 cm to 2.54 cm with 20 RL rollouts.",
     description:
-      "The +20 rollout policy achieves the lowest mean position and yaw errors in simulation. Additional refinement is not strictly monotonic.",
+      "HOIST after 20 RL rollouts achieves the lowest mean position and yaw errors in simulation. Further refinement does not consistently reduce error.",
     rows: [
       {
         name: "VLA-50",
@@ -57,7 +57,7 @@ const domains = [
     figure: real,
     summary: "From 9.28 cm to 6.38 cm on the real humanoid.",
     description:
-      "The +30 rollout policy achieves the lowest mean position error on the real platform. The +20 policy has the lowest mean yaw error.",
+      "HOIST after 30 RL rollouts achieves the lowest mean position error on the real platform. HOIST after 20 RL rollouts has the lowest mean yaw error.",
     rows: [
       {
         name: "VLA-50",
@@ -169,10 +169,11 @@ const domains = [
             </p>
           </div>
           <div class="comparison-visual">
+            <div class="method-labels" aria-hidden="true"><span>VLA-50</span><span>VLA-80</span><span>HOIST (ours)</span></div>
             <ResearchFigure
               src={domain.figure}
               alt={`${domain.title} comparison of VLA-50, VLA-80, and HOIST positioning the suspended payload`}
-              caption="Qualitative comparison at 1× speed in the accompanying video."
+              caption="End-of-trial views; method labels follow the same left-to-right order as the videos above."
             />
           </div>
         </div>

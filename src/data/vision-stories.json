@@ -1,14 +1,14 @@
 {
   "hoist": {
-    "headline": "Teaching humanoids to guide the lift.",
-    "title": "One load. A coordinated lift.",
-    "current": "Contact-guided placement",
-    "evidence": "Lab + simulation",
+    "headline": "Learning to guide suspended loads.",
+    "title": "From one guided load to a coordinated worksite.",
+    "current": "Place a suspended box",
+    "evidence": "Controlled lab + simulation",
     "image": "media/hoist-guidance-poster.jpg",
     "imageAlt": "Author-recorded humanoid guiding a suspended box toward a marked laboratory target.",
     "sourceAnchor": "#results",
     "scene": "hoist",
-    "future": "People, robots & lifting equipment",
+    "future": "Coordinated lifting on site",
     "systems": [
       "Payload",
       "Humanoid",
@@ -16,23 +16,23 @@
     ],
     "connections": [
       {
-        "task": "Adapt contact",
+        "task": "Handle changing loads",
         "partners": "Robot learning + control"
       },
       {
-        "task": "Coordinate the lift",
+        "task": "Synchronize crane and robot",
         "partners": "Lifting engineering + planning"
       },
       {
-        "task": "Work on site",
+        "task": "Integrate with site crews",
         "partners": "Construction crews + safety"
       }
     ],
     "sceneAlt": "Future concept: a crane suspends a load between a crew member and a humanoid beside an unfinished structure.",
     "description": "The current work demonstrates humanoid guidance of one suspended box in controlled laboratory and simulation settings. Three open connections—adaptive contact, coordination with lifting equipment, and integration into site operations—lead toward a future coordinated lift. The illustration places a humanoid and a crew member beside a crane-suspended load and an unfinished structure. It is a collaborative concept, not evidence of a field-deployed system.",
     "headlineLines": [
-      "Teaching humanoids",
-      "to guide the lift."
+      "Learning to guide",
+      "suspended loads."
     ]
   }
 }

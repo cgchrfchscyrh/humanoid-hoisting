@@ -83,7 +83,12 @@ try {
 
     if (route === "/") {
       const videoCount = await page.locator("video").count();
-      check(videoCount === 6, "Two introductory videos and four research excerpts are present");
+      check(videoCount === 13, "Nine real-world videos and four research excerpts are present");
+      check(await page.locator(".world-grid .world-card video").count() === 9, "Real-world gallery contains nine video players");
+      check(await page.locator(".world-grid").evaluate(el => getComputedStyle(el).gridTemplateColumns.split(" ").length === 3), "Desktop gallery uses three columns");
+      check(await page.locator("#real-world").evaluate(el => el.nextElementSibling?.id === "demo"), "Our real and simulation videos immediately follow the real-world gallery");
+      check(await page.locator(".world-card-header a").count() === 9, "Every real-world example links to its original source");
+      check(await page.locator(".citation-section h2").evaluate(el => parseFloat(getComputedStyle(el).fontSize) <= 25), "Citation heading uses a compact size");
       check(await page.locator("#hero-playback-toggle,#hero-playback-status").count() === 0, "Separate global playback button and status are removed");
       check(await page.locator("video").evaluateAll(vs => vs.every(v => v.paused && v.muted && v.controls && v.playsInline && v.controlsList.contains("nodownload"))), "Reduced-motion page starts paused with native controls and hidden native download option");
       check(await page.locator("video").evaluateAll(vs => vs.every(v => {
@@ -91,7 +96,7 @@ try {
         return ids.length > 0 && ids.every(id => (document.getElementById(id)?.textContent || "").trim().length > 40);
       })), "Every silent video has a complete linked visual description");
       check(await page.locator("video").evaluateAll(vs => vs.every(v => v.querySelectorAll('track[kind="descriptions"][src]').length === 1)), "Every silent video retains one timed visual-description track");
-      check(await page.locator("#overview video").count() === 1 && await page.locator("#method video").count() === 1 && await page.locator("#results video").count() === 2, "Research excerpts accompany Abstract, Method, and Results");
+      check(await page.locator("#overview video").count() === 1 && await page.locator("#method video").count() === 1 && await page.locator("#demo video").count() === 2, "Research excerpts accompany the question and method, with real/simulation comparisons directly after the gallery");
       check(!/\b\d+(?:\.\d+)?[- ]seconds?\b/.test(await page.locator("main").innerText()), "No redundant visible duration labels");
       await page.getByRole("tab", { name: "Real humanoid" }).focus();
       await page.keyboard.press("Enter");
@@ -115,6 +120,7 @@ try {
       await page.setViewportSize({ width, height: 900 });
       check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), route + ": reflows at " + width);
     }
+    await page.setViewportSize({ width: 320, height: 900 });
     const spacing = await page.addStyleTag({ content: "*{line-height:1.5!important;letter-spacing:.12em!important;word-spacing:.16em!important}p{margin-bottom:2em!important}" });
     check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), route + ": text-spacing reflow");
     await spacing.evaluate(x => x.remove());
@@ -127,22 +133,27 @@ try {
   const auto = await normal.newPage();
   auto.on("pageerror", e => report.errors.push(e.message));
   await auto.goto(origin + "/", { waitUntil: "networkidle" });
-  const firstVideo = auto.locator(".hero-scene video").first();
+  const firstVideo = auto.locator(".world-card video").first();
   await firstVideo.scrollIntoViewIfNeeded();
-  await auto.waitForFunction(() => [...document.querySelectorAll(".hero-scene video")].every(v => !v.paused && v.muted && v.loop && v.currentTime > .1));
-  check(true, "Both visible hero videos autoplay muted and loop");
+  await auto.waitForFunction(() => [...document.querySelectorAll(".world-card video")].slice(0, 3).every(v => !v.paused && v.muted && v.loop && v.currentTime > .1));
+  check(true, "The first row of the real-world gallery autoplays muted and loops");
   await tabToVideo(auto, firstVideo);
   check(true, "Native video controls are reachable with Tab");
   await auto.keyboard.press("Space");
   await waitForPlayback(firstVideo, true);
   check(true, "Space on the native player pauses the video");
 
+  for (const video of (await auto.locator(".world-card video").all()).slice(1)) {
+    await video.scrollIntoViewIfNeeded();
+    await waitForPlayback(video, false);
+    check(await video.evaluate(v => v.muted && v.loop && v.videoWidth > 0), "Real-world excerpt plays when visible: " + await video.getAttribute("id"));
+  }
   for (const video of await auto.locator("figure.research-clip video").all()) {
     await video.scrollIntoViewIfNeeded();
     await waitForPlayback(video, false);
     check(await video.evaluate(v => v.muted && v.loop), "Research excerpt autoplays muted when visible: " + await video.getAttribute("id"));
   }
-  check(await auto.locator(".hero-scene video").evaluateAll(vs => vs.every(v => v.paused)), "Offscreen hero videos pause");
+  check(await auto.locator(".world-card video").evaluateAll(vs => vs.every(v => v.paused)), "Offscreen real-world videos pause");
   await firstVideo.scrollIntoViewIfNeeded();
   await waitForPlayback(auto.locator("figure.research-clip video").last(), true);
   check(await firstVideo.evaluate(v => v.paused), "Native manual pause survives leaving and returning to view");
@@ -162,7 +173,7 @@ try {
     await p.goto(origin + "/", { waitUntil: "networkidle" });
     await p.locator("figure.research-clip video").last().scrollIntoViewIfNeeded();
     check(await p.locator("video").evaluateAll(vs => vs.every(v => v.paused && v.currentTime === 0)), setting + ": no automatic playback");
-    const video = p.locator(".hero-scene video").first();
+    const video = p.locator(".world-card video").first();
     await tabToVideo(p, video);
     await p.keyboard.press("Space");
     await waitForPlayback(video, false);
@@ -177,7 +188,7 @@ try {
   const p = await nojs.newPage();
   await p.goto(origin + "/");
   check(await p.locator("#panel-real").isVisible() && await p.locator("#panel-simulation").isVisible(), "Without JavaScript both result domains remain readable");
-  check(await p.locator("video[controls]").count() === 6 && await p.locator("#hero-playback-toggle").count() === 0, "Without JavaScript all six native players remain available");
+  check(await p.locator("video[controls]").count() === 13 && await p.locator("#hero-playback-toggle").count() === 0, "Without JavaScript all thirteen native players remain available");
   await nojs.close();
 } catch (e) {
   report.errors.push(e.stack || e.message);

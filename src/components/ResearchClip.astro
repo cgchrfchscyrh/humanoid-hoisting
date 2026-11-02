@@ -4,10 +4,12 @@ import { asset } from "../data/project";
 import clips from "../data/research-clips.json";
 interface Props { id: string; }
 const { id } = Astro.props;
-const { file, caption, description, width, height } = clips.find(clip => clip.id === id)!;
+const clip = clips.find(clip => clip.id === id)!;
+const { file, caption, description, width, height } = clip;
 ---
 
 <figure class="research-clip" id={id}>
+  {("comparison" in clip && clip.comparison) && <div class="method-labels" aria-hidden="true"><span>VLA-50</span><span>VLA-80</span><span>HOIST (ours)</span></div>}
   <video
     id={`${id}-video`}
     controls

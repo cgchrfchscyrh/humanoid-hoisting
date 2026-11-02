@@ -1,0 +1,228 @@
+{
+  "date": "2026-11-02",
+  "clips": [
+    {
+      "file": "public/media/world-hoisting/steel-lug.mp4",
+      "bytes": 198705,
+      "sha256": "308ebade1d5d1a4bbfd0fec301191ce884edc1a2d5c91295cc5a461b8f4f66f5",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 640,
+            "height": 360
+          }
+        ],
+        "format": {
+          "duration": "9.000000"
+        }
+      },
+      "decode_ok": true,
+      "errors": ""
+    },
+    {
+      "file": "public/media/world-hoisting/bridge-span.mp4",
+      "bytes": 466770,
+      "sha256": "bffaf95586f2a290d424f8e8cb9650413fc5712aabb33766914dfccf3d635e75",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 640,
+            "height": 360
+          }
+        ],
+        "format": {
+          "duration": "6.000000"
+        }
+      },
+      "decode_ok": true,
+      "errors": ""
+    },
+    {
+      "file": "public/media/world-hoisting/vehicle-unloading.mp4",
+      "bytes": 128912,
+      "sha256": "bb34db8024f0e2587a27f5ce606484b3384ded339e8cca7e828967abd5fd1397",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 640,
+            "height": 360
+          }
+        ],
+        "format": {
+          "duration": "9.000000"
+        }
+      },
+      "decode_ok": true,
+      "errors": ""
+    },
+    {
+      "file": "public/media/world-hoisting/concrete-cap.mp4",
+      "bytes": 434830,
+      "sha256": "2f38696384adcb0b91763d003a0647ab16d97ba3312d6a4f8a6f0c7030da31cc",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 640,
+            "height": 360
+          },
+          {
+            "codec_type": "data"
+          }
+        ],
+        "format": {
+          "duration": "10.000000"
+        }
+      },
+      "decode_ok": true,
+      "errors": ""
+    },
+    {
+      "file": "public/media/world-hoisting/gate-installation.mp4",
+      "bytes": 492178,
+      "sha256": "3ae8fe2798dcad5aefa2f0930ad87b7d3c3ebe95bed869bed69651f4dd07e48d",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 640,
+            "height": 360
+          }
+        ],
+        "format": {
+          "duration": "10.000000"
+        }
+      },
+      "decode_ok": true,
+      "errors": ""
+    },
+    {
+      "file": "public/media/world-hoisting/equipment-placement.mp4",
+      "bytes": 981782,
+      "sha256": "e94af943ef577e1375b2d591e4f7a3b01a37318c3802d125f1320106d7342026",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 640,
+            "height": 360
+          }
+        ],
+        "format": {
+          "duration": "10.000000"
+        }
+      },
+      "decode_ok": true,
+      "errors": ""
+    },
+    {
+      "file": "public/media/world-hoisting/container-transfer.mp4",
+      "bytes": 561565,
+      "sha256": "1b02005bc16c712480294c5b184f9f0e9ca6e6cf2ffa62d8323a226a467a82ce",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 640,
+            "height": 360
+          }
+        ],
+        "format": {
+          "duration": "10.000000"
+        }
+      },
+      "decode_ok": true,
+      "errors": ""
+    },
+    {
+      "file": "public/media/world-hoisting/crane-positioning.mp4",
+      "bytes": 484234,
+      "sha256": "26e0cf10906547e8866494a834bd43b2654ad80fb6a4fa0ad2335ac6749a9456",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 640,
+            "height": 360
+          }
+        ],
+        "format": {
+          "duration": "10.000000"
+        }
+      },
+      "decode_ok": true,
+      "errors": ""
+    },
+    {
+      "file": "public/media/world-hoisting/salvage-grab.mp4",
+      "bytes": 362939,
+      "sha256": "b933eda9c5c7610319d5aa37c65efa547966fb968e1ad52e7bc27cb791dadd26",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 640,
+            "height": 338
+          }
+        ],
+        "format": {
+          "duration": "7.000000"
+        }
+      },
+      "decode_ok": true,
+      "errors": ""
+    },
+    {
+      "file": "public/media/hoist-sim-comparison-clean.mp4",
+      "bytes": 1060026,
+      "sha256": "c27360017b09c547fb2a087fb7ee9011137968d194ea36f80b73b7f788003621",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 1186,
+            "height": 432
+          }
+        ],
+        "format": {
+          "duration": "19.000000"
+        }
+      },
+      "decode_ok": true,
+      "errors": ""
+    },
+    {
+      "file": "public/media/hoist-real-comparison-clean.mp4",
+      "bytes": 4163737,
+      "sha256": "4ad9c7e458cd8cba6f3da903f52776dca6eb6c6e5b164e1cf25ad468104f0172",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 1152,
+            "height": 432
+          }
+        ],
+        "format": {
+          "duration": "30.000000"
+        }
+      },
+      "decode_ok": true,
+      "errors": ""
+    }
+  ]
+}

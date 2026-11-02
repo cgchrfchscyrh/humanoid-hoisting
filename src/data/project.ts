@@ -30,5 +30,8 @@ export const bibtex = `@misc{liu2026hoist,
   title  = {${project.title}},
   author = {Liu, Songyang and Yao, Shunyu and Huang, Dingyuan and Li, Shuai},
   year   = {2026},
-  note   = {Research manuscript}
+  eprint = {2606.00252},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.RO},
+  url    = {https://arxiv.org/abs/2606.00252}
 }`;

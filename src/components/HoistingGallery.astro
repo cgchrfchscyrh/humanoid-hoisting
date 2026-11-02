@@ -1,0 +1,22 @@
+---
+import clips from "../data/world-hoisting.json";
+import { asset } from "../data/project";
+---
+<section class="hoisting-gallery" id="real-world" aria-labelledby="real-world-title">
+  <div class="gallery-heading">
+    <div><p class="section-label">Real-world hoisting</p><h2 id="real-world-title">Lifting is only part of the task.</h2></div>
+    <p>From building components to heavy equipment, a suspended load must also be guided, aligned, and brought to rest.</p>
+  </div>
+  <div class="world-grid">
+    {clips.map(clip => <article class="world-card">
+      <div class="world-card-header"><h3>{clip.title}</h3><a href={clip.source} aria-label={`Original video: ${clip.title}`}>Source ↗</a></div>
+      <figure><video id={`world-${clip.id}`} controls controlslist="nodownload" muted playsinline preload="none" width={clip.width} height={clip.height} poster={asset(`media/world-hoisting/${clip.id}.jpg`)} aria-label={clip.title} aria-describedby={`description-${clip.id}`}>
+        <source src={asset(`media/world-hoisting/${clip.id}.mp4`)} type="video/mp4" />
+        <track kind="descriptions" src={asset(`media/world-hoisting/${clip.id}.vtt`)} srclang="en" label="English visual description" />
+        Video playback is unavailable. Read the text alternative in the media notes.
+      </video></figure>
+      <p class="sr-only" id={`description-${clip.id}`}>{clip.description}</p>
+    </article>)}
+  </div>
+  <a class="gallery-notes-link" href="#video-notes">Video credits and accessible descriptions</a>
+</section>
