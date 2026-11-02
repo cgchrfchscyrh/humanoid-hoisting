@@ -16,10 +16,11 @@
   "media": {
     "new_world_clips": 9,
     "research_comparisons": 2,
-    "new_video_bytes": 9335678,
+    "new_video_bytes": 9305720,
     "decode_checks_passed": true,
     "audio_streams": 0,
-    "visual_review": "Reviewed source contact sheets and edited clips; removed title cards, unrelated ending cuts, encoded black/color gutters and CSS letterboxing. Research crops preserve robot, load and target. Labels are accessible HTML/text alternatives. External clips have source links and DVIDS credits."
+    "visual_review": "Reviewed source contact sheets and edited clips; removed title cards, unrelated ending cuts, encoded black/color gutters and CSS letterboxing. Research crops preserve robot, load and target. Labels are accessible HTML/text alternatives. External clips have source links and DVIDS credits.",
+    "final_clip_review": "Vehicle excerpt tightened to the suspended-load shot; unrelated quay and crane close-ups removed."
   },
   "manual_checks": [
     "Desktop three-column gallery and complete research panels visually reviewed.",
@@ -36,5 +37,6 @@
   "limitations": [
     "Automated scans and Chromium keyboard checks do not establish full ADA/WCAG certification.",
     "Manual screen-reader review, other browsers, and original PDF tagging/reading order have not been fully evaluated."
-  ]
+  ],
+  "build_reproducibility": "Tailwind scans only src/, so machine-local review files and untracked materials cannot add unused CSS utilities to the build."
 }

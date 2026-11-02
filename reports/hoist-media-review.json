@@ -43,8 +43,8 @@
     },
     {
       "file": "public/media/world-hoisting/vehicle-unloading.mp4",
-      "bytes": 128912,
-      "sha256": "bb34db8024f0e2587a27f5ce606484b3384ded339e8cca7e828967abd5fd1397",
+      "bytes": 98954,
+      "sha256": "1d26064c0275b662be1456f81c69cd9d2e4bd1882b127d8fc54c3e4d52ec5c3c",
       "probe": {
         "programs": [],
         "streams": [
@@ -55,7 +55,7 @@
           }
         ],
         "format": {
-          "duration": "9.000000"
+          "duration": "6.000000"
         }
       },
       "decode_ok": true,

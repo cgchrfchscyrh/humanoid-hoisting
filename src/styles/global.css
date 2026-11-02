@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" source("../");
 
 :root {
   font-family: "IBM Plex Sans Variable", "IBM Plex Sans", Arial, sans-serif;
