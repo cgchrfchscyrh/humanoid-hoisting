@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-02T21:32:43.880Z",
+  "date": "2026-11-02T22:07:56.737Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -7,6 +7,10 @@
       "name": "/ desktop",
       "violations": [],
       "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 4
+        },
         {
           "id": "video-caption",
           "nodes": 11
@@ -18,6 +22,10 @@
       "name": "home with media descriptions expanded",
       "violations": [],
       "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 4
+        },
         {
           "id": "video-caption",
           "nodes": 11
@@ -115,6 +123,7 @@
     "Every silent video retains one timed visual-description track",
     "Real and simulation HOIST clips directly follow the gallery",
     "Real and simulation clips display at the same size",
+    "Method bubbles flank the figure on wide screens",
     "Removed sections and method clip stay absent",
     "Page title is larger than section headings",
     "No redundant visible duration labels",

@@ -1,5 +1,11 @@
 # Accessibility review — 18 October 2026
 
+## Method figure bubbles — 2 November 2026
+
+The method explanation now appears as four bubbles beside the matching figure panels on wide screens, and below the figure on narrower ones. Number badges identify the panels without relying on color or position, and reading order stays 0, 1–2, 3, 4.
+
+Build, lint, and the updated browser suite passed: **9 axe scans and 91 functional checks**, with no violations or failures. Layouts from 320 to 1920 CSS pixels were reviewed. Existing PDF and screen-reader limitations still apply.
+
 ## Results section removed — 2 November 2026
 
 The homepage no longer includes the Results section; result tables remain in the HTML paper and supplementary editions. The page title's display styling, which was lost when the Vision section was removed, is restored, and the audit now checks that the title is larger than section headings.

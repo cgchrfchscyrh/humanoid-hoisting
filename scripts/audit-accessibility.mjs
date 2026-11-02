@@ -98,6 +98,11 @@ try {
       check(await page.locator("video").evaluateAll(vs => vs.every(v => v.querySelectorAll('track[kind="descriptions"][src]').length === 1)), "Every silent video retains one timed visual-description track");
       check(await page.locator("#demo video").count() === 2, "Real and simulation HOIST clips directly follow the gallery");
       check(await page.locator("#demo video").evaluateAll(([a, b]) => { const x = a.getBoundingClientRect(), y = b.getBoundingClientRect(); return x.width === y.width && x.height === y.height; }), "Real and simulation clips display at the same size");
+      check(await page.evaluate(() => {
+        const figure = document.querySelector(".method-map img").getBoundingClientRect();
+        const box = name => document.querySelector(`.method-bubble-${name}`).getBoundingClientRect();
+        return box("demonstrate").right <= figure.left && box("learn").right <= figure.left && box("practice").left >= figure.right && box("control").left >= figure.right;
+      }), "Method bubbles flank the figure on wide screens");
       check(await page.locator("#overview, #vision, #results").count() === 0 && await page.locator("#method video").count() === 0, "Removed sections and method clip stay absent");
       check(await page.locator("h1").evaluate(el => parseFloat(getComputedStyle(el).fontSize) > parseFloat(getComputedStyle(document.querySelector("#demo h2")).fontSize)), "Page title is larger than section headings");
       check(!/\b\d+(?:\.\d+)?[- ]seconds?\b/.test(await page.locator("main").innerText()), "No redundant visible duration labels");

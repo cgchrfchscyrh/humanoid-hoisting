@@ -1691,10 +1691,24 @@ math {
 .research-demonstrations { margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--line); padding-bottom: 20px; }
 .research-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 36px; max-width: 880px; margin-inline: auto; }
 .research-pair h3 { font-weight: 500; font-size: 21px; margin: 0 0 12px; }
-.method-explanation { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px 40px; margin-top: 32px; }
-.method-explanation h3 { grid-column: 1 / -1; margin: 0; font-weight: 500; font-size: 21px; }
-.method-explanation p { margin: 0; color: #454545; font-size: 16px; line-height: 1.7; }
-.method-explanation strong { color: var(--ink); }
+.method-map { display: grid; grid-template-columns: clamp(270px, 20vw, 320px) minmax(0,1fr) clamp(270px, 20vw, 320px); grid-template-areas: "demonstrate figure practice" "learn figure control"; gap: 24px 32px; width: min(calc(100vw - 48px), 1760px); margin-left: 50%; transform: translateX(-50%); }
+.method-map-figure { grid-area: figure; min-width: 0; }
+.method-map .research-figure { margin: 0; }
+.method-bubble { position: relative; margin: 0; padding: 16px 18px; background: #fff; border: 1px solid #cfcfcf; border-radius: 16px; color: #454545; font-size: 14px; line-height: 1.55; }
+.method-bubble strong { color: var(--ink); }
+.method-bubble::after { content: ""; position: absolute; top: 23px; width: 14px; height: 14px; background: #fff; border: solid #cfcfcf; border-width: 1px 1px 0 0; }
+.method-bubble-demonstrate { grid-area: demonstrate; align-self: start; }
+.method-bubble-learn { grid-area: learn; align-self: end; }
+.method-bubble-practice { grid-area: practice; align-self: start; }
+.method-bubble-control { grid-area: control; align-self: end; }
+.method-bubble-demonstrate::after, .method-bubble-learn::after { right: -8px; transform: rotate(45deg); }
+.method-bubble-practice::after, .method-bubble-control::after { left: -8px; transform: rotate(-135deg); }
+.method-badge { display: inline-block; padding: 0 8px; background: #252525; border-radius: 999px; color: #fff; font-size: 12px; font-weight: 600; line-height: 20px; }
+@media (max-width: 1359px) {
+  .method-map { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-areas: "figure figure" "demonstrate learn" "control practice"; gap: 20px; width: min(calc(100vw - 40px), var(--wide)); }
+  .method-bubble { align-self: stretch; font-size: 15px; }
+  .method-bubble::after { display: none; }
+}
 .research-pair video { height: auto; aspect-ratio: auto; background: #fff; border-radius: 0; }
 .research-pair .research-clip video { aspect-ratio: 8 / 9; object-fit: cover; }
 .research-vision .vision-evidence-image { border: 0; aspect-ratio: auto; display: block; }
@@ -1719,7 +1733,8 @@ math {
 }
 @media (max-width: 600px) {
   .hoisting-gallery, .research-demonstrations, #video-notes { width: calc(100% - 32px); }
-  .world-grid, .world-media-notes, .research-pair, .method-explanation { grid-template-columns: 1fr; }
+  .world-grid, .world-media-notes, .research-pair { grid-template-columns: 1fr; }
+  .method-map { grid-template-columns: minmax(0,1fr); grid-template-areas: "figure" "demonstrate" "learn" "control" "practice"; }
   .hoisting-gallery { margin-top: 28px; }
   .world-card h3 { font-size: 17px; }
   .research-demonstrations { margin-top: 40px; }
