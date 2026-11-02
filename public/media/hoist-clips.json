@@ -147,7 +147,7 @@
         432
       ]
     },
-    "editing": "Crop the HOIST panel to the robot, load and target region, removing the VLA-50 and VLA-80 panels, black gutters and title bands. The real clip starts at 15.2 s to omit the six-frame wipe from the preceding slide. Preserve timing, source speed, and silent audio state. Posters and end-of-trial result figures use the same crop.",
+    "editing": "Crop the HOIST panel to the robot, load and target region, removing the VLA-50 and VLA-80 panels, black gutters and title bands. The real clip starts at 15.2 s to omit the six-frame wipe from the preceding slide. Preserve timing, source speed, and silent audio state. Posters and the social preview use the same crop.",
     "poster_seconds": [
       4,
       4

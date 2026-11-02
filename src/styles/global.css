@@ -676,33 +676,6 @@ summary {
 .method-note strong {
   color: #262626;
 }
-.results-explorer {
-  margin-top: 40px;
-}
-.comparison-visual .research-figure {
-  margin: 0;
-}
-.comparison-visual .figure-link {
-  padding: 0;
-  overflow: hidden;
-}
-.comparison-visual figcaption {
-  font-size: 10px;
-}
-.data-details {
-  border-block: 1px solid var(--line);
-  margin: 30px 0 20px;
-  padding: 17px 0;
-}
-.data-details summary {
-  font-size: 12px;
-}
-.data-details summary > span {
-  float: right;
-  color: var(--muted);
-  font-weight: 400;
-  font-size: 10px;
-}
 .table-scroll {
   overflow-x: auto;
   margin-top: 20px;
@@ -734,22 +707,6 @@ thead th {
 }
 tbody th {
   font-weight: 500;
-}
-.criterion-met {
-  background: #f2f2f2;
-}
-.table-note {
-  font-size: 11px;
-  color: var(--muted);
-  margin: 15px 0 5px;
-}
-.comparison-note {
-  max-width: 850px;
-  font-size: 13px;
-  color: var(--muted);
-}
-.comparison-note strong {
-  color: #262626;
 }
 .behavior-section {
   padding-top: 0;
@@ -989,9 +946,6 @@ pre {
   }
   .abstract-details p {
     font-size: 13px;
-  }
-  .data-details summary > span {
-    display: none;
   }
   .behavior-section {
     padding-top: 0;
@@ -1673,6 +1627,10 @@ math {
   line-height: 1.25;
   margin-bottom: 24px;
 }
+.hero-intro h1.project-display-title { font-size: clamp(2.75rem, 6.2vw, 5.9rem); font-weight: 550; line-height: 1.04; letter-spacing: -.055em; max-width: 18ch; margin: 0 auto 20px; }
+.project-display-title .display-line { display: block; }
+@media (max-width: 900px) { .hero-intro h1.project-display-title { font-size: clamp(2.6rem, 8vw, 4.8rem); } }
+@media (max-width: 520px) { .hero-intro h1.project-display-title { font-size: clamp(2.6rem, 11vw, 3.5rem); } }
 .comparison-hero .authors a { color: var(--ink); }
 .comparison-hero .author-notes { color: #555; margin: 10px 0 18px; }
 .comparison-hero .resource-links { margin-bottom: 30px; }
@@ -1700,8 +1658,7 @@ math {
 .section-band { padding-block: 60px; }
 .demo-section { padding-top: 60px; }
 .demo-section .section-heading { max-width: var(--content); margin-inline: auto; }
-.video-transcript, .motion-analysis { border-block: 1px solid var(--line); padding-block: 16px; margin-top: 22px; }
-.motion-analysis summary { cursor: pointer; font-weight: 500; }
+.video-transcript { border-block: 1px solid var(--line); padding-block: 16px; margin-top: 22px; }
 .site-footer { padding-block: 30px; }
 .comparison-clips { display: grid; gap: 36px; margin-bottom: 40px; }
 @media (max-width: 700px) {
@@ -1733,16 +1690,12 @@ math {
 .gallery-notes-link { display: block; width: fit-content; margin-top: 18px; font-size: 13px; text-decoration: underline; }
 .research-demonstrations { margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--line); padding-bottom: 20px; }
 .research-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 36px; max-width: 880px; margin-inline: auto; }
-.research-pair h3, .result-panel h3 { font-weight: 500; font-size: 21px; margin: 0 0 12px; }
+.research-pair h3 { font-weight: 500; font-size: 21px; margin: 0 0 12px; }
 .method-explanation { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px 40px; margin-top: 32px; }
 .method-explanation h3 { grid-column: 1 / -1; margin: 0; font-weight: 500; font-size: 21px; }
 .method-explanation p { margin: 0; color: #454545; font-size: 16px; line-height: 1.7; }
 .method-explanation strong { color: var(--ink); }
-.results-explorer { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 48px; align-items: start; margin-top: 0; }
-.result-panel { min-width: 0; }
 .research-pair video { height: auto; aspect-ratio: auto; background: #fff; border-radius: 0; }
-.comparison-visual .figure-link { border: 0; border-radius: 0; }
-.comparison-visual .research-figure { width: min(100%, 360px); margin-inline: auto; }
 .research-vision .vision-evidence-image { border: 0; aspect-ratio: auto; display: block; }
 .research-vision .vision-evidence-image img { width: auto; max-width: 100%; max-height: 270px; height: auto; }
 .citation-section { padding-block: 32px; }
@@ -1761,7 +1714,6 @@ math {
 .world-media-notes p { font-size: 14px; line-height: 1.65; }
 @media (max-width: 900px) {
   .gallery-heading { grid-template-columns: 1fr; gap: 16px; }
-  .results-explorer { grid-template-columns: 1fr; }
   .world-grid, .world-media-notes { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 @media (max-width: 600px) {

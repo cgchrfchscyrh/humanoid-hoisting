@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-02T21:10:13.727Z",
+  "date": "2026-11-02T21:18:18.313Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -8,10 +8,6 @@
       "violations": [],
       "incomplete": [
         {
-          "id": "color-contrast",
-          "nodes": 1
-        },
-        {
           "id": "video-caption",
           "nodes": 11
         }
@@ -19,34 +15,26 @@
       "passes": 22
     },
     {
-      "name": "home with scientific data and media descriptions expanded",
+      "name": "home with media descriptions expanded",
       "violations": [],
       "incomplete": [
-        {
-          "id": "color-contrast",
-          "nodes": 2
-        },
         {
           "id": "video-caption",
           "nodes": 11
         }
       ],
-      "passes": 26
+      "passes": 23
     },
     {
       "name": "/ mobile",
       "violations": [],
       "incomplete": [
         {
-          "id": "color-contrast",
-          "nodes": 19
-        },
-        {
           "id": "video-caption",
           "nodes": 11
         }
       ],
-      "passes": 26
+      "passes": 23
     },
     {
       "name": "/paper/ desktop",
@@ -127,8 +115,8 @@
     "Every silent video retains one timed visual-description track",
     "Real and simulation HOIST clips directly follow the gallery",
     "Removed sections and method clip stay absent",
+    "Page title is larger than section headings",
     "No redundant visible duration labels",
-    "Both result domains are visible together",
     "Video captions and per-player description blocks are removed",
     "Complete research-video alternatives are consolidated in media notes",
     "Citation copies",
@@ -194,7 +182,6 @@
     "save-data: no automatic playback",
     "save-data: explicit native keyboard playback remains available",
     "save-data: native keyboard pause remains available",
-    "Without JavaScript both result domains remain readable",
     "Without JavaScript all eleven native players remain available"
   ],
   "errors": [],

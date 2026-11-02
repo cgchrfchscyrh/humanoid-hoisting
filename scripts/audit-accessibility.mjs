@@ -97,17 +97,13 @@ try {
       })), "Every silent video has a complete linked visual description");
       check(await page.locator("video").evaluateAll(vs => vs.every(v => v.querySelectorAll('track[kind="descriptions"][src]').length === 1)), "Every silent video retains one timed visual-description track");
       check(await page.locator("#demo video").count() === 2, "Real and simulation HOIST clips directly follow the gallery");
-      check(await page.locator("#overview, #vision").count() === 0 && await page.locator("#method video, #results video").count() === 0, "Removed sections and method clip stay absent");
+      check(await page.locator("#overview, #vision, #results").count() === 0 && await page.locator("#method video").count() === 0, "Removed sections and method clip stay absent");
+      check(await page.locator("h1").evaluate(el => parseFloat(getComputedStyle(el).fontSize) > parseFloat(getComputedStyle(document.querySelector("#demo h2")).fontSize)), "Page title is larger than section headings");
       check(!/\b\d+(?:\.\d+)?[- ]seconds?\b/.test(await page.locator("main").innerText()), "No redundant visible duration labels");
-      check(await page.locator("#panel-real").isVisible() && await page.locator("#panel-simulation").isVisible(), "Both result domains are visible together");
-      await page.locator("#panel-simulation summary").click();
-      await page.locator("#panel-real summary").click();
-      await page.locator(".motion-analysis > summary").click();
-      await page.getByText("Read residual-motion chart values as a table", { exact: true }).click();
       check(await page.locator("figure:has(video) > figcaption, details.clip-description").count() === 0, "Video captions and per-player description blocks are removed");
       check(await page.locator("#video-notes .research-media-notes section").count() === 2, "Complete research-video alternatives are consolidated in media notes");
       await page.getByText("Video sources and visual descriptions", { exact: true }).click();
-      await scan("home with scientific data and media descriptions expanded");
+      await scan("home with media descriptions expanded");
       await page.getByRole("button", { name: "Copy citation" }).click();
       check((await page.evaluate(() => navigator.clipboard.readText())).includes("liu2026hoist"), "Citation copies");
     }
@@ -149,6 +145,8 @@ try {
     await waitForPlayback(video, false);
     check(await video.evaluate(v => v.muted && v.loop), "Research excerpt autoplays muted when visible: " + await video.getAttribute("id"));
   }
+  await auto.locator("#citation").scrollIntoViewIfNeeded();
+  await auto.waitForFunction(() => [...document.querySelectorAll(".world-card video")].every(v => v.paused));
   check(await auto.locator(".world-card video").evaluateAll(vs => vs.every(v => v.paused)), "Offscreen real-world videos pause");
   await firstVideo.scrollIntoViewIfNeeded();
   await waitForPlayback(auto.locator("figure.research-clip video").last(), true);
@@ -183,7 +181,6 @@ try {
   const nojs = await browser.newContext({ javaScriptEnabled: false });
   const p = await nojs.newPage();
   await p.goto(origin + "/");
-  check(await p.locator("#panel-real").isVisible() && await p.locator("#panel-simulation").isVisible(), "Without JavaScript both result domains remain readable");
   check(await p.locator("video[controls]").count() === 11 && await p.locator("#hero-playback-toggle").count() === 0, "Without JavaScript all eleven native players remain available");
   await nojs.close();
 } catch (e) {

@@ -2,13 +2,10 @@ import HoistingGallery from "./components/HoistingGallery.astro";
 import Header from "./components/Header.astro";
 import ResearchClip from "./components/ResearchClip.astro";
 import ResearchFigure from "./components/ResearchFigure.astro";
-import Results from "./components/Results.astro";
 import Citation from "./components/Citation.astro";
-import ResidualData from "./components/ResidualData.astro";
 import VideoNotes from "./components/VideoNotes.astro";
 import MediaControls from "./components/MediaControls.astro";
 import pipeline from "./assets/figure4.jpg";
-import residual from "./assets/figure5.png";
 
 <Header />
 <HoistingGallery />
@@ -35,17 +32,6 @@ import residual from "./assets/figure5.png";
     <p><strong>Practice improves placement (4).</strong> Copying gives a safe start but does not aim directly for accurate placement. So the robot tries the task in batches of 10, and each try is scored on how far the load settled from its target position and angle. Reinforcement learning uses those scores to replace the random starting input of the plan with a better one. The copied skill and the controller stay fixed.</p>
   </div>
 </div>
-</section>
-
-<section className="content-section" id="results">
-  <div className="section-heading"><h2>Results</h2></div>
-  <div className="wide"><Results /></div>
-  <details className="motion-analysis">
-    <summary>Motion analysis & study scope</summary>
-    <ResearchFigure src={residual} alt="Simulation bar charts of payload acceleration RMS and angular-velocity RMS for teleoperation, VLA-50, and HOIST after 10, 20, and 30 RL rollouts." caption="At +20 rollouts, angular-velocity RMS falls from 0.141 to 0.064 rad/s; acceleration RMS rises from 3.56 to 4.83 m/s². Error bars show standard deviation." />
-    <ResidualData />
-    <p>The physical experiments use one 2.5 kg box measuring 54 × 54 × 50 cm. Other payloads, adaptive force control, and coordination with a construction crane remain open research questions.</p>
-  </details>
 </section>
 
 <section className="citation-section section-band" id="citation">

@@ -1,5 +1,11 @@
 # Accessibility review — 18 October 2026
 
+## Results section removed — 2 November 2026
+
+The homepage no longer includes the Results section; result tables remain in the HTML paper and supplementary editions. The page title's display styling, which was lost when the Vision section was removed, is restored, and the audit now checks that the title is larger than section headings.
+
+Build, lint, and the updated browser suite passed: **9 axe scans and 89 functional checks**, with no violations or failures. Desktop and 320 CSS-pixel layouts were reviewed. Existing PDF and screen-reader limitations still apply.
+
 ## Simplified homepage — 2 November 2026
 
 The homepage no longer includes the task-overview section, method steps and clip, result tabs and position-error charts, or the Vision section. The method figure now has a plain-language explanation beneath it, and simulation and real-humanoid results appear together, so no tab interaction is needed. Result tables remain available.
