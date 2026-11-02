@@ -83,7 +83,7 @@ try {
 
     if (route === "/") {
       const videoCount = await page.locator("video").count();
-      check(videoCount === 13, "Nine real-world videos and four research excerpts are present");
+      check(videoCount === 11, "Nine real-world videos and two research excerpts are present");
       check(await page.locator(".world-grid .world-card video").count() === 9, "Real-world gallery contains nine video players");
       check(await page.locator(".world-grid").evaluate(el => getComputedStyle(el).gridTemplateColumns.split(" ").length === 3), "Desktop gallery uses three columns");
       check(await page.locator("#real-world").evaluate(el => el.nextElementSibling?.id === "demo"), "Our real and simulation videos immediately follow the real-world gallery");
@@ -96,20 +96,16 @@ try {
         return ids.length > 0 && ids.every(id => (document.getElementById(id)?.textContent || "").trim().length > 40);
       })), "Every silent video has a complete linked visual description");
       check(await page.locator("video").evaluateAll(vs => vs.every(v => v.querySelectorAll('track[kind="descriptions"][src]').length === 1)), "Every silent video retains one timed visual-description track");
-      check(await page.locator("#overview video").count() === 1 && await page.locator("#method video").count() === 1 && await page.locator("#demo video").count() === 2, "Research excerpts accompany the question and method, with real/simulation comparisons directly after the gallery");
+      check(await page.locator("#demo video").count() === 2, "Real and simulation HOIST clips directly follow the gallery");
+      check(await page.locator("#overview, #vision").count() === 0 && await page.locator("#method video, #results video").count() === 0, "Removed sections and method clip stay absent");
       check(!/\b\d+(?:\.\d+)?[- ]seconds?\b/.test(await page.locator("main").innerText()), "No redundant visible duration labels");
-      await page.getByRole("tab", { name: "Real humanoid" }).focus();
-      await page.keyboard.press("Enter");
-      check(await page.locator("#panel-real").isVisible(), "Keyboard selects real-platform results");
-      await page.keyboard.press("ArrowLeft");
-      check(await page.locator("#panel-simulation").isVisible(), "Arrow key selects simulation results");
+      check(await page.locator("#panel-real").isVisible() && await page.locator("#panel-simulation").isVisible(), "Both result domains are visible together");
       await page.locator("#panel-simulation summary").click();
+      await page.locator("#panel-real summary").click();
       await page.locator(".motion-analysis > summary").click();
       await page.getByText("Read residual-motion chart values as a table", { exact: true }).click();
       check(await page.locator("figure:has(video) > figcaption, details.clip-description").count() === 0, "Video captions and per-player description blocks are removed");
-      check(await page.locator("#vision h2").count() === 1, "Story connects a controlled task to the larger collaborative vision");
-      check(await page.locator(".vision-connections li").count() === 3 && await page.locator(".vision-scene svg[role=img]").count() === 1, "Visual bridge shows three collaboration needs and an accessible future scene");
-      check(await page.locator("#video-notes .research-media-notes section").count() === 4, "Complete research-video alternatives are consolidated in media notes");
+      check(await page.locator("#video-notes .research-media-notes section").count() === 2, "Complete research-video alternatives are consolidated in media notes");
       await page.getByText("Video sources and visual descriptions", { exact: true }).click();
       await scan("home with scientific data and media descriptions expanded");
       await page.getByRole("button", { name: "Copy citation" }).click();
@@ -188,7 +184,7 @@ try {
   const p = await nojs.newPage();
   await p.goto(origin + "/");
   check(await p.locator("#panel-real").isVisible() && await p.locator("#panel-simulation").isVisible(), "Without JavaScript both result domains remain readable");
-  check(await p.locator("video[controls]").count() === 13 && await p.locator("#hero-playback-toggle").count() === 0, "Without JavaScript all thirteen native players remain available");
+  check(await p.locator("video[controls]").count() === 11 && await p.locator("#hero-playback-toggle").count() === 0, "Without JavaScript all eleven native players remain available");
   await nojs.close();
 } catch (e) {
   report.errors.push(e.stack || e.message);

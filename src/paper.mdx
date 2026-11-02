@@ -1,4 +1,3 @@
-import Vision from "./components/Vision.astro";
 import HoistingGallery from "./components/HoistingGallery.astro";
 import Header from "./components/Header.astro";
 import ResearchClip from "./components/ResearchClip.astro";
@@ -8,7 +7,6 @@ import Citation from "./components/Citation.astro";
 import ResidualData from "./components/ResidualData.astro";
 import VideoNotes from "./components/VideoNotes.astro";
 import MediaControls from "./components/MediaControls.astro";
-import overview from "./assets/figure2.jpg";
 import pipeline from "./assets/figure4.jpg";
 import residual from "./assets/figure5.png";
 
@@ -25,35 +23,22 @@ import residual from "./assets/figure5.png";
   </div>
 </section>
 
-<section className="content-section" id="overview">
-  <div className="section-heading"><h2>The challenge is the final alignment.</h2></div>
-  <div className="visual-story wide">
-    <div className="story-copy">
-      <p>A suspended load can swing and rotate as it descends. Guiding it into place requires coordinated hand contact and whole-body balance. HOIST starts from human demonstrations, then refines the learned behavior through small batches of reinforcement-learning trials. We study this task with one suspended box in simulation and the laboratory.</p>
-      <ResearchFigure src={overview} alt="Three panels contrast directly actuated pick-and-place, an underactuated suspended payload, and HOIST placement." label="Contact-guided placement." caption="The support system carries the weight; the humanoid adjusts the load’s position." description="The left panel shows directly actuated pick-and-place. The middle panel shows a suspended load that can continue moving after contact. The right panel illustrates HOIST guiding that load toward a marked landing region. These panels explain the task; measured placement and residual-motion results appear below." />
-    </div>
-    <ResearchClip id="task-overview" />
-  </div>
-</section>
-
 <section className="method-section section-band" id="method">
 <div className="section-inner">
   <div className="section-heading"><h2>Imitate the motion. Refine the outcome.</h2></div>
-  <div className="wide"><ResearchFigure src={pipeline} alt="HOIST pipeline: VR demonstrations initialize a vision-language-action policy, and reinforcement learning steers initial noise while the policy and whole-body controller remain frozen." description="VR demonstrations provide the initial behavior. Ego-view RGB, side-view RGB, language and navigation commands condition the vision-language backbone. Robot state and depth are encoded for the flow-matching action expert, which outputs a 24-step chunk of 25-dimensional planner commands. A frozen whole-body controller executes head, bimanual hand, navigation and base-height targets. During reinforcement learning, a SAC actor steers initial noise using batches of 10 autonomous rollouts and terminal position and yaw rewards; the VLA and controller remain frozen." caption="Demonstrate → imitate → refine with task-level feedback." /></div>
-  <div className="visual-story wide">
-    <div className="method-steps">
-      <article><span className="step-number">01</span><h3>Demonstrate</h3><p>Record 50 whole-body demonstrations using VR teleoperation.</p></article>
-      <article><span className="step-number">02</span><h3>Imitate</h3><p>Fine-tune a vision-language-action (VLA) policy to issue commands to a frozen whole-body controller.</p></article>
-      <article><span className="step-number">03</span><h3>Refine</h3><p>Refine the policy’s initial-noise input using placement rewards and batches of 10 rollouts. The VLA and whole-body controller remain frozen.</p></article>
-    </div>
-    <ResearchClip id="contact-guidance" />
+  <div className="wide"><ResearchFigure src={pipeline} alt="HOIST pipeline: VR demonstrations initialize a vision-language-action policy, and reinforcement learning steers initial noise while the policy and whole-body controller remain frozen." description="VR demonstrations provide the initial behavior. Ego-view RGB, side-view RGB, language and navigation commands condition the vision-language backbone. Robot state and depth are encoded for the flow-matching action expert, which outputs a 24-step chunk of 25-dimensional planner commands. A frozen whole-body controller executes head, bimanual hand, navigation and base-height targets. During reinforcement learning, a SAC actor steers initial noise using batches of 10 autonomous rollouts and terminal position and yaw rewards; the VLA and controller remain frozen." /></div>
+  <div className="method-explanation">
+    <h3>What the figure shows</h3>
+    <p><strong>A person shows the task (0).</strong> Wearing a VR headset, an operator controls the humanoid to guide the hanging box onto its target. We record 50 of these demonstrations.</p>
+    <p><strong>The robot learns to copy (1–2).</strong> An AI model reads camera images, a written instruction, and navigation commands. It combines them with the robot’s own state and a depth view to plan its next movements, and is trained to match what the operator did.</p>
+    <p><strong>A controller carries out the plan (3).</strong> The plan sets targets for the head, hands, walking, and body height. An existing whole-body controller turns those targets into balanced motion and is never changed.</p>
+    <p><strong>Practice improves placement (4).</strong> Copying gives a safe start but does not aim directly for accurate placement. So the robot tries the task in batches of 10, and each try is scored on how far the load settled from its target position and angle. Reinforcement learning uses those scores to replace the random starting input of the plan with a better one. The copied skill and the controller stay fixed.</p>
   </div>
 </div>
 </section>
 
 <section className="content-section" id="results">
-  <div className="section-heading"><h2>Measure where the load settles.</h2></div>
-  <p>HOIST reduces mean position error in both settings. Orientation accuracy and residual motion are evaluated separately: better placement does not mean every motion metric improves.</p>
+  <div className="section-heading"><h2>Results</h2></div>
   <div className="wide"><Results /></div>
   <details className="motion-analysis">
     <summary>Motion analysis & study scope</summary>
@@ -62,8 +47,6 @@ import residual from "./assets/figure5.png";
     <p>The physical experiments use one 2.5 kg box measuring 54 × 54 × 50 cm. Other payloads, adaptive force control, and coordination with a construction crane remain open research questions.</p>
   </details>
 </section>
-
-<Vision project="hoist" />
 
 <section className="citation-section section-band" id="citation">
 <div className="section-inner">

@@ -3,7 +3,7 @@ import { Picture } from "astro:assets";
 interface Props {
   src: ImageMetadata;
   alt: string;
-  caption: string;
+  caption?: string;
   label?: string;
   description?: string;
 }
@@ -28,7 +28,7 @@ const { src, alt, caption, label, description } = Astro.props;
     />
     <span class="figure-expand" aria-hidden="true">↗</span>
   </a>
-  <figcaption>{label && <strong>{label} </strong>}{caption}</figcaption>
+  {(label || caption) && <figcaption>{label && <strong>{label} </strong>}{caption}</figcaption>}
   {
     description && (
       <details class="figure-description">

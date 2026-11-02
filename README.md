@@ -29,7 +29,7 @@ Set `CHROME_PATH` to a local Chrome executable, or install the Playwright browse
 
 - `src/paper.mdx`: concise homepage content and scientific figures.
 - `src/components/Header.astro`, `Demo.astro`, `MediaControls.astro`: research media and playback.
-- `src/components/Results.astro`, `ResidualData.astro`: original charts and accessible tables.
+- `src/components/Results.astro`, `ResidualData.astro`: result figures and accessible tables.
 - `src/content/`: full manuscript/supplement HTML reading editions; preserve scientific content.
 - `public/media/`, `public/papers/`: existing video and PDF assets; originals remain unchanged.
 - `src/pages/accessibility.astro`, `ACCESSIBILITY.md`: alternatives, behavior, and review limits.

@@ -1,5 +1,11 @@
 # Accessibility review — 18 October 2026
 
+## Simplified homepage — 2 November 2026
+
+The homepage no longer includes the task-overview section, method steps and clip, result tabs and position-error charts, or the Vision section. The method figure now has a plain-language explanation beneath it, and simulation and real-humanoid results appear together, so no tab interaction is needed. Result tables remain available.
+
+Build, lint, and the updated browser suite passed: **9 axe scans and 90 functional checks**, with no violations or failures. Desktop and 320 CSS-pixel layouts were reviewed. Existing PDF and screen-reader limitations still apply.
+
 ## Light vision presentation — 27 October 2026
 
 Vision sections now share the surrounding light page background, dark type, and dark SVG linework. Evidence imagery uses a white surface; focus outlines, concept badges, and diagram relationships remain visible without relying on color.
