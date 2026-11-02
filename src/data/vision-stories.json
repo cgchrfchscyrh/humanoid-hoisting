@@ -1,6 +1,6 @@
 {
   "hoist": {
-    "headline": "Learning to guide suspended loads.",
+    "headline": "Teaching humanoids to guide suspended loads.",
     "title": "From one guided load to a coordinated worksite.",
     "current": "Place a suspended box",
     "evidence": "Controlled lab + simulation",
@@ -31,8 +31,8 @@
     "sceneAlt": "Future concept: a crane suspends a load between a crew member and a humanoid beside an unfinished structure.",
     "description": "The current work demonstrates humanoid guidance of one suspended box in controlled laboratory and simulation settings. Three open connections—adaptive contact, coordination with lifting equipment, and integration into site operations—lead toward a future coordinated lift. The illustration places a humanoid and a crew member beside a crane-suspended load and an unfinished structure. It is a collaborative concept, not evidence of a field-deployed system.",
     "headlineLines": [
-      "Learning to guide",
-      "suspended loads."
+      "Teaching humanoids",
+      "to guide suspended loads."
     ]
   }
 }

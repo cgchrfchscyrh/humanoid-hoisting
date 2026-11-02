@@ -1912,6 +1912,7 @@ math {
   margin: 48px auto 0;
 }
 .gallery-heading { display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 48px; margin-bottom: 28px; }
+.gallery-heading--statement { display: block; }
 .section-label { margin: 0 0 12px; font-size: 13px; color: #595959; letter-spacing: .08em; text-transform: uppercase; }
 .gallery-heading h2 { font-size: clamp(28px, 3.2vw, 42px); line-height: 1.13; letter-spacing: -.035em; margin: 0; }
 .gallery-heading > p { font-size: 16px; line-height: 1.65; color: #525252; margin: 0; }
