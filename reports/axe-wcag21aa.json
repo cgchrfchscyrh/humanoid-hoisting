@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-02T15:20:30.054Z",
+  "date": "2026-11-02T15:33:21.952Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -51,7 +51,7 @@
         },
         {
           "id": "color-contrast",
-          "nodes": 18
+          "nodes": 17
         },
         {
           "id": "video-caption",
