@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-02T21:23:35.472Z",
+  "date": "2026-11-02T21:32:43.880Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -114,6 +114,7 @@
     "Every silent video has a complete linked visual description",
     "Every silent video retains one timed visual-description track",
     "Real and simulation HOIST clips directly follow the gallery",
+    "Real and simulation clips display at the same size",
     "Removed sections and method clip stay absent",
     "Page title is larger than section headings",
     "No redundant visible duration labels",

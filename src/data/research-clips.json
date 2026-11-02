@@ -9,7 +9,7 @@
   },
   {
     "id": "sim-result",
-    "file": "hoist-sim-result",
+    "file": "hoist-sim-result-v2",
     "width": 384,
     "height": 432,
     "caption": "Simulation: HOIST guides the load onto its landing platform.",

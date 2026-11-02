@@ -97,6 +97,7 @@ try {
       })), "Every silent video has a complete linked visual description");
       check(await page.locator("video").evaluateAll(vs => vs.every(v => v.querySelectorAll('track[kind="descriptions"][src]').length === 1)), "Every silent video retains one timed visual-description track");
       check(await page.locator("#demo video").count() === 2, "Real and simulation HOIST clips directly follow the gallery");
+      check(await page.locator("#demo video").evaluateAll(([a, b]) => { const x = a.getBoundingClientRect(), y = b.getBoundingClientRect(); return x.width === y.width && x.height === y.height; }), "Real and simulation clips display at the same size");
       check(await page.locator("#overview, #vision, #results").count() === 0 && await page.locator("#method video").count() === 0, "Removed sections and method clip stay absent");
       check(await page.locator("h1").evaluate(el => parseFloat(getComputedStyle(el).fontSize) > parseFloat(getComputedStyle(document.querySelector("#demo h2")).fontSize)), "Page title is larger than section headings");
       check(!/\b\d+(?:\.\d+)?[- ]seconds?\b/.test(await page.locator("main").innerText()), "No redundant visible duration labels");
