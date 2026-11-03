@@ -1,5 +1,11 @@
 # Accessibility review — 18 October 2026
 
+## Real-world gallery reselected — 3 November 2026
+
+The nine real-world clips were replaced with single-shot excerpts in which people handle or guide the lifted load by hand or by tag line. Each clip has a new text alternative and timed description written after reviewing its frames, and its source and license credit are listed in the media notes. All nine sources are marked public domain on DVIDS.
+
+Build and the browser suite passed: **9 axe scans and 92 functional checks**, with no violations or failures. All nine players keep the same display size at 390 and 1440 CSS pixels, with no horizontal overflow. Existing PDF and screen-reader limitations still apply.
+
 ## Video explanation bubbles — 2 November 2026
 
 The real and simulation videos each have a short plain-language bubble: beside the video on wide screens and directly below it on narrower ones. The bubbles add to, and do not replace, the linked text alternatives and timed descriptions.

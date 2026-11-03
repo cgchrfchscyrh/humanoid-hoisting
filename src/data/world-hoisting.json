@@ -1,163 +1,163 @@
 [
   {
-    "id": "concrete-cap",
-    "title": "Precast concrete",
+    "id": "hand-concrete-cap",
+    "title": "Steadying a concrete cap by hand",
     "sourceTitle": "CRANE #2",
     "source": "https://www.dvidshub.net/video/760467/crane-2",
     "creator": "U.S. Navy / Defense VI Records Center",
-    "description": "Workers steady a crane-suspended concrete cap by hand above a masonry wall. They guide its edge toward the wall as the crane lowers the piece. The landscape excerpt is reframed around the workers, load, and landing interface.",
+    "description": "A worker in a hard hat rests a gloved hand on a crane-suspended concrete cap and steers it beside a masonry wall as the crane lowers it, then leans over the wall to watch it go down.",
     "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2007/DOD_107904992/DOD_107904992-640x480-922k.mp4",
     "excerptSeconds": [
-      98,
-      108
+      96.8,
+      104.8
     ],
     "license": "Public domain in the United States; DVIDS usage conditions apply.",
     "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted, audio removed, resized, and H.264 compressed. Source playback speed retained. Landscape crop removes side black strips and reframes the workers and concrete cap; the source remains linked.",
+    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained. Cropped toward the people and the load; the source remains linked.",
     "width": 640,
     "height": 360
   },
   {
-    "id": "bridge-span",
-    "title": "Bridge construction",
-    "sourceTitle": "Deep Creek Bridge Replacement Project UPDATE B-Roll",
-    "source": "https://www.dvidshub.net/video/961094/deep-creek-bridge-replacement-project-update-b-roll",
-    "creator": "James Walker / U.S. Army Corps of Engineers",
-    "description": "A crane supports a large steel bridge assembly on slings at the Deep Creek construction site. The view shows the suspended structural frame being moved near its supports, with workers and equipment around the work area.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2505/DOD_110971392/DOD_110971392.mp4",
-    "excerptSeconds": [
-      294,
-      300
-    ],
-    "license": "Public domain in the United States; DVIDS usage conditions apply.",
-    "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted, audio removed, resized, and H.264 compressed. Source playback speed retained.",
-    "width": 640,
-    "height": 360
-  },
-  {
-    "id": "gate-installation",
-    "title": "Dam gate installation",
+    "id": "hand-gate-section",
+    "title": "Hand on a gate section",
     "sourceTitle": "Gavins Point Dam Bulkhead Gate Replacement",
     "source": "https://www.dvidshub.net/video/942675/gavins-point-dam-bulkhead-gate-replacement",
     "creator": "Delanie Stafford / U.S. Army Corps of Engineers",
-    "description": "A mobile crane holds a tall rectangular gate section upright outside a dam powerhouse. Workers stand nearby as the suspended section is positioned beside the concrete structure.",
+    "description": "A worker standing on a flatbed trailer reaches up and keeps a gloved hand on a lifting lug of a wide steel gate section held by crane slings above the trailer.",
     "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2411/DOD_110664954/DOD_110664954.mp4",
     "excerptSeconds": [
-      183,
-      193
+      140.5,
+      148.5
     ],
     "license": "Public domain in the United States; DVIDS usage conditions apply.",
     "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted, audio removed, resized, and H.264 compressed. Source playback speed retained.",
+    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained. Cropped toward the people and the load; the source remains linked.",
     "width": 640,
     "height": 360
   },
   {
-    "id": "equipment-placement",
-    "title": "Heavy equipment placement",
+    "id": "sling-log",
+    "title": "Slinging a log by hand",
     "sourceTitle": "Debris Removal crane operations",
     "source": "https://www.dvidshub.net/video/969657/debris-removal-crane-operations",
     "creator": "Charles Delano / U.S. Army Corps of Engineers",
-    "description": "A compact tracked loader hangs from lifting straps above a wooded work area. A worker controls a guide rope while the machine is lowered toward the ground. The crane provides access to a site that the machine cannot readily reach by driving.",
+    "description": "A worker in an orange vest handles a crane sling around a log, pulling the strap through with both hands and leaning across the log to reach beneath it.",
     "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2507/DOD_111141546/DOD_111141546.mp4",
     "excerptSeconds": [
-      59,
-      69
+      88.0,
+      95.9
     ],
     "license": "Public domain in the United States; DVIDS usage conditions apply.",
     "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted, audio removed, resized, and H.264 compressed. Source playback speed retained.",
+    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained. Cropped toward the people and the load; the source remains linked.",
     "width": 640,
     "height": 360
   },
   {
-    "id": "steel-lug",
-    "title": "Steel component handling",
-    "sourceTitle": "Next-to-last lifting lug on motor vessel Golden Ray",
-    "source": "https://www.dvidshub.net/video/754881/next-last-lifting-lug-motor-vessel-golden-ray",
-    "creator": "John D. Miller / U.S. Coast Guard",
-    "description": "A large angular steel lifting lug hangs from two crane lines above a work platform. Crew members watch its position as it is transferred toward the Golden Ray wreck for installation.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2006/DOD_107839581/DOD_107839581-1024x576-1769k.mp4",
-    "excerptSeconds": [
-      1,
-      10
-    ],
-    "license": "Public domain in the United States; DVIDS usage conditions apply.",
-    "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted, audio removed, resized, and H.264 compressed. Source playback speed retained.",
-    "width": 640,
-    "height": 360
-  },
-  {
-    "id": "salvage-grab",
-    "title": "Salvage equipment handling",
-    "sourceTitle": "Salvors prepare a heavy lift sheerleg crane ship during the Key Bridge Response 2024",
-    "source": "https://www.dvidshub.net/video/921148/salvors-prepare-heavy-lift-sheerleg-crane-ship-during-key-bridge-response-2024",
-    "creator": "Christopher Rosario / U.S. Army Corps of Engineers",
-    "description": "A heavy hydraulic salvage grab hangs open from slings beside a crane barge. The suspended tool is maneuvered above the deck in preparation for wreckage removal; the clip shows equipment handling rather than removal of a bridge segment.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2404/DOD_110266908/DOD_110266908.mp4",
-    "excerptSeconds": [
-      26,
-      33
-    ],
-    "license": "Public domain in the United States; DVIDS usage conditions apply.",
-    "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted, audio removed, resized, and H.264 compressed. Source playback speed retained.",
-    "width": 640,
-    "height": 338
-  },
-  {
-    "id": "container-transfer",
-    "title": "Ship-to-barge transfer",
-    "sourceTitle": "Crews remove containers on M/V Dali",
-    "source": "https://www.dvidshub.net/video/918321/crews-remove-containers-m-v-dali",
-    "creator": "Charles Delano / U.S. Army Corps of Engineers",
-    "description": "A floating crane suspends a shipping container between a damaged container ship and a barge during recovery operations in Baltimore. The wide shot shows the container moving above the receiving barge.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2404/DOD_110222215/DOD_110222215.mp4",
-    "excerptSeconds": [
-      24,
-      34
-    ],
-    "license": "Public domain in the United States; DVIDS usage conditions apply.",
-    "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted, audio removed, resized, and H.264 compressed. Source playback speed retained.",
-    "width": 640,
-    "height": 360
-  },
-  {
-    "id": "vehicle-unloading",
-    "title": "Vehicle unloading",
-    "sourceTitle": "B-ROLL African Lion 24 conducts port operations in Gabes, Tunisia.",
-    "source": "https://www.dvidshub.net/video/921247/b-roll-african-lion-24-conducts-port-operations-gabes-tunisia",
-    "creator": "Genesis Miranda / U.S. Army",
-    "description": "A wheeled utility vehicle hangs from four lifting slings beside a cargo ship. The crane carries the vehicle over the quay during port unloading. The source sequence is slow motion; the webpage retains that playback speed.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2404/DOD_110268914/DOD_110268914.mp4",
-    "excerptSeconds": [
-      115,
-      121
-    ],
-    "license": "Public domain in the United States; DVIDS usage conditions apply.",
-    "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted, audio removed, resized, and H.264 compressed. Source playback speed retained.",
-    "width": 640,
-    "height": 360
-  },
-  {
-    "id": "crane-positioning",
-    "title": "Crane operator coordination",
+    "id": "tagline-container",
+    "title": "Tag line on a hanging container",
     "sourceTitle": "Navy Reserve Sailors Conduct Crane Operations",
     "source": "https://www.dvidshub.net/video/1004148/navy-reserve-sailors-conduct-crane-operations",
     "creator": "David C. Warren / U.S. Navy",
-    "description": "The view changes from an operator working inside a crane cab to a shipping container suspended above a training area. The sequence connects the operator’s controls with the motion of the hanging load.",
+    "description": "On a paved training yard, a sailor holds a tag line running up to a green shipping container hanging from a crane above a row of stacked containers, while a second sailor gives arm signals.",
     "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2604/DOD_111658215/DOD_111658215.mp4",
     "excerptSeconds": [
-      47,
-      57
+      128.9,
+      137.8
     ],
     "license": "Public domain in the United States; DVIDS usage conditions apply.",
     "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted, audio removed, resized, and H.264 compressed. Source playback speed retained.",
+    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained. Cropped toward the people and the load; the source remains linked.",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "id": "palm-gate",
+    "title": "Bracing a hanging gate",
+    "sourceTitle": "Gavins Point Dam Bulkhead Gate Replacement",
+    "source": "https://www.dvidshub.net/video/942675/gavins-point-dam-bulkhead-gate-replacement",
+    "creator": "Delanie Stafford / U.S. Army Corps of Engineers",
+    "description": "A worker in a bright yellow jacket presses one palm against the edge of a tall gate section hanging from crane slings beside a concrete wall, while a second worker walks up from the far side of the section.",
+    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2411/DOD_110664954/DOD_110664954.mp4",
+    "excerptSeconds": [
+      245.6,
+      253.8
+    ],
+    "license": "Public domain in the United States; DVIDS usage conditions apply.",
+    "licenseUrl": "https://www.dvidshub.net/about/copyright",
+    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained. Cropped toward the people and the load; the source remains linked.",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "id": "tagline-bow-plane",
+    "title": "Tag line on a bow plane",
+    "sourceTitle": "Shipyard Chronicles: Riggers Install a Port Retractable Bow Plane Into a Submarine",
+    "source": "https://www.dvidshub.net/video/1003810/shipyard-chronicles-riggers-install-port-retractable-bow-plane-into-submarine",
+    "creator": "Claudia LaMantia / Pearl Harbor Naval Shipyard and Intermediate Maintenance Facility",
+    "description": "A shipyard rigger with a coil of rope over one arm holds a tag line attached to a submarine bow plane hanging from a dockside crane, working the line as the load travels overhead. The wide-angle camera follows the rigger.",
+    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2604/DOD_111652584/DOD_111652584.mp4",
+    "excerptSeconds": [
+      26.3,
+      35.0
+    ],
+    "license": "Public domain in the United States; DVIDS usage conditions apply.",
+    "licenseUrl": "https://www.dvidshub.net/about/copyright",
+    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained.",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "id": "tagline-loader",
+    "title": "Tag line on a tracked loader",
+    "sourceTitle": "Debris Removal crane operations",
+    "source": "https://www.dvidshub.net/video/969657/debris-removal-crane-operations",
+    "creator": "Charles Delano / U.S. Army Corps of Engineers",
+    "description": "A worker in an orange vest holds a guide rope attached to a compact tracked loader hanging from crane straps, keeping the line in hand as the machine moves just above a cleared slope.",
+    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2507/DOD_111141546/DOD_111141546.mp4",
+    "excerptSeconds": [
+      51.5,
+      58.5
+    ],
+    "license": "Public domain in the United States; DVIDS usage conditions apply.",
+    "licenseUrl": "https://www.dvidshub.net/about/copyright",
+    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained.",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "id": "hook-rigging",
+    "title": "Fitting rigging onto a hook",
+    "sourceTitle": "Navy Reserve Sailors Conduct Crane Operations",
+    "source": "https://www.dvidshub.net/video/1004148/navy-reserve-sailors-conduct-crane-operations",
+    "creator": "David C. Warren / U.S. Navy",
+    "description": "Two sailors stand at a large yellow crane hook block and work red lifting gear onto the hook together with their hands.",
+    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2604/DOD_111658215/DOD_111658215.mp4",
+    "excerptSeconds": [
+      83.3,
+      91.3
+    ],
+    "license": "Public domain in the United States; DVIDS usage conditions apply.",
+    "licenseUrl": "https://www.dvidshub.net/about/copyright",
+    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained. Cropped toward the people and the load; the source remains linked.",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "id": "spreader-bar",
+    "title": "Steadying a spreader bar",
+    "sourceTitle": "3d LSB and NMCB 5 conduct crane load test",
+    "source": "https://www.dvidshub.net/video/782333/3d-lsb-and-nmcb-5-conduct-crane-load-test",
+    "creator": "Moises Rodriguez / U.S. Marine Corps",
+    "description": "Two service members in hearing protection stand at opposite ends of a yellow spreader bar hanging from a crane during a load-test setup, steadying the bar by hand with heavy shackles ready to attach.",
+    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2102/DOD_108169293/DOD_108169293-1024x576-1769k.mp4",
+    "excerptSeconds": [
+      178.4,
+      184.1
+    ],
+    "license": "Public domain in the United States; DVIDS usage conditions apply.",
+    "licenseUrl": "https://www.dvidshub.net/about/copyright",
+    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained.",
     "width": 640,
     "height": 360
   }
