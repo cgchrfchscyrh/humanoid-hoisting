@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-04T21:08:08.513Z",
+  "date": "2026-11-04T21:18:32.695Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -104,7 +104,8 @@
     "Six-clip gallery uses six hosted video players",
     "No third-party player is embedded",
     "People clip and robot film fill the opening width side by side at one height",
-    "Top navigation links stay removed",
+    "Homepage has no top navigation bar",
+    "Gallery videos touch with no gaps",
     "Desktop gallery uses three columns",
     "Our real and simulation videos immediately follow the real-world gallery",
     "Every gallery clip carries its source link on the video",

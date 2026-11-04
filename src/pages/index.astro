@@ -1,7 +1,6 @@
 ---
 import "@fontsource-variable/ibm-plex-sans";
 import stories from "../data/vision-stories.json";
-import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import "../styles/global.css";
 import { Content } from "../paper.mdx";
@@ -63,7 +62,6 @@ const scholarlyData = {
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
-    <SiteHeader />
     <main id="main" tabindex="-1"><Content /></main>
     <SiteFooter />
   </body>

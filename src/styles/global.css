@@ -1804,3 +1804,7 @@ math {
 @media (max-width: 768px) {
   .hero-film.hero-pair { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Gallery videos sit edge to edge. */
+.world-grid { gap: 0; }
+.world-card video { display: block; width: 100%; }
