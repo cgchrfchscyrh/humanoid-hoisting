@@ -1,16 +1,16 @@
 {
-  "caption": "Opening film: a real humanoid running HOIST pushes a hanging box toward its target.",
-  "description": "A real Unitree G1 humanoid running HOIST faces a gray box hanging from straps above a wooden platform with an outlined target. As the box comes down, the robot reaches forward and pushes it with its hands, then the box reaches the platform. Fully autonomous, at original speed, without audio.",
+  "caption": "Opening film: a real humanoid running HOIST guides a suspended box toward its target.",
+  "description": "A real Unitree G1 humanoid running HOIST faces a gray box suspended from slings above a wooden platform with an outlined target. As the box is lowered, the robot reaches forward and pushes it with its hands, and the box lands on the platform. Fully autonomous, at original speed, without audio.",
   "source": "The authors' supplementary hoist.mp4, 23–45 seconds, HOIST panel only.",
   "changes": "Excerpted, resized, and H.264 compressed. Original playback speed; no audio.",
   "people": {
-    "title": "Workers guiding a concrete base by hand",
+    "title": "Workers hand-guiding a precast concrete footing",
     "sourceTitle": "Process of Constructing a Concrete Modular House in Just 2 Weeks. PC(Precast Concrete) Factory.",
     "source": "https://www.youtube.com/watch?v=GXIMQnndCVU&t=549s",
     "creator": "Holy Maker",
     "license": "© Holy Maker. Used with permission.",
     "changes": "Excerpted, audio removed, resized, and H.264 compressed. Original playback speed.",
-    "description": "Workers in hard hats and high-visibility vests guide a concrete base hanging from crane slings onto a foundation slab. They walk beside it with their hands on it as it comes down. Close views then show workers crouched against the block, pressing it with gloved hands to seat it on its guide hardware.",
+    "description": "Workers in hard hats and high-visibility vests guide a precast concrete footing suspended from crane slings onto a prepared concrete slab. They walk beside it with their hands on it as it is lowered. Close views then show workers crouched against the footing, pressing it with gloved hands to seat it on its guide hardware.",
     "excerptSeconds": [
       548.9,
       570.7

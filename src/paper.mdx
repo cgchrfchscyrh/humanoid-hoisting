@@ -11,22 +11,22 @@ import { asset } from "./data/project";
 <HoistingGallery />
 <section className="method-section section-band" id="method">
 <div className="section-inner">
-  <div className="section-heading"><h2>HOIST turns 50 demonstrations into accurate load placement in 20 practice runs, without retraining the policy or the controller.</h2></div>
+  <div className="section-heading"><h2>HOIST turns 50 teleoperated demonstrations into accurate load placement with 20 reinforcement-learning rollouts, keeping the policy and the whole-body controller frozen.</h2></div>
   <div className="method-map">
     <div className="method-map-figure"><ResearchFigure src={pipeline} alt="HOIST pipeline: VR demonstrations initialize a vision-language-action policy, and reinforcement learning steers initial noise while the policy and whole-body controller remain frozen." description="VR demonstrations provide the initial behavior. Ego-view RGB, side-view RGB, language and navigation commands condition the vision-language backbone. Robot state and depth are encoded for the flow-matching action expert, which outputs a 24-step chunk of 25-dimensional planner commands. A frozen whole-body controller executes head, bimanual hand, navigation and base-height targets. During reinforcement learning, a SAC actor steers initial noise using batches of 10 autonomous rollouts and terminal position and yaw rewards; the VLA and controller remain frozen." /></div>
     <h3 className="sr-only">What the figure shows</h3>
-    <p className="method-bubble method-bubble-demonstrate"><span className="method-badge"><span className="sr-only">Figure panel </span>0</span> <strong>A person goes first.</strong> An operator in a VR headset drives the robot through the task. We recorded 50 runs.</p>
-    <p className="method-bubble method-bubble-learn"><span className="method-badge"><span className="sr-only">Figure panels </span>1–2</span> <strong>A model copies those runs.</strong> GR00T N1.6 takes in camera images, a written instruction, navigation commands, a depth view, and the robot’s own state. We tune it to issue the commands the operator issued.</p>
-    <p className="method-bubble method-bubble-control"><span className="method-badge"><span className="sr-only">Figure panel </span>3</span> <strong>A controller moves the body.</strong> The commands set targets for the head, hands, walking, and body height. SONIC, an existing whole-body controller, turns them into balanced motion. We do not retrain it.</p>
-    <p className="method-bubble method-bubble-practice"><span className="method-badge"><span className="sr-only">Figure panel </span>4</span> <strong>Then it practices.</strong> Copying gets the robot started, but nothing in it rewards an accurate landing. So the robot runs the task alone in batches of 10, and each run is scored on where the box ends up. Reinforcement learning uses the scores to pick a better starting noise for each plan. The copied model and the controller stay as they are.</p>
+    <p className="method-bubble method-bubble-demonstrate"><span className="method-badge"><span className="sr-only">Figure panel </span>0</span> <strong>Teleoperated demonstrations.</strong> An operator teleoperates the humanoid with a VR headset and controllers. We collected 50 demonstrations.</p>
+    <p className="method-bubble method-bubble-learn"><span className="method-badge"><span className="sr-only">Figure panels </span>1–2</span> <strong>Imitation learning.</strong> We finetune the GR00T N1.6 vision-language-action (VLA) policy on those demonstrations. Its inputs are RGB images, a language instruction, navigation commands, depth, and proprioception; its outputs are action chunks.</p>
+    <p className="method-bubble method-bubble-control"><span className="method-badge"><span className="sr-only">Figure panel </span>3</span> <strong>Whole-body control.</strong> Action chunks set targets for head pose, bimanual hand poses, navigation, and base height. SONIC, a frozen whole-body controller, executes them on the robot.</p>
+    <p className="method-bubble method-bubble-practice"><span className="method-badge"><span className="sr-only">Figure panel </span>4</span> <strong>Reinforcement learning.</strong> Imitation does not directly optimize final placement. The robot runs batches of 10 autonomous rollouts, each scored by a terminal reward on position and yaw error. A Soft Actor-Critic agent learns to steer the policy’s initial noise. The VLA policy and the controller stay frozen.</p>
   </div>
 </div>
 </section>
 
 <section className="research-demonstrations" id="demo" aria-labelledby="demonstrations-title">
-  <div className="gallery-heading gallery-heading--statement"><h2 id="demonstrations-title">After 20 practice runs, HOIST cut mean placement error from 9.28 cm to 6.69 cm on the real robot and from 22.44 cm to 2.54 cm in simulation.</h2></div>
+  <div className="gallery-heading gallery-heading--statement"><h2 id="demonstrations-title">After 20 reinforcement-learning rollouts, HOIST cut mean Manhattan position error from 9.28 cm to 6.69 cm on the real humanoid and from 22.44 cm to 2.54 cm in simulation.</h2></div>
   <div className="research-pair">
-    <section aria-labelledby="real-demo-title"><h3 id="real-demo-title">Real robot</h3><ResearchClip id="real-result" /></section>
+    <section aria-labelledby="real-demo-title"><h3 id="real-demo-title">Real humanoid</h3><ResearchClip id="real-result" /></section>
     <section aria-labelledby="sim-demo-title"><h3 id="sim-demo-title">Simulation</h3><ResearchClip id="sim-result" /></section>
   </div>
 </section>

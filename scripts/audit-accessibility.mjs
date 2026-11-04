@@ -95,7 +95,7 @@ try {
       check(await page.evaluate(() => { const order = ["real-world", "method", "demo", "citation"].map(id => document.getElementById(id).getBoundingClientRect().top); return order.every((top, i) => i === 0 || top > order[i - 1]); }), "Page order is evidence, method, results, citation");
       check(await page.locator(".evidence-tile").count() === 4 && await page.locator(".evidence-tile a[href^='https://']").count() === 4, "Four evidence tiles each link to a source");
       check((await page.locator(".evidence-tile h3").allInnerTexts()).join() === "Dull,Dirty,Dangerous,Demanding", "Evidence tiles name the four Ds in order");
-      check(/HOIST turns 50 demonstrations/.test(await page.locator("#method h2").first().innerText()) && /9\.28 cm to 6\.69 cm/.test(await page.locator("#demonstrations-title").innerText()), "Method and results headings state the contribution and the result");
+      check(/HOIST turns 50 teleoperated demonstrations/.test(await page.locator("#method h2").first().innerText()) && /9\.28 cm to 6\.69 cm/.test(await page.locator("#demonstrations-title").innerText()), "Method and results headings state the contribution and the result");
       check(await page.locator(".world-card figure > .world-source").count() === 6, "Every gallery clip carries its source link on the video");
       check(await page.locator(".world-card h3, .world-card-sector, .gallery-notes-link, .clip-bubble, .hero-film-copy, details.figure-description, details.hero-media-notes").count() === 0, "Gallery text, hero text, video bubbles, and description disclosures stay removed");
       check((await page.locator("#real-world-title").innerText()) === "Hoisting is a 4D task: dull, dirty, dangerous, and demanding.", "The hoisting statement is restored");

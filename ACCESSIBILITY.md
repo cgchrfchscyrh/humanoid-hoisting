@@ -1,5 +1,9 @@
 # Accessibility review — 18 October 2026
 
+## Terminology review — 4 November 2026
+
+Homepage text, video descriptions, and timed description tracks now use crane, rigging, precast, and robot-learning terms from OSHA 1926 Subpart CC and the HOIST paper. The HTML paper and supplement were not changed. The 4D phrase is the authors' own.
+
 ## Evidence tiles and method first — 4 November 2026
 
 The homepage now runs from the opening videos to the 4D evidence and gallery, then the method, the results, and the citation. Four stat tiles use text only, with a real heading and a named source link each, so nothing depends on color. Their figures come from O*NET's work-context survey for riggers and from the U.S. Bureau of Labor Statistics factsheet on crane fatalities. The results heading uses the paper's 20-rollout values from Table 1, as the abstract does.

@@ -5,7 +5,7 @@
     "width": 384,
     "height": 432,
     "caption": "Real humanoid: HOIST guides the load to its target.",
-    "description": "A real humanoid running HOIST faces a gray box hanging from straps above a wooden platform with an outlined target. The robot reaches toward the box and adjusts hand contact as the load descends, and the box reaches the platform. This is the HOIST panel of the real-platform segment of the authors\u2019 comparison, at original speed and without audio; black gutters and title bands are removed while the robot, load, and target are retained."
+    "description": "A real humanoid running HOIST faces a gray box suspended from slings above a wooden platform with an outlined target. The robot reaches toward the box and adjusts hand contact as the load is lowered, and the box lands on the platform. This is the HOIST panel of the real-platform segment of the authors\u2019 comparison, at original speed and without audio; black gutters and title bands are removed while the robot, load, and target are retained."
   },
   {
     "id": "sim-result",
