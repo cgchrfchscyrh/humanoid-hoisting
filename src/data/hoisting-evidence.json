@@ -1,0 +1,30 @@
+[
+  {
+    "label": "Dull",
+    "value": "80%",
+    "text": "of riggers make repetitive motions for more than half of their working time.",
+    "source": "https://www.onetonline.org/link/details/49-9096.00",
+    "sourceName": "O*NET, Riggers"
+  },
+  {
+    "label": "Dirty",
+    "value": "64%",
+    "text": "of riggers work exposed to contaminants such as dust, gases, or odors every day.",
+    "source": "https://www.onetonline.org/link/details/49-9096.00",
+    "sourceName": "O*NET, Riggers"
+  },
+  {
+    "label": "Dangerous",
+    "value": "297",
+    "text": "U.S. workers died in crane-related incidents from 2011 to 2017. Just over half were struck by an object.",
+    "source": "https://www.bls.gov/iif/factsheets/fatal-occupational-injuries-cranes-2011-17.htm",
+    "sourceName": "U.S. Bureau of Labor Statistics"
+  },
+  {
+    "label": "Demanding",
+    "value": "92%",
+    "text": "of riggers rate being exact or highly accurate as very or extremely important to the job.",
+    "source": "https://www.onetonline.org/link/details/49-9096.00",
+    "sourceName": "O*NET, Riggers"
+  }
+]

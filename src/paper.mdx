@@ -9,17 +9,9 @@ import { asset } from "./data/project";
 
 <Header />
 <HoistingGallery />
-<section className="research-demonstrations" id="demo" aria-labelledby="demonstrations-title">
-  <div className="gallery-heading gallery-heading--statement"><h2 id="demonstrations-title">Our robot guides a hanging box</h2></div>
-  <div className="research-pair">
-    <section aria-labelledby="real-demo-title"><h3 id="real-demo-title">Real robot</h3><ResearchClip id="real-result" /></section>
-    <section aria-labelledby="sim-demo-title"><h3 id="sim-demo-title">Simulation</h3><ResearchClip id="sim-result" /></section>
-  </div>
-</section>
-
 <section className="method-section section-band" id="method">
 <div className="section-inner">
-  <div className="section-heading"><h2>How we trained it</h2></div>
+  <div className="section-heading"><h2>HOIST turns 50 demonstrations into accurate load placement in 20 practice runs, without retraining the policy or the controller.</h2></div>
   <div className="method-map">
     <div className="method-map-figure"><ResearchFigure src={pipeline} alt="HOIST pipeline: VR demonstrations initialize a vision-language-action policy, and reinforcement learning steers initial noise while the policy and whole-body controller remain frozen." description="VR demonstrations provide the initial behavior. Ego-view RGB, side-view RGB, language and navigation commands condition the vision-language backbone. Robot state and depth are encoded for the flow-matching action expert, which outputs a 24-step chunk of 25-dimensional planner commands. A frozen whole-body controller executes head, bimanual hand, navigation and base-height targets. During reinforcement learning, a SAC actor steers initial noise using batches of 10 autonomous rollouts and terminal position and yaw rewards; the VLA and controller remain frozen." /></div>
     <h3 className="sr-only">What the figure shows</h3>
@@ -29,6 +21,14 @@ import { asset } from "./data/project";
     <p className="method-bubble method-bubble-practice"><span className="method-badge"><span className="sr-only">Figure panel </span>4</span> <strong>Then it practices.</strong> Copying gets the robot started, but nothing in it rewards an accurate landing. So the robot runs the task alone in batches of 10, and each run is scored on where the box ends up. Reinforcement learning uses the scores to pick a better starting noise for each plan. The copied model and the controller stay as they are.</p>
   </div>
 </div>
+</section>
+
+<section className="research-demonstrations" id="demo" aria-labelledby="demonstrations-title">
+  <div className="gallery-heading gallery-heading--statement"><h2 id="demonstrations-title">After 20 practice runs, HOIST cut mean placement error from 9.28 cm to 6.69 cm on the real robot and from 22.44 cm to 2.54 cm in simulation.</h2></div>
+  <div className="research-pair">
+    <section aria-labelledby="real-demo-title"><h3 id="real-demo-title">Real robot</h3><ResearchClip id="real-result" /></section>
+    <section aria-labelledby="sim-demo-title"><h3 id="sim-demo-title">Simulation</h3><ResearchClip id="sim-result" /></section>
+  </div>
 </section>
 
 <section className="citation-section section-band" id="citation">

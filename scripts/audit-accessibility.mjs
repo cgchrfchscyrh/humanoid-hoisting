@@ -92,7 +92,10 @@ try {
       check(await page.locator('.citation-links a[href$="/accessibility/"]').count() === 1, "Accessibility and video credits stay linked from the homepage");
       check(await page.locator(".world-grid").evaluate(el => { const style = getComputedStyle(el), cards = [...el.children].map(c => c.querySelector("video").getBoundingClientRect()); return style.rowGap === "0px" && style.columnGap === "0px" && Math.abs(cards[0].right - cards[1].left) < 1 && Math.abs(cards[0].bottom - cards[3].top) < 1; }), "Gallery videos touch with no gaps");
       check(await page.locator(".world-grid").evaluate(el => getComputedStyle(el).gridTemplateColumns.split(" ").length === 3), "Desktop gallery uses three columns");
-      check(await page.locator("#real-world").evaluate(el => el.nextElementSibling?.id === "demo"), "Our real and simulation videos immediately follow the real-world gallery");
+      check(await page.evaluate(() => { const order = ["real-world", "method", "demo", "citation"].map(id => document.getElementById(id).getBoundingClientRect().top); return order.every((top, i) => i === 0 || top > order[i - 1]); }), "Page order is evidence, method, results, citation");
+      check(await page.locator(".evidence-tile").count() === 4 && await page.locator(".evidence-tile a[href^='https://']").count() === 4, "Four evidence tiles each link to a source");
+      check((await page.locator(".evidence-tile h3").allInnerTexts()).join() === "Dull,Dirty,Dangerous,Demanding", "Evidence tiles name the four Ds in order");
+      check(/HOIST turns 50 demonstrations/.test(await page.locator("#method h2").first().innerText()) && /9\.28 cm to 6\.69 cm/.test(await page.locator("#demonstrations-title").innerText()), "Method and results headings state the contribution and the result");
       check(await page.locator(".world-card figure > .world-source").count() === 6, "Every gallery clip carries its source link on the video");
       check(await page.locator(".world-card h3, .world-card-sector, .gallery-notes-link, .clip-bubble, .hero-film-copy, details.figure-description, details.hero-media-notes").count() === 0, "Gallery text, hero text, video bubbles, and description disclosures stay removed");
       check((await page.locator("#real-world-title").innerText()) === "Hoisting is a 4D task: dull, dirty, dangerous, and demanding.", "The hoisting statement is restored");
@@ -105,7 +108,7 @@ try {
         return ids.length > 0 && ids.every(id => (document.getElementById(id)?.textContent || "").trim().length > 40);
       })), "Every silent video has a complete linked visual description");
       check(await page.locator("video").evaluateAll(vs => vs.every(v => v.querySelectorAll('track[kind="descriptions"][src]').length === 1)), "Every silent video retains one timed visual-description track");
-      check(await page.locator("#demo video").count() === 2, "Real and simulation HOIST clips directly follow the gallery");
+      check(await page.locator("#demo video").count() === 2, "Real and simulation HOIST clips are in the results section");
       check(await page.locator("#demo video").evaluateAll(([a, b]) => { const x = a.getBoundingClientRect(), y = b.getBoundingClientRect(); return x.width === y.width && x.height === y.height; }), "Real and simulation clips display at the same size");
       check(await page.evaluate(() => {
         const figure = document.querySelector(".method-map img").getBoundingClientRect();

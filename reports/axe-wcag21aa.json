@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-04T21:31:29.651Z",
+  "date": "2026-11-04T21:49:32.158Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -109,7 +109,10 @@
     "Accessibility and video credits stay linked from the homepage",
     "Gallery videos touch with no gaps",
     "Desktop gallery uses three columns",
-    "Our real and simulation videos immediately follow the real-world gallery",
+    "Page order is evidence, method, results, citation",
+    "Four evidence tiles each link to a source",
+    "Evidence tiles name the four Ds in order",
+    "Method and results headings state the contribution and the result",
     "Every gallery clip carries its source link on the video",
     "Gallery text, hero text, video bubbles, and description disclosures stay removed",
     "The hoisting statement is restored",
@@ -119,7 +122,7 @@
     "Reduced-motion page starts paused with native controls and hidden native download option",
     "Every silent video has a complete linked visual description",
     "Every silent video retains one timed visual-description track",
-    "Real and simulation HOIST clips directly follow the gallery",
+    "Real and simulation HOIST clips are in the results section",
     "Real and simulation clips display at the same size",
     "Method bubbles flank the figure on wide screens",
     "Removed sections and method clip stay absent",

@@ -1,5 +1,9 @@
 # Accessibility review — 18 October 2026
 
+## Evidence tiles and method first — 4 November 2026
+
+The homepage now runs from the opening videos to the 4D evidence and gallery, then the method, the results, and the citation. Four stat tiles use text only, with a real heading and a named source link each, so nothing depends on color. Their figures come from O*NET's work-context survey for riggers and from the U.S. Bureau of Labor Statistics factsheet on crane fatalities. The results heading uses the paper's 20-rollout values from Table 1, as the abstract does.
+
 ## Homepage without top bar or footer — 4 November 2026
 
 The homepage top bar and footer were removed at the author's request, and gallery videos now touch. The accessibility and credits link and the template attribution moved to one line in the citation band. Sub-pages keep their header and footer as the way back to the homepage. With no bars, the homepage has no site-wide navigation; the skip link and in-page order remain. A further Holy Maker excerpt replaced the bow plane clip in the gallery.
