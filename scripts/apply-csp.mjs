@@ -13,7 +13,7 @@ async function secure(directory) {
       const hashes = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
         .filter((match) => !/\bsrc\s*=/.test(match[1]))
         .map((match) => `'sha256-${createHash("sha256").update(match[2]).digest("base64")}'`);
-      const policy = `default-src 'self'; script-src 'self' ${[...new Set(hashes)].join(" ")}; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'`;
+      const policy = `default-src 'self'; script-src 'self' ${[...new Set(hashes)].join(" ")}; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src https://www.youtube-nocookie.com; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'`;
       html = html.replace(/<meta\s+charset="[^"]+"\s*\/?>/i, (tag) => `${tag}<meta http-equiv="Content-Security-Policy" content="${policy}">`);
       await writeFile(file, html);
     }

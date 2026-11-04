@@ -1,5 +1,5 @@
 {
-  "reviewed": "2026-10-01",
+  "reviewed": "2026-11-04",
   "construction-guidance.mp4": {
     "title": "CRANE #2",
     "creator": "U.S. Navy",
@@ -9,7 +9,10 @@
     "rights": "Listed as public domain in the United States; subject to DVIDS usage conditions, including non-endorsement and other rights restrictions.",
     "usage_conditions": "https://www.dvidshub.net/about/copyright",
     "required_disclaimer": "The appearance of U.S. Department of War (DoW) visual information does not imply or constitute DoW endorsement.",
-    "excerpt_seconds": [98, 124],
+    "excerpt_seconds": [
+      98,
+      124
+    ],
     "modifications": "26-second excerpt; audio removed; H.264 compression at 640 × 480; no speed change. Website layout may crop the frame; native fullscreen shows the complete excerpt.",
     "poster": "construction-guidance-poster.jpg (frame at excerpt time 00:02)",
     "purpose": "Construction background only; not a HOIST experiment or evidence of field deployment."
@@ -18,8 +21,56 @@
     "creator": "HOIST authors",
     "source": "Authors’ supplementary hoist.mp4",
     "full_website_video": "hoist.mp4",
-    "excerpt_seconds": [16, 42],
+    "excerpt_seconds": [
+      16,
+      42
+    ],
     "modifications": "Cropped to the HOIST panel only: 384 × 432 pixels at x=896, y=144 in the 1280 × 720 website video. No speed change. No audio.",
     "poster": "hoist-guidance-poster.jpg (frame at excerpt time 00:08)"
+  },
+  "hoist-opening.mp4": {
+    "files": [
+      "hoist-opening.mp4",
+      "hoist-opening-small.mp4",
+      "hoist-opening-poster.jpg"
+    ],
+    "shots": [
+      {
+        "source": "https://www.dvidshub.net/video/993151/shipyard-workers-build-us-navy-ships-ingalls-shipbuilding",
+        "creator": "Austin Rooney / U.S. Navy",
+        "excerptSeconds": [
+          [
+            219.2,
+            225.2
+          ],
+          [
+            86.0,
+            92.0
+          ],
+          [
+            100.2,
+            105.2
+          ]
+        ]
+      },
+      {
+        "source": "https://www.dvidshub.net/video/1003810/shipyard-chronicles-riggers-install-port-retractable-bow-plane-into-submarine",
+        "creator": "Claudia LaMantia / Pearl Harbor Naval Shipyard and Intermediate Maintenance Facility",
+        "excerptSeconds": [
+          [
+            26.4,
+            32.4
+          ],
+          [
+            41.0,
+            43.4
+          ]
+        ]
+      }
+    ],
+    "license": "Public domain in the United States; DVIDS usage conditions apply.",
+    "licenseUrl": "https://www.dvidshub.net/about/copyright",
+    "changes": "Five excerpts joined with hard cuts, audio removed, resized, and H.264 compressed. Source playback speed retained.",
+    "purpose": "Shipyard background only; not a HOIST experiment or evidence of field deployment."
   }
 }

@@ -1,7 +1,7 @@
 ---
-import stories from "../data/vision-stories.json";
 import { Icon } from "astro-icon/components";
 import { project, asset } from "../data/project";
+import opening from "../data/opening-video.json";
 const links = [
   {
     name: "arXiv",
@@ -15,10 +15,33 @@ const links = [
 ---
 
 <header class="comparison-hero" id="top">
-  <div class="hero-intro">
-    <h1 class="project-display-title">{stories.hoist.headlineLines.map(line => <span class="display-line">{line}{" "}</span>)}</h1>
+  <div class="hero-film">
+    <video
+      id="hero-film-video"
+      controls
+      controlslist="nodownload"
+      muted
+      playsinline
+      preload="none"
+      poster={asset("media/hoist-opening-poster.jpg")}
+      width="1920"
+      height="1080"
+      aria-label={opening.caption}
+      aria-describedby="hero-film-description"
+    >
+      <source media="(max-width: 768px)" src={asset("media/hoist-opening-small.mp4")} type="video/mp4" />
+      <source src={asset("media/hoist-opening.mp4")} type="video/mp4" />
+      <track kind="descriptions" src={asset("media/hoist-opening-descriptions.vtt")} srclang="en" label="English visual descriptions" />
+      Video playback is unavailable. Read the text alternative in the media notes.
+    </video>
+    <div class="hero-film-copy">
+      <h1 class="project-display-title">HOIST</h1>
+      <p>A crane can lift a concrete room or a section of hull. Landing it in the right spot still takes a person standing next to it. We are teaching humanoid robots to do that part of the job.</p>
+    </div>
   </div>
+  <p class="sr-only" id="hero-film-description">{opening.description}</p>
   <div class="hero-publication">
+    <p class="hero-paper-name">{project.subtitle}</p>
     <div class="authors">
       {
         project.authors.map((author) => (

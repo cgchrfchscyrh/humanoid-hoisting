@@ -83,8 +83,12 @@ try {
 
     if (route === "/") {
       const videoCount = await page.locator("video").count();
-      check(videoCount === 11, "Nine real-world videos and two research excerpts are present");
-      check(await page.locator(".world-grid .world-card video").count() === 9, "Real-world gallery contains nine video players");
+      check(videoCount === 11, "Opening film, eight hosted gallery clips, and two research excerpts are present");
+      check(await page.locator(".world-grid .world-card video").count() === 8 && await page.locator(".world-grid .youtube-facade").count() === 1, "Real-world gallery contains eight video players and one YouTube link");
+      check(await page.locator("iframe").count() === 0, "YouTube is not loaded before the visitor chooses to play it");
+      check(await page.locator(".youtube-facade").evaluate(a => a.href.startsWith("https://www.youtube.com/watch")), "YouTube clip works as a plain link without JavaScript");
+      check(await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute("content").then(csp => csp.includes("frame-src https://www.youtube-nocookie.com") && csp.includes("https://i.ytimg.com")), "Content security policy allows only the YouTube player and its preview image");
+      check(await page.locator("#hero-film-video").evaluate(v => Math.round(v.getBoundingClientRect().width) === document.documentElement.clientWidth && v.getBoundingClientRect().height >= innerHeight * .6), "Opening film spans the full page width and most of the screen");
       check(await page.locator(".world-grid").evaluate(el => getComputedStyle(el).gridTemplateColumns.split(" ").length === 3), "Desktop gallery uses three columns");
       check(await page.locator("#real-world").evaluate(el => el.nextElementSibling?.id === "demo"), "Our real and simulation videos immediately follow the real-world gallery");
       check(await page.locator(".world-card-header a").count() === 9, "Every real-world example links to its original source");
@@ -135,9 +139,12 @@ try {
   const auto = await normal.newPage();
   auto.on("pageerror", e => report.errors.push(e.message));
   await auto.goto(origin + "/", { waitUntil: "networkidle" });
+  const openingFilm = auto.locator("#hero-film-video");
+  await waitForPlayback(openingFilm, false);
+  check(await openingFilm.evaluate(v => v.muted && v.loop), "Opening film autoplays muted and loops");
   const firstVideo = auto.locator(".world-card video").first();
   await firstVideo.scrollIntoViewIfNeeded();
-  await auto.waitForFunction(() => [...document.querySelectorAll(".world-card video")].slice(0, 3).every(v => !v.paused && v.muted && v.loop && v.currentTime > .1));
+  await auto.waitForFunction(() => [...document.querySelectorAll(".world-card video")].slice(0, 2).every(v => !v.paused && v.muted && v.loop && v.currentTime > .1));
   check(true, "The first row of the real-world gallery autoplays muted and loops");
   await tabToVideo(auto, firstVideo);
   check(true, "Native video controls are reachable with Tab");
@@ -158,6 +165,7 @@ try {
   await auto.locator("#citation").scrollIntoViewIfNeeded();
   await auto.waitForFunction(() => [...document.querySelectorAll(".world-card video")].every(v => v.paused));
   check(await auto.locator(".world-card video").evaluateAll(vs => vs.every(v => v.paused)), "Offscreen real-world videos pause");
+  check(await openingFilm.evaluate(v => v.paused), "Offscreen opening film pauses");
   await firstVideo.scrollIntoViewIfNeeded();
   await waitForPlayback(auto.locator("figure.research-clip video").last(), true);
   check(await firstVideo.evaluate(v => v.paused), "Native manual pause survives leaving and returning to view");
@@ -168,6 +176,16 @@ try {
   await auto.emulateMedia({ reducedMotion: "reduce" });
   await auto.waitForFunction(() => [...document.querySelectorAll("video")].every(v => v.paused));
   check(true, "Enabling reduced motion pauses automatic playback immediately");
+  const embed = await normal.newPage();
+  await embed.route("**/*youtube-nocookie.com/**", route => route.abort());
+  await embed.goto(origin + "/", { waitUntil: "domcontentloaded" });
+  await embed.locator(".youtube-facade").focus();
+  await embed.keyboard.press("Enter");
+  const frame = embed.locator(".world-card iframe");
+  await frame.waitFor({ state: "attached" });
+  check((await frame.getAttribute("src")).startsWith("https://www.youtube-nocookie.com/embed/") && (await frame.getAttribute("title")).length > 0, "Keyboard activation loads the titled privacy-enhanced YouTube player");
+  check(await frame.evaluate(el => document.activeElement === el), "Focus moves into the YouTube player after activation");
+  await embed.close();
   await normal.close();
 
   for (const setting of ["reduced-motion", "save-data"]) {

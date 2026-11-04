@@ -5,7 +5,7 @@ export const project = {
   subtitle:
     "Humanoid Optimization with Imitation and Sample-Efficient Tuning for Manipulating Suspended Loads",
   description:
-    "Learning to guide suspended loads with humanoid robots. HOIST combines VR demonstrations, vision-language-action policies, and sample-efficient reinforcement learning.",
+    "HOIST teaches humanoid robots to guide loads hanging from a hoist, using VR demonstrations, a vision-language-action model, and a small number of practice runs.",
   institution: "University of Florida",
   department: "Department of Civil and Coastal Engineering",
   year: "2026",

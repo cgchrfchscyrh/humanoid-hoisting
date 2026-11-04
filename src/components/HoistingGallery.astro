@@ -3,19 +3,45 @@ import clips from "../data/world-hoisting.json";
 import { asset } from "../data/project";
 ---
 <section class="hoisting-gallery" id="real-world" aria-labelledby="real-world-title">
-  <div class="gallery-heading gallery-heading--statement">
-    <h2 id="real-world-title">Hoisting is a 3D task: dull, dirty, and dangerous.</h2>
+  <div class="gallery-heading">
+    <h2 id="real-world-title">The last few feet are done by hand.</h2>
+    <p>The crane carries the weight. To line the load up, workers commonly stand beside it with a hand or a rope on it and push. A load that swings or reacts late can strike or pin them. These clips come from concrete housing, shipyards, and other crane work. None of them shows HOIST.</p>
   </div>
   <div class="world-grid">
     {clips.map(clip => <article class="world-card">
+      <p class="world-card-sector">{clip.sector}</p>
       <div class="world-card-header"><h3>{clip.title}</h3><a href={clip.source} aria-label={`Original video: ${clip.title}`}>Source ↗</a></div>
-      <figure><video id={`world-${clip.id}`} controls controlslist="nodownload" muted playsinline preload="none" width={clip.width} height={clip.height} poster={asset(`media/world-hoisting/${clip.id}.jpg`)} aria-label={clip.title} aria-describedby={`description-${clip.id}`}>
-        <source src={asset(`media/world-hoisting/${clip.id}.mp4`)} type="video/mp4" />
-        <track kind="descriptions" src={asset(`media/world-hoisting/${clip.id}.vtt`)} srclang="en" label="English visual description" />
-        Video playback is unavailable. Read the text alternative in the media notes.
-      </video></figure>
+      <figure>
+        {clip.youtubeId
+          ? <a class="youtube-facade" href={clip.source} data-youtube-id={clip.youtubeId} data-start={clip.startSeconds} data-title={clip.title} aria-describedby={`description-${clip.id}`}>
+              <img src={`https://i.ytimg.com/vi/${clip.youtubeId}/maxresdefault.jpg`} alt={clip.posterAlt} width="1280" height="720" loading="lazy" referrerpolicy="no-referrer" />
+              <span class="youtube-facade-label">Play on YouTube</span>
+            </a>
+          : <video id={`world-${clip.id}`} controls controlslist="nodownload" muted playsinline preload="none" width={clip.width} height={clip.height} poster={asset(`media/world-hoisting/${clip.id}.jpg`)} aria-label={clip.title} aria-describedby={`description-${clip.id}`}>
+              <source src={asset(`media/world-hoisting/${clip.id}.mp4`)} type="video/mp4" />
+              <track kind="descriptions" src={asset(`media/world-hoisting/${clip.id}.vtt`)} srclang="en" label="English visual description" />
+              Video playback is unavailable. Read the text alternative in the media notes.
+            </video>}
+      </figure>
       <p class="sr-only" id={`description-${clip.id}`}>{clip.description}</p>
     </article>)}
   </div>
   <a class="gallery-notes-link" href="#video-notes">Video credits and accessible descriptions</a>
+  <script>
+    // YouTube loads only after a deliberate click; without JavaScript the link opens the video on YouTube.
+    for (const link of document.querySelectorAll<HTMLAnchorElement>(".youtube-facade")) {
+      link.addEventListener("click", event => {
+        event.preventDefault();
+        const { youtubeId, start, title } = link.dataset;
+        const frame = document.createElement("iframe");
+        frame.src = `https://www.youtube-nocookie.com/embed/${youtubeId}?start=${start}&autoplay=1&mute=1&rel=0&playsinline=1`;
+        frame.title = title ?? "YouTube video";
+        frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+        frame.referrerPolicy = "strict-origin-when-cross-origin";
+        frame.className = "youtube-frame";
+        link.replaceWith(frame);
+        frame.focus();
+      });
+    }
+  </script>
 </section>

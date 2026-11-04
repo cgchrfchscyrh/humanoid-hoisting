@@ -1752,3 +1752,22 @@ math {
   .research-demonstrations { margin-top: 40px; }
   .citation-box pre { font-size: 12px; padding: 12px; }
 }
+
+/* Full-width opening film. The copy sits in normal flow so the block grows with zoom and text spacing. */
+.comparison-hero { padding: 0; }
+.hero-film { position: relative; display: grid; align-items: end; min-height: calc(100svh - 58px); overflow: hidden; background: #111; color: #fff; }
+.hero-film video { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; background: #111; }
+.hero-film video:focus-visible { outline: 3px solid #fff; outline-offset: -3px; }
+.hero-film::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(0,0,0,.84) 0, rgba(0,0,0,.66) 45%, rgba(0,0,0,0) 80%); }
+.hero-film-copy { position: relative; z-index: 1; pointer-events: none; padding: 96px max(24px, 4vw) 76px; }
+.hero-film-copy h1.project-display-title { color: #fff; font-size: clamp(4.5rem, 15vw, 14rem); font-weight: 600; line-height: .9; letter-spacing: -.06em; margin: 0 0 24px -.04em; }
+.hero-film-copy p { color: #fff; max-width: 42ch; margin: 0; font-size: clamp(1.125rem, 1.9vw, 1.6rem); line-height: 1.4; }
+.comparison-hero .hero-publication { padding: 32px 20px 8px; }
+.hero-paper-name { max-width: 60ch; margin: 0 auto 16px; font-size: 18px; font-weight: 500; line-height: 1.4; }
+
+.world-card-sector { margin: 0 0 2px; color: #595959; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.youtube-facade { position: relative; display: block; aspect-ratio: 16 / 9; background: #111; color: #fff; font-size: 14px; }
+.youtube-facade img { width: 100%; height: 100%; object-fit: cover; }
+.youtube-facade-label { position: absolute; left: 10px; bottom: 10px; padding: 6px 12px; background: #171717; color: #fff; font-size: 13px; text-decoration: underline; }
+.youtube-facade:hover .youtube-facade-label { background: #444; }
+.youtube-frame { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; }

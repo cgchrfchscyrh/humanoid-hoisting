@@ -1,5 +1,13 @@
 # Accessibility review — 18 October 2026
 
+## Opening film and plainer text — 4 November 2026
+
+The homepage now opens with a full-width silent film of two U.S. Navy shipyards, using native controls, the existing viewport playback rules, a timed description track, and a complete text alternative. White text sits on a dark gradient so it stays readable over bright frames. Frame-to-frame brightness was measured for the flash criterion: no more than one large swing in any second. That is a screening check, not a certified flash analysis.
+
+The gallery's concrete house clip is copyrighted by its owner and plays through YouTube's embedded player. It works as a plain link without JavaScript, and nothing from the player loads until a visitor activates it, although its preview image comes from YouTube. **YouTube's player and that video's audio and captions were not reviewed and are outside this site's control.** Its description was written from YouTube's preview frames at 10-second steps, not from continuous viewing.
+
+Headings and explanations were rewritten in plainer language. The result sentence comes from Table 2 of the paper. Existing PDF and screen-reader limitations still apply.
+
 ## Real-world gallery reselected — 3 November 2026
 
 The nine real-world clips were replaced with single-shot excerpts in which people handle or guide the lifted load by hand or by tag line. Each clip has a new text alternative and timed description written after reviewing its frames, and its source and license credit are listed in the media notes. All nine sources are marked public domain on DVIDS.
