@@ -18,20 +18,18 @@
     "height": 360
   },
   {
-    "id": "push-bow-plane",
-    "title": "Pushing a bow plane by hand",
-    "sourceTitle": "Shipyard Chronicles: Riggers Install a Port Retractable Bow Plane Into a Submarine",
-    "source": "https://www.dvidshub.net/video/1003810/shipyard-chronicles-riggers-install-port-retractable-bow-plane-into-submarine",
-    "creator": "Claudia LaMantia / Pearl Harbor Naval Shipyard and Intermediate Maintenance Facility",
-    "description": "On scaffolding above a dry dock, a shipyard worker in a yellow hard hat presses a gloved hand against a submarine bow plane hanging from a crane. A second arm reaches in from the left and rests on the same edge.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2604/DOD_111652584/DOD_111652584.mp4",
+    "id": "push-concrete-beam",
+    "title": "Pushing a concrete beam by hand",
+    "sourceTitle": "Process of Constructing a Concrete Modular House in Just 2 Weeks. PC(Precast Concrete) Factory.",
+    "source": "https://www.youtube.com/watch?v=GXIMQnndCVU&t=1223s",
+    "creator": "Holy Maker",
+    "description": "Two workers in hard hats raise their arms and press gloved hands against a concrete beam hanging from crane slings between two columns. A close view then shows their hands on both ends of the beam as they line it up above a column.",
     "excerptSeconds": [
-      41.0,
-      43.4
+      1222.9,
+      1228.5
     ],
-    "license": "Public domain in the United States; DVIDS usage conditions apply.",
-    "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained.",
+    "license": "© Holy Maker. Used with permission.",
+    "changes": "Two consecutive shots, audio removed, resized, and H.264 compressed. Source playback speed retained.",
     "width": 640,
     "height": 360
   },

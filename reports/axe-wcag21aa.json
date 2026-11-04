@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-04T21:18:32.695Z",
+  "date": "2026-11-04T21:31:29.651Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -105,6 +105,8 @@
     "No third-party player is embedded",
     "People clip and robot film fill the opening width side by side at one height",
     "Homepage has no top navigation bar",
+    "Homepage ends at the citation band with no footer below it",
+    "Accessibility and video credits stay linked from the homepage",
     "Gallery videos touch with no gaps",
     "Desktop gallery uses three columns",
     "Our real and simulation videos immediately follow the real-world gallery",
@@ -173,7 +175,7 @@
     "The first row of the real-world gallery autoplays muted and loops",
     "Native video controls are reachable with Tab",
     "Space on the native player pauses the video",
-    "Real-world excerpt plays when visible: world-push-bow-plane",
+    "Real-world excerpt plays when visible: world-push-concrete-beam",
     "Real-world excerpt plays when visible: world-push-concrete-cap",
     "Real-world excerpt plays when visible: world-tagline-bow-plane",
     "Real-world excerpt plays when visible: world-tagline-loader",

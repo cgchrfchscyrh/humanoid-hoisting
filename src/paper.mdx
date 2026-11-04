@@ -5,6 +5,7 @@ import ResearchFigure from "./components/ResearchFigure.astro";
 import Citation from "./components/Citation.astro";
 import MediaControls from "./components/MediaControls.astro";
 import pipeline from "./assets/figure4.jpg";
+import { asset } from "./data/project";
 
 <Header />
 <HoistingGallery />
@@ -34,6 +35,7 @@ import pipeline from "./assets/figure4.jpg";
 <div className="section-inner">
   <div className="section-heading"><h2>Citation</h2></div>
   <Citation />
+  <p className="citation-links"><a href={asset("accessibility/")}>Accessibility &amp; video credits</a> · Template: <a href="https://github.com/RomanHauksson/academic-project-astro-template">Roman Hauksson</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></p>
 </div>
 </section>
 <MediaControls />

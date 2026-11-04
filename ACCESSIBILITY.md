@@ -1,5 +1,9 @@
 # Accessibility review — 18 October 2026
 
+## Homepage without top bar or footer — 4 November 2026
+
+The homepage top bar and footer were removed at the author's request, and gallery videos now touch. The accessibility and credits link and the template attribution moved to one line in the citation band. Sub-pages keep their header and footer as the way back to the homepage. With no bars, the homepage has no site-wide navigation; the skip link and in-page order remain. A further Holy Maker excerpt replaced the bow plane clip in the gallery.
+
 ## Opening pair and no top navigation — 4 November 2026
 
 The opening now shows people guiding a hanging concrete base beside the robot film, at one height with no cropping, and the top navigation links were removed at the author's request. The two videos have the same 21.8-second length and act as one player: they start, pause, resume, and loop together, and the existing reduced-motion, data-saving, and offscreen rules apply to both. Both are silent, with native controls, timed descriptions, and text alternatives. The people clip and one gallery clip are excerpts from Holy Maker's video, which the project team reports having permission to use. They are stored on this site, so YouTube's player is no longer embedded and no third-party content loads with the page. The written permission was not reviewed here. Their descriptions were written from frames at 1-second steps.

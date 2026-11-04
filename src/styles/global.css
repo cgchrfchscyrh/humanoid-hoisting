@@ -1806,5 +1806,9 @@ math {
 }
 
 /* Gallery videos sit edge to edge. */
-.world-grid { gap: 0; }
-.world-card video { display: block; width: 100%; }
+.world-grid { gap: 0; background: #111; }
+.world-card video { display: block; width: 100%; background: #111; }
+
+/* The homepage ends with the citation band; credits sit in one line inside it. */
+.citation-section p.citation-links { margin: 14px 0 0; color: #454545; font-size: 14px; }
+.citation-section .citation-links a { color: #202020; text-decoration: underline; }
