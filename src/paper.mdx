@@ -3,20 +3,16 @@ import Header from "./components/Header.astro";
 import ResearchClip from "./components/ResearchClip.astro";
 import ResearchFigure from "./components/ResearchFigure.astro";
 import Citation from "./components/Citation.astro";
-import VideoNotes from "./components/VideoNotes.astro";
 import MediaControls from "./components/MediaControls.astro";
 import pipeline from "./assets/figure4.jpg";
 
 <Header />
 <HoistingGallery />
 <section className="research-demonstrations" id="demo" aria-labelledby="demonstrations-title">
-  <div className="gallery-heading">
-    <h2 id="demonstrations-title">We started with a box.</h2>
-    <p>In our lab, a 54 cm, 2.5 kg box hangs from a hoist next to a Unitree G1 humanoid. The robot has no control over the hoist. It can only walk up, push the box with its hands on the way down, and back off before it lands. After 50 demonstrations and 30 practice runs, mean placement error fell from 22.44 cm to 6.25 cm in simulation and from 9.28 cm to 6.38 cm on the real robot. The real robot's angle error rose from 14.5° to 28.9°, still inside our 30° limit.</p>
-  </div>
+  <div className="gallery-heading gallery-heading--statement"><h2 id="demonstrations-title">Our robot guides a hanging box</h2></div>
   <div className="research-pair">
-    <section aria-labelledby="real-demo-title"><h3 id="real-demo-title">Real humanoid</h3><ResearchClip id="real-result" /><p className="method-bubble clip-bubble clip-bubble-real"><strong>The real robot.</strong> Nobody is steering it. The box comes down on its own, and the robot pushes it toward the outlined target with its hands. Original speed.</p></section>
-    <section aria-labelledby="sim-demo-title"><h3 id="sim-demo-title">Simulation</h3><ResearchClip id="sim-result" /><p className="method-bubble clip-bubble clip-bubble-sim"><strong>In simulation.</strong> Same task, same rules. The robot shifts its hands and stance to correct where the box is and which way it faces, then eases off as the box reaches the platform. Original speed.</p></section>
+    <section aria-labelledby="real-demo-title"><h3 id="real-demo-title">Real robot</h3><ResearchClip id="real-result" /></section>
+    <section aria-labelledby="sim-demo-title"><h3 id="sim-demo-title">Simulation</h3><ResearchClip id="sim-result" /></section>
   </div>
 </section>
 
@@ -40,5 +36,4 @@ import pipeline from "./assets/figure4.jpg";
   <Citation />
 </div>
 </section>
-<VideoNotes />
 <MediaControls />

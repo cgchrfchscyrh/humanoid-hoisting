@@ -1,5 +1,9 @@
 # Accessibility review — 18 October 2026
 
+## Robot opening film and six-clip gallery — 4 November 2026
+
+The homepage opens with a full-width silent film of the real robot, with no text over it. On wide screens the complete panel sits over a blurred copy of itself; narrow screens use a separate copy of the panel with no blurred sides. The gallery now has six clips of people pushing or pulling a load, with a source link placed on each video. At the author's request, gallery titles, the text explaining the research videos, and the visible description and credit disclosures were removed from the homepage. Every video keeps a complete text alternative for screen readers and a timed description track, and the figure description stays available to screen readers. Full descriptions, source credits, and the required DoW statement moved to the accessibility page, linked from the footer. Sighted visitors no longer see these descriptions on the homepage. Text sizes were brought closer together. Existing PDF and screen-reader limitations still apply.
+
 ## Opening film and plainer text — 4 November 2026
 
 The homepage now opens with a full-width silent film of two U.S. Navy shipyards, using native controls, the existing viewport playback rules, a timed description track, and a complete text alternative. White text sits on a dark gradient so it stays readable over bright frames. Frame-to-frame brightness was measured for the flash criterion: no more than one large swing in any second. That is a screening check, not a certified flash analysis.

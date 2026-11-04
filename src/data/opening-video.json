@@ -1,19 +1,6 @@
 {
-  "caption": "Opening film: cranes and workers in two U.S. Navy shipyards.",
-  "description": "A silent film of five shots. The gray side of a warship rises overhead against a cloudy sky. A dockside crane carries a submarine bow plane while a rigger below holds its tag line. A worker on scaffolding keeps a gloved hand on the hanging plane. An overhead crane carries a long lifting beam hung with magnets above stacks of steel plate. Sparks fly from a torch cutting steel. None of these shots show HOIST.",
-  "sources": [
-    {
-      "title": "Shipyard Workers Build U.S. Navy Ships at Ingalls Shipbuilding",
-      "url": "https://www.dvidshub.net/video/993151/shipyard-workers-build-us-navy-ships-ingalls-shipbuilding",
-      "creator": "Austin Rooney / U.S. Navy"
-    },
-    {
-      "title": "Shipyard Chronicles: Riggers Install a Port Retractable Bow Plane Into a Submarine",
-      "url": "https://www.dvidshub.net/video/1003810/shipyard-chronicles-riggers-install-port-retractable-bow-plane-into-submarine",
-      "creator": "Claudia LaMantia / Pearl Harbor Naval Shipyard and Intermediate Maintenance Facility"
-    }
-  ],
-  "license": "Public domain in the United States; DVIDS usage conditions apply.",
-  "licenseUrl": "https://www.dvidshub.net/about/copyright",
-  "changes": "Five excerpts joined with hard cuts, audio removed, resized, and H.264 compressed. Source playback speed retained."
+  "caption": "Opening film: a real humanoid running HOIST pushes a hanging box toward its target.",
+  "description": "A real Unitree G1 humanoid running HOIST faces a gray box hanging from straps above a wooden platform with an outlined target. As the box comes down, the robot reaches forward and pushes it with its hands, then the box reaches the platform. Fully autonomous, at original speed, without audio. The sharp center of the frame is the HOIST panel from the authors' comparison recording; the sides are a blurred copy of the same picture.",
+  "source": "The authors' supplementary hoist.mp4, 23–45 seconds, HOIST panel only.",
+  "changes": "Excerpted, placed over a blurred copy of itself to fill a wide screen, resized, and H.264 compressed. Original playback speed; no audio."
 }

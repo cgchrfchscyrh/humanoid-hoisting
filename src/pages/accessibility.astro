@@ -1,5 +1,6 @@
 ---
 import ReadingLayout from "../layouts/ReadingLayout.astro";
+import VideoNotes from "../components/VideoNotes.astro";
 import { asset } from "../data/project";
 ---
 
@@ -24,8 +25,8 @@ import { asset } from "../data/project";
       and <a href={asset("") + "#demo"}>our experiments</a>. They start automatically when
       visible, unless reduced motion or data saving is enabled. Use each player’s
       native controls to pause or resume; a manual pause is respected when scrolling.
-      Every clip has timed visual descriptions and a complete linked text alternative.
-      Full video descriptions and source credits are collected in the media notes at the end of the project page.
+      Every clip has timed visual descriptions and a complete text alternative for screen readers.
+      Full video descriptions and source credits are listed on this page.
     </li><li>
       Full results are available as labeled numbers and tables in the <a
         href={asset("paper/")}>HTML paper</a
@@ -35,6 +36,7 @@ import { asset } from "../data/project";
       to follow links, and Space or Enter to activate buttons.
     </li><li>The page supports browser zoom and reduced-motion preferences.</li>
   </ul>
+  <VideoNotes />
   <h2>Request assistance or report a barrier</h2>
   <p>
     If you have trouble using this site or need research materials in another

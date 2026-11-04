@@ -23,25 +23,21 @@ const links = [
       muted
       playsinline
       preload="none"
-      poster={asset("media/hoist-opening-poster.jpg")}
+      poster={asset("media/hoist-robot-opening-poster.jpg")}
       width="1920"
       height="1080"
       aria-label={opening.caption}
       aria-describedby="hero-film-description"
     >
-      <source media="(max-width: 768px)" src={asset("media/hoist-opening-small.mp4")} type="video/mp4" />
-      <source src={asset("media/hoist-opening.mp4")} type="video/mp4" />
-      <track kind="descriptions" src={asset("media/hoist-opening-descriptions.vtt")} srclang="en" label="English visual descriptions" />
-      Video playback is unavailable. Read the text alternative in the media notes.
+      <source media="(max-width: 768px)" src={asset("media/hoist-robot-opening-small.mp4")} type="video/mp4" />
+      <source src={asset("media/hoist-robot-opening.mp4")} type="video/mp4" />
+      <track kind="descriptions" src={asset("media/hoist-robot-opening-descriptions.vtt")} srclang="en" label="English visual descriptions" />
+      Video playback is unavailable.
     </video>
-    <div class="hero-film-copy">
-      <h1 class="project-display-title">HOIST</h1>
-      <p>A crane can lift a concrete room or a section of hull. Landing it in the right spot still takes a person standing next to it. We are teaching humanoid robots to do that part of the job.</p>
-    </div>
   </div>
   <p class="sr-only" id="hero-film-description">{opening.description}</p>
   <div class="hero-publication">
-    <p class="hero-paper-name">{project.subtitle}</p>
+    <h1 class="hero-paper-name">{project.title}</h1>
     <div class="authors">
       {
         project.authors.map((author) => (

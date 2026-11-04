@@ -83,15 +83,18 @@ try {
 
     if (route === "/") {
       const videoCount = await page.locator("video").count();
-      check(videoCount === 11, "Opening film, eight hosted gallery clips, and two research excerpts are present");
-      check(await page.locator(".world-grid .world-card video").count() === 8 && await page.locator(".world-grid .youtube-facade").count() === 1, "Real-world gallery contains eight video players and one YouTube link");
+      check(videoCount === 8, "Opening film, five hosted gallery clips, and two research excerpts are present");
+      check(await page.locator(".world-grid .world-card video").count() === 5 && await page.locator(".world-grid .youtube-facade").count() === 1 && await page.locator(".world-card").count() === 6, "Six-clip gallery: five video players and one YouTube link");
       check(await page.locator("iframe").count() === 0, "YouTube is not loaded before the visitor chooses to play it");
       check(await page.locator(".youtube-facade").evaluate(a => a.href.startsWith("https://www.youtube.com/watch")), "YouTube clip works as a plain link without JavaScript");
       check(await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute("content").then(csp => csp.includes("frame-src https://www.youtube-nocookie.com") && csp.includes("https://i.ytimg.com")), "Content security policy allows only the YouTube player and its preview image");
       check(await page.locator("#hero-film-video").evaluate(v => Math.round(v.getBoundingClientRect().width) === document.documentElement.clientWidth && v.getBoundingClientRect().height >= innerHeight * .6), "Opening film spans the full page width and most of the screen");
       check(await page.locator(".world-grid").evaluate(el => getComputedStyle(el).gridTemplateColumns.split(" ").length === 3), "Desktop gallery uses three columns");
       check(await page.locator("#real-world").evaluate(el => el.nextElementSibling?.id === "demo"), "Our real and simulation videos immediately follow the real-world gallery");
-      check(await page.locator(".world-card-header a").count() === 9, "Every real-world example links to its original source");
+      check(await page.locator(".world-card figure > .world-source").count() === 6, "Every gallery clip carries its source link on the video");
+      check(await page.locator(".world-card h3, .world-card-sector, .gallery-notes-link, .clip-bubble, .hero-film-copy, details.figure-description, details.hero-media-notes").count() === 0, "Gallery text, hero text, video bubbles, and description disclosures stay removed");
+      check((await page.locator("#real-world-title").innerText()) === "Hoisting is a 4D task: dull, dirty, dangerous, and demanding.", "The hoisting statement is restored");
+      check(await page.evaluate(() => { const size = q => parseFloat(getComputedStyle(document.querySelector(q)).fontSize); return size("h1") <= 34 && size("#real-world-title") <= 28 && size(".method-bubble") >= 14; }), "Type sizes stay within a narrow range");
       check(await page.locator(".citation-section h2").evaluate(el => parseFloat(getComputedStyle(el).fontSize) <= 25), "Citation heading uses a compact size");
       check(await page.locator("#hero-playback-toggle,#hero-playback-status").count() === 0, "Separate global playback button and status are removed");
       check(await page.locator("video").evaluateAll(vs => vs.every(v => v.paused && v.muted && v.controls && v.playsInline && v.controlsList.contains("nodownload"))), "Reduced-motion page starts paused with native controls and hidden native download option");
@@ -107,21 +110,17 @@ try {
         const box = name => document.querySelector(`.method-bubble-${name}`).getBoundingClientRect();
         return box("demonstrate").right <= figure.left && box("learn").right <= figure.left && box("practice").left >= figure.right && box("control").left >= figure.right;
       }), "Method bubbles flank the figure on wide screens");
-      check(await page.evaluate(() => {
-        const box = selector => document.querySelector(selector).getBoundingClientRect();
-        return box(".clip-bubble-real").right <= box("#real-result-video").left && box(".clip-bubble-sim").left >= box("#sim-result-video").right;
-      }), "Video bubbles sit beside their videos on wide screens");
       check(await page.locator("#overview, #vision, #results").count() === 0 && await page.locator("#method video").count() === 0, "Removed sections and method clip stay absent");
       check(await page.locator("h1").evaluate(el => parseFloat(getComputedStyle(el).fontSize) > parseFloat(getComputedStyle(document.querySelector("#demo h2")).fontSize)), "Page title is larger than section headings");
       check(!/\b\d+(?:\.\d+)?[- ]seconds?\b/.test(await page.locator("main").innerText()), "No redundant visible duration labels");
       check(await page.locator("figure:has(video) > figcaption, details.clip-description").count() === 0, "Video captions and per-player description blocks are removed");
-      check(await page.locator("#video-notes .research-media-notes section").count() === 2, "Complete research-video alternatives are consolidated in media notes");
-      await page.getByText("Video sources and visual descriptions", { exact: true }).click();
-      await scan("home with media descriptions expanded");
       await page.getByRole("button", { name: "Copy citation" }).click();
       check((await page.evaluate(() => navigator.clipboard.readText())).includes("liu2026hoist"), "Citation copies");
     }
 
+    if (route === "/accessibility/") {
+      check(await page.locator("#video-notes .research-media-notes section").count() === 2 && await page.locator("#video-notes .world-media-notes section").count() === 6, "Complete video alternatives and source credits are on the accessibility page");
+    }
     for (const width of [320, 768]) {
       await page.setViewportSize({ width, height: 900 });
       check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), route + ": reflows at " + width);
@@ -144,7 +143,7 @@ try {
   check(await openingFilm.evaluate(v => v.muted && v.loop), "Opening film autoplays muted and loops");
   const firstVideo = auto.locator(".world-card video").first();
   await firstVideo.scrollIntoViewIfNeeded();
-  await auto.waitForFunction(() => [...document.querySelectorAll(".world-card video")].slice(0, 2).every(v => !v.paused && v.muted && v.loop && v.currentTime > .1));
+  await auto.waitForFunction(() => [...document.querySelectorAll(".world-card video")].slice(0, 3).every(v => !v.paused && v.muted && v.loop && v.currentTime > .1));
   check(true, "The first row of the real-world gallery autoplays muted and loops");
   await tabToVideo(auto, firstVideo);
   check(true, "Native video controls are reachable with Tab");
@@ -209,7 +208,7 @@ try {
   const nojs = await browser.newContext({ javaScriptEnabled: false });
   const p = await nojs.newPage();
   await p.goto(origin + "/");
-  check(await p.locator("video[controls]").count() === 11 && await p.locator("#hero-playback-toggle").count() === 0, "Without JavaScript all eleven native players remain available");
+  check(await p.locator("video[controls]").count() === 8 && await p.locator("#hero-playback-toggle").count() === 0, "Without JavaScript all eight native players remain available");
   await nojs.close();
 } catch (e) {
   report.errors.push(e.stack || e.message);

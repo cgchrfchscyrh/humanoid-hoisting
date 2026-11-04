@@ -1,43 +1,6 @@
 [
   {
-    "id": "concrete-module",
-    "title": "Setting a concrete house by crane",
-    "sector": "Concrete modular house",
-    "sourceTitle": "Process of Constructing a Concrete Modular House in Just 2 Weeks. PC(Precast Concrete) Factory.",
-    "source": "https://www.youtube.com/watch?v=GXIMQnndCVU&t=1068s",
-    "creator": "Holy Maker",
-    "description": "Workers in hard hats and high-visibility vests assemble a house from factory-made concrete parts. A truck-mounted crane lowers concrete wall sections onto a slab, and gloved hands and a steel bar nudge each one into line before it is bolted.",
-    "posterAlt": "A crane lowers a long concrete beam onto a scaffolded concrete house while workers stand beside it.",
-    "youtubeId": "GXIMQnndCVU",
-    "startSeconds": 1068,
-    "license": "Copyright Holy Maker, all rights reserved.",
-    "licenseUrl": "https://www.youtube.com/t/terms",
-    "changes": "Played through YouTube's embedded player, which loads only after you choose to play it. No copy is stored on this website.",
-    "width": 640,
-    "height": 360
-  },
-  {
-    "id": "hand-concrete-cap",
-    "sector": "Construction",
-    "title": "Steadying a concrete cap by hand",
-    "sourceTitle": "CRANE #2",
-    "source": "https://www.dvidshub.net/video/760467/crane-2",
-    "creator": "U.S. Navy / Defense VI Records Center",
-    "description": "A worker in a hard hat rests a gloved hand on a crane-suspended concrete cap and steers it beside a masonry wall as the crane lowers it, then leans over the wall to watch it go down.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2007/DOD_107904992/DOD_107904992-640x480-922k.mp4",
-    "excerptSeconds": [
-      96.8,
-      104.8
-    ],
-    "license": "Public domain in the United States; DVIDS usage conditions apply.",
-    "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained. Cropped toward the people and the load; the source remains linked.",
-    "width": 640,
-    "height": 360
-  },
-  {
     "id": "palm-gate",
-    "sector": "Dam construction",
     "title": "Bracing a hanging gate",
     "sourceTitle": "Gavins Point Dam Bulkhead Gate Replacement",
     "source": "https://www.dvidshub.net/video/942675/gavins-point-dam-bulkhead-gate-replacement",
@@ -55,17 +18,16 @@
     "height": 360
   },
   {
-    "id": "shop-crane",
-    "sector": "Shipbuilding",
-    "title": "Overhead crane in a steel shop",
-    "sourceTitle": "Shipyard Workers Build U.S. Navy Ships at Ingalls Shipbuilding",
-    "source": "https://www.dvidshub.net/video/993151/shipyard-workers-build-us-navy-ships-ingalls-shipbuilding",
-    "creator": "Austin Rooney / U.S. Navy",
-    "description": "In a steel fabrication hall at a shipyard, a yellow overhead crane carries a long lifting beam hung with magnets above stacks of steel plate.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2601/DOD_111482557/DOD_111482557.mp4",
+    "id": "push-bow-plane",
+    "title": "Pushing a bow plane by hand",
+    "sourceTitle": "Shipyard Chronicles: Riggers Install a Port Retractable Bow Plane Into a Submarine",
+    "source": "https://www.dvidshub.net/video/1003810/shipyard-chronicles-riggers-install-port-retractable-bow-plane-into-submarine",
+    "creator": "Claudia LaMantia / Pearl Harbor Naval Shipyard and Intermediate Maintenance Facility",
+    "description": "On scaffolding above a dry dock, a shipyard worker in a yellow hard hat presses a gloved hand against a submarine bow plane hanging from a crane. A second arm reaches in from the left and rests on the same edge.",
+    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2604/DOD_111652584/DOD_111652584.mp4",
     "excerptSeconds": [
-      86.0,
-      94.0
+      41.0,
+      43.4
     ],
     "license": "Public domain in the United States; DVIDS usage conditions apply.",
     "licenseUrl": "https://www.dvidshub.net/about/copyright",
@@ -74,27 +36,25 @@
     "height": 360
   },
   {
-    "id": "hand-bow-plane",
-    "sector": "Shipyard",
-    "title": "Reaching up to a bow plane",
-    "sourceTitle": "Shipyard Chronicles: Riggers Install a Port Retractable Bow Plane Into a Submarine",
-    "source": "https://www.dvidshub.net/video/1003810/shipyard-chronicles-riggers-install-port-retractable-bow-plane-into-submarine",
-    "creator": "Claudia LaMantia / Pearl Harbor Naval Shipyard and Intermediate Maintenance Facility",
-    "description": "On scaffolding above a dry dock, a shipyard worker in a yellow hard hat reaches up and puts a gloved hand on a submarine bow plane hanging in chain hoists, with two other workers close by.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2604/DOD_111652584/DOD_111652584.mp4",
+    "id": "push-concrete-cap",
+    "title": "Pushing a concrete cap by hand",
+    "sourceTitle": "CRANE #2",
+    "source": "https://www.dvidshub.net/video/760467/crane-2",
+    "creator": "U.S. Navy / Defense VI Records Center",
+    "description": "A worker in a hard hat rests a gloved hand on a crane-suspended concrete cap and pushes it along a brick wall as the crane lowers it.",
+    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2007/DOD_107904992/DOD_107904992-640x480-922k.mp4",
     "excerptSeconds": [
-      6.2,
-      10.0
+      96.9,
+      99.7
     ],
     "license": "Public domain in the United States; DVIDS usage conditions apply.",
     "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained.",
+    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained. Cropped toward the person and the load; the source remains linked.",
     "width": 640,
     "height": 360
   },
   {
     "id": "tagline-bow-plane",
-    "sector": "Shipyard",
     "title": "Tag line on a bow plane",
     "sourceTitle": "Shipyard Chronicles: Riggers Install a Port Retractable Bow Plane Into a Submarine",
     "source": "https://www.dvidshub.net/video/1003810/shipyard-chronicles-riggers-install-port-retractable-bow-plane-into-submarine",
@@ -112,17 +72,16 @@
     "height": 360
   },
   {
-    "id": "chain-bow-plane",
-    "sector": "Shipyard",
-    "title": "Hand on a bow plane in chain hoists",
-    "sourceTitle": "Shipyard Chronicles: Riggers Install a Port Retractable Bow Plane Into a Submarine",
-    "source": "https://www.dvidshub.net/video/1003810/shipyard-chronicles-riggers-install-port-retractable-bow-plane-into-submarine",
-    "creator": "Claudia LaMantia / Pearl Harbor Naval Shipyard and Intermediate Maintenance Facility",
-    "description": "A rigger in a yellow hard hat rests a gloved hand on a dark bow plane hanging in orange chain hoists beside a submarine's hull, while other workers on the scaffold watch the lift.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2604/DOD_111652584/DOD_111652584.mp4",
+    "id": "tagline-loader",
+    "title": "Tag line on a tracked loader",
+    "sourceTitle": "Debris Removal crane operations",
+    "source": "https://www.dvidshub.net/video/969657/debris-removal-crane-operations",
+    "creator": "Charles Delano / U.S. Army Corps of Engineers",
+    "description": "A worker in an orange vest holds a guide rope attached to a compact tracked loader hanging from crane straps, keeping the line in hand as the machine moves just above a cleared slope.",
+    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2507/DOD_111141546/DOD_111141546.mp4",
     "excerptSeconds": [
-      51.6,
-      55.3
+      51.5,
+      58.5
     ],
     "license": "Public domain in the United States; DVIDS usage conditions apply.",
     "licenseUrl": "https://www.dvidshub.net/about/copyright",
@@ -131,40 +90,18 @@
     "height": 360
   },
   {
-    "id": "tagline-container",
-    "sector": "Crane training",
-    "title": "Tag line on a hanging container",
-    "sourceTitle": "Navy Reserve Sailors Conduct Crane Operations",
-    "source": "https://www.dvidshub.net/video/1004148/navy-reserve-sailors-conduct-crane-operations",
-    "creator": "David C. Warren / U.S. Navy",
-    "description": "On a paved training yard, a sailor holds a tag line running up to a green shipping container hanging from a crane above a row of stacked containers, while a second sailor gives arm signals.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2604/DOD_111658215/DOD_111658215.mp4",
-    "excerptSeconds": [
-      128.9,
-      137.8
-    ],
-    "license": "Public domain in the United States; DVIDS usage conditions apply.",
-    "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained. Cropped toward the people and the load; the source remains linked.",
-    "width": 640,
-    "height": 360
-  },
-  {
-    "id": "hook-rigging",
-    "sector": "Crane training",
-    "title": "Fitting rigging onto a hook",
-    "sourceTitle": "Navy Reserve Sailors Conduct Crane Operations",
-    "source": "https://www.dvidshub.net/video/1004148/navy-reserve-sailors-conduct-crane-operations",
-    "creator": "David C. Warren / U.S. Navy",
-    "description": "Two sailors stand at a large yellow crane hook block and work red lifting gear onto the hook together with their hands.",
-    "sourceMedia": "https://d34w7g4gy10iej.cloudfront.net/video/2604/DOD_111658215/DOD_111658215.mp4",
-    "excerptSeconds": [
-      83.3,
-      91.3
-    ],
-    "license": "Public domain in the United States; DVIDS usage conditions apply.",
-    "licenseUrl": "https://www.dvidshub.net/about/copyright",
-    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained. Cropped toward the people and the load; the source remains linked.",
+    "id": "concrete-module",
+    "title": "Setting a concrete house by crane",
+    "sourceTitle": "Process of Constructing a Concrete Modular House in Just 2 Weeks. PC(Precast Concrete) Factory.",
+    "source": "https://www.youtube.com/watch?v=GXIMQnndCVU&t=1068s",
+    "creator": "Holy Maker",
+    "description": "Workers in hard hats and high-visibility vests assemble a house from factory-made concrete parts. A truck-mounted crane lowers concrete wall sections onto a slab, and gloved hands and a steel bar nudge each one into line before it is bolted.",
+    "posterAlt": "A crane lowers a long concrete beam onto a scaffolded concrete house while workers stand beside it.",
+    "youtubeId": "GXIMQnndCVU",
+    "startSeconds": 1068,
+    "license": "Copyright Holy Maker, all rights reserved.",
+    "licenseUrl": "https://www.youtube.com/t/terms",
+    "changes": "Played through YouTube's embedded player, which loads only after you choose to play it. No copy is stored on this website.",
     "width": 640,
     "height": 360
   }
