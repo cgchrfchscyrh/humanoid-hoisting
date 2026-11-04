@@ -1762,19 +1762,12 @@ math {
 .hero-paper-name { max-width: 60ch; margin: 0 auto 16px; font-size: 18px; font-weight: 500; line-height: 1.4; }
 
 .world-card-sector { margin: 0 0 2px; color: #595959; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
-.youtube-facade { position: relative; display: block; aspect-ratio: 16 / 9; background: #111; color: #fff; font-size: 14px; }
-.youtube-facade img { width: 100%; height: 100%; object-fit: cover; }
-.youtube-facade-label { position: absolute; left: 10px; bottom: 10px; padding: 6px 12px; background: #171717; color: #fff; font-size: 13px; text-decoration: underline; }
-.youtube-facade:hover .youtube-facade-label { background: #444; }
-.youtube-frame { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; }
 
-/* Six-clip gallery: source link on each video, and a play mark on the YouTube preview. */
+/* Six-clip gallery: source link on each video. */
 .world-card figure { position: relative; }
 .world-source { position: absolute; z-index: 2; top: 8px; right: 8px; padding: 3px 8px; background: rgb(0 0 0 / 72%); color: #fff; font-size: 14px; line-height: 1.4; text-decoration: none; }
 .world-source:hover { background: #000; text-decoration: underline; }
 .world-source:focus-visible { outline: 3px solid #fff; outline-offset: 1px; }
-.youtube-facade-play { position: absolute; left: 50%; top: 50%; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: rgb(0 0 0 / 72%); color: #fff; font-size: 22px; transform: translate(-50%, -50%); }
-.youtube-facade:hover .youtube-facade-play { background: #000; }
 .hoisting-gallery .gallery-heading { margin-bottom: 20px; }
 
 /* Research videos without side text. */
@@ -1799,6 +1792,15 @@ math {
 .citation-section p { font-size: 14px; }
 
 @media (max-width: 768px) {
-  .hero-film { min-height: 0; aspect-ratio: 8 / 9; }
   .research-pair { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Opening pair: people on the left, our robot on the right, the same height and no cropping. */
+.hero-film.hero-pair { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: stretch; min-height: 0; }
+.hero-pair video { position: static; width: 100%; height: 100%; aspect-ratio: 8 / 9; object-fit: contain; }
+.hero-pair .hero-people { position: relative; margin: 0; min-width: 0; }
+.hero-pair .hero-people video { aspect-ratio: 16 / 9; }
+.nav-inner { justify-content: flex-start; }
+@media (max-width: 768px) {
+  .hero-film.hero-pair { grid-template-columns: minmax(0, 1fr); }
 }

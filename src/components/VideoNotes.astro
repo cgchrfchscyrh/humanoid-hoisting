@@ -5,9 +5,10 @@ import opening from "../data/opening-video.json";
 ---
 <section id="video-notes">
   <h2>Video sources and descriptions</h2>
-  <p>The six real-world clips show independent lifting operations. HOIST is evaluated in controlled laboratory and simulation settings; these external clips do not show HOIST in field use. All clips stored on this website are silent. The concrete house clip plays through YouTube, starts muted, and has its own sound control.</p>
+  <p>The six real-world clips show independent lifting operations. HOIST is evaluated in controlled laboratory and simulation settings; these external clips do not show HOIST in field use. All clips are silent.</p>
   <section class="opening-media-note"><h3>{opening.caption}</h3><p>{opening.description}</p><p>Source: {opening.source} {opening.changes}</p></section>
-  <div class="world-media-notes">{worldClips.map(clip => <section><h3>{clip.title}</h3><p>{clip.description}</p><p><a href={clip.source}>{clip.sourceTitle}</a> — {clip.creator}.</p><p>{clip.license} <a href={clip.licenseUrl}>Read usage conditions</a>. {clip.changes}</p></section>)}</div>
+  <section class="opening-media-note"><h3>{opening.people.title}</h3><p>{opening.people.description}</p><p><a href={opening.people.source}>{opening.people.sourceTitle}</a> — {opening.people.creator}.</p><p>{opening.people.license} {opening.people.changes}</p></section>
+  <div class="world-media-notes">{worldClips.map(clip => <section><h3>{clip.title}</h3><p>{clip.description}</p><p><a href={clip.source}>{clip.sourceTitle}</a> — {clip.creator}.</p><p>{clip.license} {clip.licenseUrl && <><a href={clip.licenseUrl}>Read usage conditions</a>. </>}{clip.changes}</p></section>)}</div>
   <p class="source-disclaimer">The appearance of U.S. Department of War (DoW) visual information does not imply or constitute DoW endorsement.</p>
   <div class="research-media-notes">{clips.map(clip => <section><h3>{clip.caption}</h3><p>{clip.description}</p><p>Source: the authors’ HOIST comparison recording. Original playback speed; no audio.</p></section>)}</div>
 </section>

@@ -5,6 +5,9 @@
     connection?: { saveData?: boolean; addEventListener?: (type: string, listener: () => void) => void };
   }).connection;
   const pausedByUser = new Set<HTMLVideoElement>();
+  // The two opening videos play, pause, and loop together.
+  const pair = videos.filter(video => video.closest(".hero-pair"));
+  const groupOf = (video: HTMLVideoElement) => (pair.includes(video) ? pair : [video]);
   const internalPauses = new Set<HTMLVideoElement>();
   const visible = new Set<HTMLVideoElement>();
   const autoplayAllowed = () => !document.hidden && !motion.matches && !connection?.saveData;
@@ -23,13 +26,15 @@
   };
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
-      const video = entry.target as HTMLVideoElement;
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.2) {
-        visible.add(video);
-        void play(video);
-      } else {
-        visible.delete(video);
-        pause(video);
+      const members = entry.target instanceof HTMLVideoElement ? [entry.target] : pair;
+      for (const video of members) {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.2) {
+          visible.add(video);
+          void play(video);
+        } else {
+          visible.delete(video);
+          pause(video);
+        }
       }
     }
   }, { threshold: [0, 0.2] });
@@ -38,13 +43,31 @@
     video.loop = true;
     video.addEventListener("play", () => {
       // Native play is an explicit choice, including with reduced motion or Save-Data.
-      pausedByUser.delete(video);
+      for (const member of groupOf(video)) {
+        pausedByUser.delete(member);
+        if (member.paused) {
+          member.currentTime = video.currentTime;
+          void member.play().catch(() => {});
+        }
+      }
     });
     video.addEventListener("pause", () => {
       if (internalPauses.has(video)) internalPauses.delete(video);
-      else pausedByUser.add(video);
+      else for (const member of groupOf(video)) {
+        pausedByUser.add(member);
+        if (member !== video) pause(member);
+      }
     });
-    observer.observe(video);
+    if (!pair.includes(video)) observer.observe(video);
+  }
+  if (pair.length) {
+    observer.observe(document.querySelector(".hero-pair")!);
+    const [follower, leader] = pair;
+    leader.addEventListener("timeupdate", () => {
+      if (follower.paused || follower.seeking || !leader.duration) return;
+      const gap = Math.abs(leader.currentTime - follower.currentTime);
+      if (Math.min(gap, leader.duration - gap) > 0.15) follower.currentTime = leader.currentTime;
+    });
   }
   const preferencesChanged = () => {
     for (const video of videos) {

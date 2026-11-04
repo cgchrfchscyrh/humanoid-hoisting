@@ -1,5 +1,9 @@
 # Accessibility review — 18 October 2026
 
+## Opening pair and no top navigation — 4 November 2026
+
+The opening now shows people guiding a hanging concrete base beside the robot film, at one height with no cropping, and the top navigation links were removed at the author's request. The two videos have the same 21.8-second length and act as one player: they start, pause, resume, and loop together, and the existing reduced-motion, data-saving, and offscreen rules apply to both. Both are silent, with native controls, timed descriptions, and text alternatives. The people clip and one gallery clip are excerpts from Holy Maker's video, which the project team reports having permission to use. They are stored on this site, so YouTube's player is no longer embedded and no third-party content loads with the page. The written permission was not reviewed here. Their descriptions were written from frames at 1-second steps.
+
 ## Robot opening film and six-clip gallery — 4 November 2026
 
 The homepage opens with a full-width silent film of the real robot, with no text over it. On wide screens the complete panel sits over a blurred copy of itself; narrow screens use a separate copy of the panel with no blurred sides. The gallery now has six clips of people pushing or pulling a load, with a source link placed on each video. At the author's request, gallery titles, the text explaining the research videos, and the visible description and credit disclosures were removed from the homepage. Every video keeps a complete text alternative for screen readers and a timed description track, and the figure description stays available to screen readers. Full descriptions, source credits, and the required DoW statement moved to the accessibility page, linked from the footer. Sighted visitors no longer see these descriptions on the homepage. Text sizes were brought closer together. Existing PDF and screen-reader limitations still apply.

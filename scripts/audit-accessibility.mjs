@@ -83,12 +83,11 @@ try {
 
     if (route === "/") {
       const videoCount = await page.locator("video").count();
-      check(videoCount === 8, "Opening film, five hosted gallery clips, and two research excerpts are present");
-      check(await page.locator(".world-grid .world-card video").count() === 5 && await page.locator(".world-grid .youtube-facade").count() === 1 && await page.locator(".world-card").count() === 6, "Six-clip gallery: five video players and one YouTube link");
-      check(await page.locator("iframe").count() === 0, "YouTube is not loaded before the visitor chooses to play it");
-      check(await page.locator(".youtube-facade").evaluate(a => a.href.startsWith("https://www.youtube.com/watch")), "YouTube clip works as a plain link without JavaScript");
-      check(await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute("content").then(csp => csp.includes("frame-src https://www.youtube-nocookie.com") && csp.includes("https://i.ytimg.com")), "Content security policy allows only the YouTube player and its preview image");
-      check(await page.locator("#hero-film-video").evaluate(v => Math.round(v.getBoundingClientRect().width) === document.documentElement.clientWidth && v.getBoundingClientRect().height >= innerHeight * .6), "Opening film spans the full page width and most of the screen");
+      check(videoCount === 10, "Two opening videos, six gallery clips, and two research excerpts are present");
+      check(await page.locator(".world-grid .world-card video").count() === 6 && await page.locator(".world-card").count() === 6, "Six-clip gallery uses six hosted video players");
+      check(await page.locator("iframe").count() === 0 && !(await page.content()).includes("youtube-nocookie"), "No third-party player is embedded");
+      check(await page.evaluate(() => { const film = document.querySelector(".hero-pair").getBoundingClientRect(), people = document.querySelector("#hero-people-video").getBoundingClientRect(), robot = document.querySelector("#hero-film-video").getBoundingClientRect(); return Math.round(film.width) === document.documentElement.clientWidth && people.left === 0 && Math.abs(people.right - robot.left) <= 1 && Math.abs(people.height - robot.height) <= 1 && Math.abs(robot.right - film.right) <= 1; }), "People clip and robot film fill the opening width side by side at one height");
+      check(await page.locator(".nav-links").count() === 0, "Top navigation links stay removed");
       check(await page.locator(".world-grid").evaluate(el => getComputedStyle(el).gridTemplateColumns.split(" ").length === 3), "Desktop gallery uses three columns");
       check(await page.locator("#real-world").evaluate(el => el.nextElementSibling?.id === "demo"), "Our real and simulation videos immediately follow the real-world gallery");
       check(await page.locator(".world-card figure > .world-source").count() === 6, "Every gallery clip carries its source link on the video");
@@ -141,6 +140,17 @@ try {
   const openingFilm = auto.locator("#hero-film-video");
   await waitForPlayback(openingFilm, false);
   check(await openingFilm.evaluate(v => v.muted && v.loop), "Opening film autoplays muted and loops");
+  const peopleFilm = auto.locator("#hero-people-video");
+  await waitForPlayback(peopleFilm, false);
+  await auto.waitForFunction(() => document.querySelector("#hero-film-video").currentTime > 1);
+  check(await auto.evaluate(() => { const a = document.querySelector("#hero-film-video"), b = document.querySelector("#hero-people-video"); return a.duration === b.duration || Math.abs(a.duration - b.duration) < .1; }), "Opening videos have the same length");
+  check(await auto.evaluate(() => Math.abs(document.querySelector("#hero-film-video").currentTime - document.querySelector("#hero-people-video").currentTime) < .4), "Opening videos play in step");
+  await openingFilm.evaluate(v => v.pause());
+  await waitForPlayback(peopleFilm, true);
+  check(true, "Pausing one opening video pauses the other");
+  await peopleFilm.evaluate(v => v.play());
+  await waitForPlayback(openingFilm, false);
+  check(true, "Playing one opening video plays the other");
   const firstVideo = auto.locator(".world-card video").first();
   await firstVideo.scrollIntoViewIfNeeded();
   await auto.waitForFunction(() => [...document.querySelectorAll(".world-card video")].slice(0, 3).every(v => !v.paused && v.muted && v.loop && v.currentTime > .1));
@@ -175,16 +185,6 @@ try {
   await auto.emulateMedia({ reducedMotion: "reduce" });
   await auto.waitForFunction(() => [...document.querySelectorAll("video")].every(v => v.paused));
   check(true, "Enabling reduced motion pauses automatic playback immediately");
-  const embed = await normal.newPage();
-  await embed.route("**/*youtube-nocookie.com/**", route => route.abort());
-  await embed.goto(origin + "/", { waitUntil: "domcontentloaded" });
-  await embed.locator(".youtube-facade").focus();
-  await embed.keyboard.press("Enter");
-  const frame = embed.locator(".world-card iframe");
-  await frame.waitFor({ state: "attached" });
-  check((await frame.getAttribute("src")).startsWith("https://www.youtube-nocookie.com/embed/") && (await frame.getAttribute("title")).length > 0, "Keyboard activation loads the titled privacy-enhanced YouTube player");
-  check(await frame.evaluate(el => document.activeElement === el), "Focus moves into the YouTube player after activation");
-  await embed.close();
   await normal.close();
 
   for (const setting of ["reduced-motion", "save-data"]) {
@@ -208,7 +208,7 @@ try {
   const nojs = await browser.newContext({ javaScriptEnabled: false });
   const p = await nojs.newPage();
   await p.goto(origin + "/");
-  check(await p.locator("video[controls]").count() === 8 && await p.locator("#hero-playback-toggle").count() === 0, "Without JavaScript all eight native players remain available");
+  check(await p.locator("video[controls]").count() === 10 && await p.locator("#hero-playback-toggle").count() === 0, "Without JavaScript all ten native players remain available");
   await nojs.close();
 } catch (e) {
   report.errors.push(e.stack || e.message);

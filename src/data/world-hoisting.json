@@ -90,18 +90,18 @@
     "height": 360
   },
   {
-    "id": "concrete-module",
-    "title": "Setting a concrete house by crane",
+    "id": "push-concrete-column",
+    "title": "Pushing a concrete column by hand",
     "sourceTitle": "Process of Constructing a Concrete Modular House in Just 2 Weeks. PC(Precast Concrete) Factory.",
-    "source": "https://www.youtube.com/watch?v=GXIMQnndCVU&t=1068s",
+    "source": "https://www.youtube.com/watch?v=GXIMQnndCVU&t=1063s",
     "creator": "Holy Maker",
-    "description": "Workers in hard hats and high-visibility vests assemble a house from factory-made concrete parts. A truck-mounted crane lowers concrete wall sections onto a slab, and gloved hands and a steel bar nudge each one into line before it is bolted.",
-    "posterAlt": "A crane lowers a long concrete beam onto a scaffolded concrete house while workers stand beside it.",
-    "youtubeId": "GXIMQnndCVU",
-    "startSeconds": 1068,
-    "license": "Copyright Holy Maker, all rights reserved.",
-    "licenseUrl": "https://www.youtube.com/t/terms",
-    "changes": "Played through YouTube's embedded player, which loads only after you choose to play it. No copy is stored on this website.",
+    "description": "A worker in a white hard hat reaches under a concrete column section and keeps a gloved hand pressed against it as it comes down onto the section below, then lets go when the gap has nearly closed.",
+    "excerptSeconds": [
+      1063.0,
+      1071.8
+    ],
+    "license": "© Holy Maker. Used with permission.",
+    "changes": "Excerpted from a single shot, audio removed, resized, and H.264 compressed. Source playback speed retained.",
     "width": 640,
     "height": 360
   }

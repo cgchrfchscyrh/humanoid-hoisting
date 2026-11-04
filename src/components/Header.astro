@@ -15,7 +15,15 @@ const links = [
 ---
 
 <header class="comparison-hero" id="top">
-  <div class="hero-film">
+  <div class="hero-film hero-pair">
+    <figure class="hero-people">
+      <video id="hero-people-video" controls controlslist="nodownload" muted playsinline preload="none" poster={asset("media/hoist-people-opening.jpg")} width="1280" height="720" aria-label={opening.people.title} aria-describedby="hero-people-description">
+        <source src={asset("media/hoist-people-opening.mp4")} type="video/mp4" />
+        <track kind="descriptions" src={asset("media/hoist-people-opening-descriptions.vtt")} srclang="en" label="English visual descriptions" />
+        Video playback is unavailable.
+      </video>
+      <a class="world-source" href={opening.people.source} aria-label={`Source of the video: ${opening.people.title}`}>Source ↗</a>
+    </figure>
     <video
       id="hero-film-video"
       controls
@@ -24,17 +32,17 @@ const links = [
       playsinline
       preload="none"
       poster={asset("media/hoist-robot-opening-poster.jpg")}
-      width="1920"
-      height="1080"
+      width="768"
+      height="864"
       aria-label={opening.caption}
       aria-describedby="hero-film-description"
     >
-      <source media="(max-width: 768px)" src={asset("media/hoist-robot-opening-small.mp4")} type="video/mp4" />
-      <source src={asset("media/hoist-robot-opening.mp4")} type="video/mp4" />
+      <source src={asset("media/hoist-robot-opening-small.mp4")} type="video/mp4" />
       <track kind="descriptions" src={asset("media/hoist-robot-opening-descriptions.vtt")} srclang="en" label="English visual descriptions" />
       Video playback is unavailable.
     </video>
   </div>
+  <p class="sr-only" id="hero-people-description">{opening.people.description}</p>
   <p class="sr-only" id="hero-film-description">{opening.description}</p>
   <div class="hero-publication">
     <h1 class="hero-paper-name">{project.title}</h1>
