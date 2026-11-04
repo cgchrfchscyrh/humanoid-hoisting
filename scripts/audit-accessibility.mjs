@@ -208,6 +208,9 @@ try {
     await p.keyboard.press("Space");
     await waitForPlayback(video, true);
     check(true, setting + ": native keyboard pause remains available");
+    for (const id of ["world-palm-gate", "hero-film-video"]) {
+      check(await p.locator("#" + id).evaluate(async v => { void v.play().catch(() => {}); v.pause(); await new Promise(res => setTimeout(res, 800)); return v.paused; }), setting + ": a pause right after play stays paused: " + id);
+    }
     await ctx.close();
   }
 

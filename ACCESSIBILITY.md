@@ -1,5 +1,9 @@
 # Accessibility review — 18 October 2026
 
+## Pause fix — 4 November 2026
+
+A pause that arrived just after playback started could be undone, so a video kept playing after a viewer paused it. The cause was the opening-pair sync code added earlier the same day. It is fixed, and the browser suite now tests this case.
+
 ## Terminology review — 4 November 2026
 
 Homepage text, video descriptions, and timed description tracks now use crane, rigging, precast, and robot-learning terms from OSHA 1926 Subpart CC and the HOIST paper. The HTML paper and supplement were not changed. The 4D phrase is the authors' own.

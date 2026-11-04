@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-04T22:00:58.943Z",
+  "date": "2026-11-04T22:08:30.799Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -193,9 +193,13 @@
     "reduced-motion: no automatic playback",
     "reduced-motion: explicit native keyboard playback remains available",
     "reduced-motion: native keyboard pause remains available",
+    "reduced-motion: a pause right after play stays paused: world-palm-gate",
+    "reduced-motion: a pause right after play stays paused: hero-film-video",
     "save-data: no automatic playback",
     "save-data: explicit native keyboard playback remains available",
     "save-data: native keyboard pause remains available",
+    "save-data: a pause right after play stays paused: world-palm-gate",
+    "save-data: a pause right after play stays paused: hero-film-video",
     "Without JavaScript all ten native players remain available"
   ],
   "errors": [],

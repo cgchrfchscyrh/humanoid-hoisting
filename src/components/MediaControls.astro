@@ -43,9 +43,11 @@
     video.loop = true;
     video.addEventListener("play", () => {
       // Native play is an explicit choice, including with reduced motion or Save-Data.
+      // A pause can land before this event arrives; it wins, and its own event records it.
+      if (video.paused) return;
       for (const member of groupOf(video)) {
         pausedByUser.delete(member);
-        if (member.paused) {
+        if (member !== video && member.paused) {
           member.currentTime = video.currentTime;
           void member.play().catch(() => {});
         }
