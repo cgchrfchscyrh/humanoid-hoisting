@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-05T16:47:19.842Z",
+  "date": "2026-11-05T16:55:31.888Z",
   "engine": "axe-core via Playwright",
   "target": "WCAG 2.1 A and AA",
   "scans": [
@@ -112,6 +112,7 @@
     "Page order is evidence, method, results, citation",
     "Four evidence tiles each link to a source",
     "Evidence tiles name the four Ds in order",
+    "Method and results headings share one centered position",
     "Method and results headings state the contribution and the result",
     "Every gallery clip carries its source link on the video",
     "Gallery text, hero text, video bubbles, and description disclosures stay removed",

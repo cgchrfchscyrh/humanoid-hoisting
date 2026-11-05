@@ -1825,7 +1825,8 @@ math {
 .research-demonstrations { margin-top: 0; padding-top: 48px; padding-bottom: 48px; border-top: 0; }
 .method-section .section-heading h2,
 .research-demonstrations .gallery-heading h2 { max-width: 34em; }
-.method-section .section-heading h2 { margin-inline: auto; text-align: center; }
+.method-section .section-heading h2,
+.research-demonstrations .gallery-heading h2 { margin-inline: auto; text-align: center; }
 @media (max-width: 900px) {
   .evidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
