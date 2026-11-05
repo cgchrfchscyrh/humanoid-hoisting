@@ -10,7 +10,7 @@ Homepage text, video descriptions, and timed description tracks now use crane, r
 
 ## Evidence tiles and method first — 4 November 2026
 
-The homepage now runs from the opening videos to the 4D evidence and gallery, then the method, the results, and the citation. Four stat tiles use text only, with a real heading and a named source link each, so nothing depends on color. Their figures come from O*NET's work-context survey for riggers and from the U.S. Bureau of Labor Statistics factsheet on crane fatalities. The results heading uses the paper's 20-rollout values from Table 1, as the abstract does.
+The homepage now runs from the opening videos to the 4D evidence and gallery, then the method, the results, and the citation. Four stat tiles use text only, with a real heading and a named source link each, so nothing depends on color. Their figures come from O*NET's work-context survey for riggers, the U.S. Bureau of Labor Statistics factsheet on crane fatalities, and the AGC and NCCER 2025 Workforce Survey. The results heading uses the paper's 20-rollout values from Table 1, as the abstract does.
 
 ## Homepage without top bar or footer — 4 November 2026
 

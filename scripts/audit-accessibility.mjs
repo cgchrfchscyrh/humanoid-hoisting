@@ -163,6 +163,8 @@ try {
   check(true, "The first row of the real-world gallery autoplays muted and loops");
   await tabToVideo(auto, firstVideo);
   check(true, "Native video controls are reachable with Tab");
+  // Tabbing scrolls the page, so wait for playback to resume or Space would start the video instead of pausing it.
+  await waitForPlayback(firstVideo, false);
   await auto.keyboard.press("Space");
   await waitForPlayback(firstVideo, true);
   check(true, "Space on the native player pauses the video");

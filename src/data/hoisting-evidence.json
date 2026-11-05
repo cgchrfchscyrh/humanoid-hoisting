@@ -16,15 +16,15 @@
   {
     "label": "Dangerous",
     "value": "297",
-    "text": "U.S. workers died in crane-related incidents from 2011 to 2017. Just over half were struck by an object or equipment.",
+    "text": "U.S. workers died in crane-related incidents from 2011 to 2017.",
     "source": "https://www.bls.gov/iif/factsheets/fatal-occupational-injuries-cranes-2011-17.htm",
     "sourceName": "U.S. Bureau of Labor Statistics"
   },
   {
     "label": "Demanding",
-    "value": "92%",
-    "text": "of riggers rate being exact or highly accurate as very or extremely important to the job.",
-    "source": "https://www.onetonline.org/link/details/49-9096.00",
-    "sourceName": "O*NET, Riggers"
+    "value": "77%",
+    "text": "of construction firms that employ crane and heavy-equipment operators say they are hard to find.",
+    "source": "https://www.agc.org/sites/default/files/users/user21902/2025%20Workforce%20Survey%20Analysis%20(3).pdf",
+    "sourceName": "AGC and NCCER 2025 Workforce Survey"
   }
 ]
