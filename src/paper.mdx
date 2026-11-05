@@ -11,7 +11,7 @@ import { asset } from "./data/project";
 <HoistingGallery />
 <section className="method-section section-band" id="method">
 <div className="section-inner">
-  <div className="section-heading"><h2>HOIST turns 50 teleoperated demonstrations into accurate load placement with 20 reinforcement-learning rollouts, keeping the policy and the whole-body controller frozen.</h2></div>
+  <div className="section-heading"><h2>HOIST learns from human demonstrations, then refines load placement through a small number of autonomous trials.</h2></div>
   <div className="method-map">
     <div className="method-map-figure"><ResearchFigure src={pipeline} alt="HOIST pipeline: VR demonstrations initialize a vision-language-action policy, and reinforcement learning steers initial noise while the policy and whole-body controller remain frozen." description="VR demonstrations provide the initial behavior. Ego-view RGB, side-view RGB, language and navigation commands condition the vision-language backbone. Robot state and depth are encoded for the flow-matching action expert, which outputs a 24-step chunk of 25-dimensional planner commands. A frozen whole-body controller executes head, bimanual hand, navigation and base-height targets. During reinforcement learning, a SAC actor steers initial noise using batches of 10 autonomous rollouts and terminal position and yaw rewards; the VLA and controller remain frozen." /></div>
     <h3 className="sr-only">What the figure shows</h3>
@@ -24,7 +24,7 @@ import { asset } from "./data/project";
 </section>
 
 <section className="research-demonstrations" id="demo" aria-labelledby="demonstrations-title">
-  <div className="gallery-heading gallery-heading--statement"><h2 id="demonstrations-title">After 20 reinforcement-learning rollouts, HOIST cut mean Manhattan position error from 9.28 cm to 6.69 cm on the real humanoid and from 22.44 cm to 2.54 cm in simulation.</h2></div>
+  <div className="gallery-heading gallery-heading--statement"><h2 id="demonstrations-title">HOIST places suspended loads more accurately than imitation learning alone, in simulation and on a real humanoid.</h2></div>
   <div className="research-pair">
     <section aria-labelledby="real-demo-title"><h3 id="real-demo-title">Real humanoid</h3><ResearchClip id="real-result" /></section>
     <section aria-labelledby="sim-demo-title"><h3 id="sim-demo-title">Simulation</h3><ResearchClip id="sim-result" /></section>
