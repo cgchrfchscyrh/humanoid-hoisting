@@ -2,7 +2,7 @@
   {
     "label": "Dull",
     "value": "80%",
-    "text": "of riggers make repetitive motions for more than half of their working time.",
+    "text": "of riggers, the workers who attach and guide crane loads, make repetitive motions for more than half of their working time.",
     "source": "https://www.onetonline.org/link/details/49-9096.00",
     "sourceName": "O*NET, Riggers"
   },
@@ -23,7 +23,7 @@
   {
     "label": "Demanding",
     "value": "77%",
-    "text": "of construction firms that employ crane and heavy-equipment operators say they are hard to find.",
+    "text": "of construction firms report operators of cranes and heavy equipment as difficult to find.",
     "source": "https://www.agc.org/sites/default/files/users/user21902/2025%20Workforce%20Survey%20Analysis%20(3).pdf",
     "sourceName": "AGC and NCCER 2025 Workforce Survey"
   }
